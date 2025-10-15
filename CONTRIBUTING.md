@@ -1,7 +1,3 @@
-# Contribuir al Proyecto-Web
-
-Gracias por colaborar en este repositorio. Aquí están las normas mínimas y, en especial, la sección para dejar un entorno local reproducible entre todos los desarrolladores.
-
 ## Entorno local reproducible
 Sigue estos pasos para dejar tu entorno local alineado con el equipo. Estas instrucciones asumen Windows y que se usará XAMPP para PHP durante el desarrollo.
 
@@ -70,5 +66,3 @@ npm run dev
 - Trabaja sobre ramas `feature/*` o `fix/*` basadas en `develop`.
 - Abre Pull Requests hacia `develop`. Un revisor y CI aprobado son requeridos antes de merge.
 - No subas credenciales ni el archivo `.env`.
-
-Gracias por colaborar — si algo no queda claro, abre un Issue usando las plantillas del repo.
