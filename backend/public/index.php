@@ -1,1 +1,15 @@
-<?php echo "Hola Mundo"; ?>
+<h1>
+    <?php echo "Mi primera app"; ?>
+</h1>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+}
+h1 {
+    color: #333;
+}
+</style>
