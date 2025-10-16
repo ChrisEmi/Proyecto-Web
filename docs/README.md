@@ -23,12 +23,13 @@ Siguiendo el estándar de arquitectura de tres capas:
    - HTTP Client: Axios
 
 2. **Capa de Lógica de Negocio** (Backend - Controladores)
-   - Framework: Laravel 12 (PHP 8.2)
+   - Lenguaje: PHP 8.2 puro
    - Patrón: MVC (Model-View-Controller)
    - API: RESTful con respuestas JSON
+   - Router: Sistema de rutas personalizado
 
 3. **Capa de Acceso a Datos** (Backend - Modelos)
-   - ORM: Eloquent (Laravel)
+   - Acceso a datos: PDO (PHP Data Objects)
    - Base de Datos: SQL Server
    - Drivers: `sqlsrv` y `pdo_sqlsrv`
 
@@ -36,9 +37,9 @@ Siguiendo el estándar de arquitectura de tres capas:
 
 ### Backend
 - **PHP**: 8.2.12 (Thread Safe)
-- **Framework**: Laravel 12
+- **PDO**: Para acceso seguro a la base de datos
 - **Base de Datos**: Microsoft SQL Server
-- **Autenticación**: Laravel Sanctum (para tokens de API)
+- **Autenticación**: JWT (JSON Web Tokens)
 - **Servidor Web**: Apache (XAMPP)
 
 ### Frontend
@@ -69,16 +70,16 @@ Siguiendo el estándar de arquitectura de tres capas:
 
 ```
 Proyecto-Web/
-├── backend/              # API Laravel
-│   ├── app/
-│   │   ├── Http/
-│   │   │   └── Controllers/  # Lógica de negocio
-│   │   └── Models/       # Modelos Eloquent (acceso a datos)
-│   ├── database/
-│   │   └── migrations/   # Control de versiones de BD
-│   ├── routes/
-│   │   └── api.php       # Definición de endpoints
-│   ├── public/           # Punto de entrada
+├── backend/              # API PHP
+│   ├── src/
+│   │   ├── Core/
+│   │   │   └── Database.php  # Singleton para conexión PDO
+│   │   ├── Controllers/  # Lógica de negocio
+│   │   ├── Models/       # Modelos para acceso a datos
+│   │   └── Routes/
+│   │       └── api.php   # Definición de endpoints
+│   ├── public/
+│   │   └── index.php     # Punto de entrada
 │   ├── .env              # Variables de entorno (no versionado)
 │   └── composer.json
 ├── frontend/             # Aplicación React
@@ -105,9 +106,9 @@ git clone https://github.com/ChrisEmi/Proyecto-Web.git
 cd Proyecto-Web
 ```
 
-### 2. Configuración del Backend (Laravel)
+### 2. Configuración del Backend (PHP)
 
-#### a. Instalar dependencias
+#### a. Instalar dependencias (si las hay)
 
 ```powershell
 cd backend
@@ -125,31 +126,21 @@ Copy-Item .env.example .env
 Edita el archivo `.env` con tus credenciales de base de datos:
 
 ```env
-DB_CONNECTION=sqlsrv
 DB_HOST="TU_SERVIDOR\SQLEXPRESS"
 DB_PORT=1433
-DB_DATABASE=ProyectoWeb
-DB_USERNAME=tu_usuario
-DB_PASSWORD=tu_contraseña
-
-# Configuración de sesiones
-SESSION_DRIVER=file
+DB_NAME=ProyectoWeb
+DB_USER=tu_usuario
+DB_PASS=tu_contraseña
 
 # URL del frontend para CORS
 FRONTEND_URL=http://localhost:5173
 ```
 
-#### c. Generar la clave de aplicación
-
-```powershell
-php artisan key:generate
-```
-
-#### d. Crear la base de datos
+#### c. Crear la base de datos
 
 Ejecuta el script SQL ubicado en `docs/schema.sql` en tu gestor de SQL Server (SSMS o similar).
 
-#### e. Configurar el Virtual Host de Apache
+#### d. Configurar el Virtual Host de Apache
 
 Edita `C:\xampp\apache\conf\extra\httpd-vhosts.conf` y agrega:
 
@@ -174,13 +165,9 @@ Edita `C:\Windows\System32\drivers\etc\hosts` (como administrador) y agrega:
 
 Reinicia Apache.
 
-#### f. Verificar la conexión a la base de datos
+#### e. Verificar la conexión
 
-```powershell
-php artisan tinker --execute="DB::connection()->getPdo()"
-```
-
-Si no aparece ningún error, la conexión es exitosa.
+Abre tu navegador en `http://proyecto-web.local/api/test` y deberías ver una respuesta JSON confirmando que la API está funcionando.
 
 ### 3. Configuración del Frontend (React)
 
@@ -246,19 +233,20 @@ Abre tu navegador en `http://localhost:5173`.
 
 - **Variables de entorno**: Nunca versionar archivos `.env` con credenciales reales.
 - **CORS**: Configurado para aceptar solo peticiones desde el dominio del frontend.
-- **Autenticación**: Implementada con Laravel Sanctum para tokens de API.
-- **SQL Injection**: Protección automática mediante Eloquent ORM.
+- **Autenticación**: Implementada con JWT (JSON Web Tokens).
+- **SQL Injection**: Protección mediante prepared statements de PDO.
 - **XSS**: React escapa automáticamente el contenido renderizado.
+- **Validación**: Validación de entrada en todos los endpoints del backend.
 
 ## Despliegue en Producción
 
 ### Backend
 1. Configurar un servidor con Apache y PHP 8.2+
 2. Configurar el Virtual Host apuntando a `backend/public`
-3. Instalar dependencias: `composer install --optimize-autoloader --no-dev`
+3. Instalar dependencias: `composer install --optimize-autoloader --no-dev` (si las hay)
 4. Configurar `.env` con credenciales de producción
-5. Generar clave: `php artisan key:generate`
-6. Optimizar configuración: `php artisan config:cache`
+5. Asegurar que el servidor tiene las extensiones PHP necesarias (`pdo_sqlsrv`, `sqlsrv`)
+6. Configurar permisos adecuados para las carpetas de logs y caché
 
 ### Frontend
 1. Construir el proyecto: `npm run build`
@@ -281,7 +269,8 @@ Para configurar el proyecto en tu máquina local:
 
 ## Referencias
 
-- [Laravel Documentation](https://laravel.com/docs)
+- [PHP Documentation](https://www.php.net/docs.php)
+- [PDO Documentation](https://www.php.net/manual/en/book.pdo.php)
 - [React Documentation](https://react.dev)
 - [Tailwind CSS](https://tailwindcss.com)
 - Documento de especificación original: `docs/proyectoFinal_TDAW-20261_JAOR.pdf`
