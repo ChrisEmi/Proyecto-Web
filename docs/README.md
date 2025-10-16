@@ -1,146 +1,288 @@
-# Proyecto Web - TDAW
+# Proyecto Web - Sistema de Gestión de Eventos Universitarios
 
-## Qué hace la aplicación (según el documento)
+## Descripción del Proyecto
 
-- Gestiona usuarios: registro, inicio de sesión y roles (usuario/administrador).
-- Permite crear, leer, actualizar y eliminar recursos principales (por ejemplo: entradas/artículos, categorías, comentarios).
-- Proporciona una API REST en el backend (endpoints para usuarios y recursos) consumida por el frontend.
-- Control de acceso: rutas protegidas para acciones de administración.
-- Interfaz responsiva construida con componentes React.
+Sistema web para la gestión integral de eventos universitarios que permite a estudiantes, organizadores y administradores crear, gestionar y participar en eventos académicos, culturales y deportivos.
 
-## Cómo lo implementa (resumen técnico del documento)
+### Funcionalidades Principales
 
-- Backend (PHP):
-  - Arquitectura MVC ligera con rutas que exponen una API REST.
-  - Uso de PDO para acceder a la base de datos relacional (MySQL / MariaDB o PostgreSQL si se configura).
-  - Endpoints principales: /api/auth (login/register), /api/users, /api/posts, /api/categories, /api/comments.
-  - Autenticación: sesiones o tokens (el documento recomienda JWT; aquí se implementa JWT en PHP para las rutas protegidas).
-  - Validación de entrada y manejo básico de errores con respuestas JSON estándar (status, message, data).
+- **Gestión de Usuarios**: Registro, autenticación y autorización con tres roles (Estudiante, Organizador, Administrador).
+- **Gestión de Eventos**: Creación, edición, eliminación y visualización de eventos con categorías, ubicaciones y fechas.
+- **Inscripción a Eventos**: Los estudiantes pueden inscribirse, cancelar inscripciones y ver su historial.
+- **Panel de Administración**: Control total de usuarios, eventos y configuraciones del sistema.
+- **Interfaz Responsiva**: Diseño adaptable construido con React y Tailwind CSS.
 
-- Frontend (React + Vite):
-  - Proyecto creado con Vite + React.
-  - Páginas: Home (lista de recursos), Detalle (ver recurso), Admin (CRUD de recursos), Login/Register.
-  - Gestión de estado ligera con Context API o hooks (useState/useEffect). Autorización mediante almacenamiento seguro del token (localStorage con precauciones).
-  - Peticiones a la API usando fetch o axios.
+## Arquitectura del Sistema (3 Capas)
 
-## Requisitos
+Siguiendo el estándar de arquitectura de tres capas:
 
-- PHP 8.0+ con extensiones: pdo, pdo_mysql (o pdo_pgsql si usa PostgreSQL), openssl (para JWT).
-- Composer
-- Node.js 18+ y npm o pnpm
-- Base de datos: MySQL / MariaDB (recomendado) o PostgreSQL
-- Git
+1. **Capa de Presentación** (Frontend)
+   - Framework: React 18 con Vite
+   - Estilos: Tailwind CSS
+   - Routing: React Router DOM
+   - HTTP Client: Axios
 
-## Estructura del repositorio (esperada)
+2. **Capa de Lógica de Negocio** (Backend - Controladores)
+   - Framework: Laravel 12 (PHP 8.2)
+   - Patrón: MVC (Model-View-Controller)
+   - API: RESTful con respuestas JSON
 
-- `backend/` - Código PHP (rutas, controladores, modelos, utilidades, composer.json).
-- `backend/public/` - Punto de entrada público (index.php) y archivos públicos del backend.
-- `frontend/` - Proyecto React + Vite.
-- `database/` - Scripts SQL y/o migraciones.
-- `docs/` - Documentación adicional y el PDF entregado.
-- `.env.example` - Variables de entorno de ejemplo para backend y frontend.
+3. **Capa de Acceso a Datos** (Backend - Modelos)
+   - ORM: Eloquent (Laravel)
+   - Base de Datos: SQL Server
+   - Drivers: `sqlsrv` y `pdo_sqlsrv`
 
-## Instalación y ejecución (instrucciones concretas)
+## Tecnologías Utilizadas
 
-Siguientes instrucciones suponen que el repositorio tiene dos carpetas principales `backend/` y `frontend/`. Ajusta rutas si tu proyecto las tiene diferentes.
+### Backend
+- **PHP**: 8.2.12 (Thread Safe)
+- **Framework**: Laravel 12
+- **Base de Datos**: Microsoft SQL Server
+- **Autenticación**: Laravel Sanctum (para tokens de API)
+- **Servidor Web**: Apache (XAMPP)
 
-1) Clonar el repositorio
+### Frontend
+- **JavaScript**: ES6+
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **CSS Framework**: Tailwind CSS
+- **HTTP Client**: Axios
+- **Routing**: React Router DOM v6
 
-   git clone https://github.com/ChrisEmi/Proyecto-Web.git
-   cd Proyecto-Web
+## Requisitos del Sistema
 
-2) Backend (PHP)
+- **PHP** 8.2+ con extensiones:
+  - `pdo`
+  - `pdo_sqlsrv`
+  - `sqlsrv`
+  - `openssl`
+  - `mbstring`
+  - `fileinfo`
+- **Composer** 2.x
+- **Node.js** 18+ y npm
+- **SQL Server** (cualquier versión compatible con el driver ODBC 17)
+- **Microsoft ODBC Driver 17 for SQL Server**
+- **Apache** 2.4+ (incluido en XAMPP)
+- **Git**
 
-  a. Ir a la carpeta del backend:
+## Estructura del Proyecto
 
-     cd backend
+```
+Proyecto-Web/
+├── backend/              # API Laravel
+│   ├── app/
+│   │   ├── Http/
+│   │   │   └── Controllers/  # Lógica de negocio
+│   │   └── Models/       # Modelos Eloquent (acceso a datos)
+│   ├── database/
+│   │   └── migrations/   # Control de versiones de BD
+│   ├── routes/
+│   │   └── api.php       # Definición de endpoints
+│   ├── public/           # Punto de entrada
+│   ├── .env              # Variables de entorno (no versionado)
+│   └── composer.json
+├── frontend/             # Aplicación React
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/     # Llamadas a la API
+│   │   └── App.jsx
+│   ├── public/
+│   ├── .env              # Variables de entorno (no versionado)
+│   └── package.json
+├── docs/                 # Documentación
+│   ├── schema.sql        # Script de base de datos
+│   └── schema.md         # Documentación del esquema
+└── .gitignore
+```
 
-  b. Instalar dependencias con Composer:
+## Instalación y Configuración
 
-     composer install
+### 1. Clonar el Repositorio
 
-  c. Copiar el ejemplo de variables de entorno y configurarlas (`.env`):
+```powershell
+git clone https://github.com/ChrisEmi/Proyecto-Web.git
+cd Proyecto-Web
+```
 
-     # En PowerShell (Windows)
-     Copy-Item .env.example .env
+### 2. Configuración del Backend (Laravel)
 
-     # Editar `.env` con los datos de la base de datos y la clave JWT
+#### a. Instalar dependencias
 
-     Ejemplo de variables importantes en `.env`:
+```powershell
+cd backend
+composer install
+```
 
-     DB_HOST=127.0.0.1
-     DB_PORT=3306
-     DB_NAME=proyecto_db
-     DB_USER=root
-     DB_PASS=secret
-     JWT_SECRET=clave_secreta_larga
+#### b. Configurar variables de entorno
 
-  d. Crear la base de datos y ejecutar el script SQL de inicialización (si existe):
+Copia el archivo de ejemplo y configúralo:
 
-     # Ajusta según el motor; ejemplo MySQL desde PowerShell usando el cliente mysql
-     mysql -u root -p < ..\database\schema.sql
+```powershell
+Copy-Item .env.example .env
+```
 
-  e. Iniciar servidor PHP para desarrollo (serve desde la carpeta public):
+Edita el archivo `.env` con tus credenciales de base de datos:
 
-     # PowerShell: desde la carpeta backend/public
-     php -S localhost:8000
+```env
+DB_CONNECTION=sqlsrv
+DB_HOST="TU_SERVIDOR\SQLEXPRESS"
+DB_PORT=1433
+DB_DATABASE=ProyectoWeb
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
 
-     O usar un entorno como XAMPP / WAMP con DocumentRoot apuntando a `backend/public`.
+# Configuración de sesiones
+SESSION_DRIVER=file
 
-3) Frontend (React + Vite)
+# URL del frontend para CORS
+FRONTEND_URL=http://localhost:5173
+```
 
-  a. Abrir nueva terminal y situarse en la carpeta frontend:
+#### c. Generar la clave de aplicación
 
-     cd frontend
+```powershell
+php artisan key:generate
+```
 
-  b. Instalar dependencias:
+#### d. Crear la base de datos
 
-     npm install
+Ejecuta el script SQL ubicado en `docs/schema.sql` en tu gestor de SQL Server (SSMS o similar).
 
-  c. Copiar variables de entorno y configurar API base en `.env` (Vite usa prefijos VITE_):
+#### e. Configurar el Virtual Host de Apache
 
-     # PowerShell
-     Copy-Item .env.example .env
+Edita `C:\xampp\apache\conf\extra\httpd-vhosts.conf` y agrega:
 
-     Ejemplo en `frontend/.env`:
+```apache
+<VirtualHost *:80>
+    ServerName proyecto-web.local
+    DocumentRoot "C:/Users/TU_USUARIO/Documents/GitHub/Proyecto-Web/backend/public"
+    
+    <Directory "C:/Users/TU_USUARIO/Documents/GitHub/Proyecto-Web/backend/public">
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+</VirtualHost>
+```
 
-     VITE_API_BASE_URL=http://localhost:8000/api
+Edita `C:\Windows\System32\drivers\etc\hosts` (como administrador) y agrega:
 
-  d. Ejecutar en modo desarrollo:
+```
+127.0.0.1    proyecto-web.local
+```
 
-     npm run dev
+Reinicia Apache.
 
-  e. Abra el navegador en la URL que muestre Vite (por defecto http://localhost:5173).
+#### f. Verificar la conexión a la base de datos
 
-## Endpoints (resumen esperado según el documento)
+```powershell
+php artisan tinker --execute="DB::connection()->getPdo()"
+```
 
-- POST /api/auth/register -> registrar usuario
-- POST /api/auth/login -> iniciar sesión (devuelve JWT)
-- GET /api/posts -> obtener lista de posts
-- GET /api/posts/:id -> obtener detalle
-- POST /api/posts -> crear post (protegido)
-- PUT /api/posts/:id -> actualizar post (protegido)
-- DELETE /api/posts/:id -> borrar post (protegido)
-- GET /api/users -> (lista, protegido según rol)
+Si no aparece ningún error, la conexión es exitosa.
 
-## Consideraciones de seguridad
+### 3. Configuración del Frontend (React)
 
-- Guardar `JWT_SECRET` seguro y no comprometido.
-- En producción, usar HTTPS y habilitar cabeceras CORS correctamente en el backend.
-- No guardar credenciales en el frontend; usar refresh tokens y mecanismos de expiración si el proyecto lo requiere.
+#### a. Instalar dependencias
 
-## Despliegue
+```powershell
+cd ..\frontend
+npm install
+```
 
-- Backend PHP: desplegar en un servidor con soporte PHP (Apache/Nginx + PHP-FPM) y configurar el virtual host apuntando a `backend/public`.
-- Frontend: construir el proyecto con `npm run build` y servir los archivos estáticos en un CDN o directamente desde el servidor web (o integrar el build en `backend/public` si se desea).
+#### b. Configurar variables de entorno
 
-## Autor y referencias
+Copia el archivo de ejemplo:
 
-- Autor: J. A. O. R. (ver documento PDF entregado).
-- Documento original: `proyectoFinal_TDAW-20261_JAOR.pdf` (incluir en `docs/`).
+```powershell
+Copy-Item .env.example .env
+```
 
-## Notas finales y supuestos
+Edita el archivo `.env`:
 
-- Esta versión del README sigue la especificación del documento entregado: backend en PHP y frontend en React + Vite.
-- Si quieres que incluya scripts concretos (por ejemplo `composer.json`, `package.json`, migraciones o snippets de configuración del servidor), envíame los archivos o dime qué prefieres y los añadiré.
+```env
+VITE_API_BASE_URL=http://proyecto-web.local/api
+```
+
+#### c. Ejecutar en modo desarrollo
+
+```powershell
+npm run dev
+```
+
+Abre tu navegador en `http://localhost:5173`.
+
+## Endpoints de la API
+
+### Autenticación
+- `POST /api/auth/register` - Registrar nuevo usuario
+- `POST /api/auth/login` - Iniciar sesión (devuelve token)
+- `POST /api/auth/logout` - Cerrar sesión
+- `GET /api/auth/user` - Obtener usuario autenticado
+
+### Usuarios (Protegidas - Admin)
+- `GET /api/usuarios` - Listar todos los usuarios
+- `GET /api/usuarios/{id}` - Obtener usuario específico
+- `PUT /api/usuarios/{id}` - Actualizar usuario
+- `DELETE /api/usuarios/{id}` - Eliminar usuario
+
+### Eventos
+- `GET /api/eventos` - Listar eventos (públicos y futuros)
+- `GET /api/eventos/{id}` - Obtener detalle de evento
+- `POST /api/eventos` - Crear evento (Organizador/Admin)
+- `PUT /api/eventos/{id}` - Actualizar evento (Organizador/Admin)
+- `DELETE /api/eventos/{id}` - Eliminar evento (Admin)
+
+### Inscripciones
+- `POST /api/inscripciones` - Inscribirse a un evento
+- `GET /api/inscripciones/mis-eventos` - Ver eventos del usuario
+- `DELETE /api/inscripciones/{id}` - Cancelar inscripción
+
+### Tipos de Usuario
+- `GET /api/tipos-usuario` - Listar tipos de usuario disponibles
+
+## Consideraciones de Seguridad
+
+- **Variables de entorno**: Nunca versionar archivos `.env` con credenciales reales.
+- **CORS**: Configurado para aceptar solo peticiones desde el dominio del frontend.
+- **Autenticación**: Implementada con Laravel Sanctum para tokens de API.
+- **SQL Injection**: Protección automática mediante Eloquent ORM.
+- **XSS**: React escapa automáticamente el contenido renderizado.
+
+## Despliegue en Producción
+
+### Backend
+1. Configurar un servidor con Apache y PHP 8.2+
+2. Configurar el Virtual Host apuntando a `backend/public`
+3. Instalar dependencias: `composer install --optimize-autoloader --no-dev`
+4. Configurar `.env` con credenciales de producción
+5. Generar clave: `php artisan key:generate`
+6. Optimizar configuración: `php artisan config:cache`
+
+### Frontend
+1. Construir el proyecto: `npm run build`
+2. Servir los archivos de `frontend/dist` con un servidor web o CDN
+3. Configurar `VITE_API_BASE_URL` con la URL de producción del backend
+
+## Colaboradores
+
+Para configurar el proyecto en tu máquina local:
+
+1. Clona el repositorio
+2. Ejecuta `composer install` en `/backend`
+3. Ejecuta `npm install` en `/frontend`
+4. Configura tu archivo `.env` en ambas carpetas
+5. Ejecuta el script `docs/schema.sql` en tu SQL Server local
+
+## Equipo de Desarrollo
+
+- **ChrisEmi** - Líder del proyecto y desarrollador full-stack
+
+## Referencias
+
+- [Laravel Documentation](https://laravel.com/docs)
+- [React Documentation](https://react.dev)
+- [Tailwind CSS](https://tailwindcss.com)
+- Documento de especificación original: `docs/proyectoFinal_TDAW-20261_JAOR.pdf`
 
