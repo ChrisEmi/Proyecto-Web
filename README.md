@@ -1,6 +1,6 @@
 # Proyecto Web - TDAW
 
-## Qué hace la aplicación (según el documento)
+## Qué hace la aplicación
 
 - Gestiona usuarios: registro, inicio de sesión y roles (usuario/administrador).
 - Permite crear, leer, actualizar y eliminar recursos principales (por ejemplo: entradas/artículos, categorías, comentarios).
@@ -133,14 +133,4 @@ Siguientes instrucciones suponen que el repositorio tiene dos carpetas principal
 
 - Backend PHP: desplegar en un servidor con soporte PHP (Apache/Nginx + PHP-FPM) y configurar el virtual host apuntando a `backend/public`.
 - Frontend: construir el proyecto con `npm run build` y servir los archivos estáticos en un CDN o directamente desde el servidor web (o integrar el build en `backend/public` si se desea).
-
-## Autor y referencias
-
-- Autor: J. A. O. R. (ver documento PDF entregado).
-- Documento original: `proyectoFinal_TDAW-20261_JAOR.pdf` (incluir en `docs/`).
-
-## Notas finales y supuestos
-
-- Esta versión del README sigue la especificación del documento entregado: backend en PHP y frontend en React + Vite.
-- Si quieres que incluya scripts concretos (por ejemplo `composer.json`, `package.json`, migraciones o snippets de configuración del servidor), envíame los archivos o dime qué prefieres y los añadiré.
 
