@@ -1,75 +1,85 @@
-# Node
+# ===================================
+# Node / Frontend (React + Vite)
+# ===================================
 node_modules/
-npm-debug.log*
-.env
-.env.local
-.env.*.local
-/dist
-/build
-
-# Vite / React
-.vite/
-*.local
-
-# PHP / Composer
-/vendor/
-/composer.lock
-/.phpunit.result.cache
-
-# PHPStorm, VSCode
-.idea/
-.vscode/
-
-# OS files
-.DS_Store
-Thumbs.db
-
-# Logs
-logs/
-*.log
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
+.pnpm-debug.log*
 
-# Database
-*.sqlite
-*.sqlite3
-
-# Others
-coverage/
-.cache/
-.env.backup
-
-# Build outputs
-frontend/dist/
-backend/public/build/
-
-# Temporary
-tmp/
-temp/
-
-# Ignore IDE specific files
-*.sublime-workspace
-*.sublime-project
-
-# Composer vendor
+# ===================================
+# PHP / Backend
+# ===================================
+vendor/
 backend/vendor/
+*.phar
+composer.lock
+/.phpunit.result.cache
 
-# Node modules in frontend
-frontend/node_modules/
-
-# Vite cache
-frontend/node_modules/.vite
-
-# Ignore credentials
+# ===================================
+# Variables de entorno (NUNCA subir)
+# ===================================
+.env
+.env.local
+.env.*.local
+.env.backup
+backend/.env
+frontend/.env
 credentials.json
 
-# ignore compiled php files
-*.phar
+# ===================================
+# Base de datos
+# ===================================
+*.sqlite
+*.sqlite3
+*.db
 
-# Ignore composer vendor at root if present
-vendor/
+# ===================================
+# Logs
+# ===================================
+logs/
+*.log
+backend/logs/
+frontend/logs/
 
-# Ignore package-lock and yarn.lock if you prefer
-# package-lock.json
-# yarn.lock
+# ===================================
+# IDEs y Editores
+# ===================================
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+.phpintel/
+
+# ===================================
+# Sistema Operativo
+# ===================================
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ===================================
+# Build outputs
+# ===================================
+/dist
+/build
+backend/public/build/
+
+# ===================================
+# Temporal
+# ===================================
+tmp/
+temp/
+.cache/
+coverage/
+
+# ===================================
+# Proyecto antiguo (backup)
+# ===================================
+backend_legacy/
+backend_temp/

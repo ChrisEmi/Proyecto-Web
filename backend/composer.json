@@ -1,0 +1,11 @@
+{
+    "name": "proyecto-web/backend",
+    "autoload": {
+        "psr-4": {
+            "Core\\": "src/Core/"
+        }
+    },
+    "require": {
+        "bramus/router": "~1.6"
+    }
+}

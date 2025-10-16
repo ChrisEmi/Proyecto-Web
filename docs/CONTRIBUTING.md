@@ -32,16 +32,13 @@ Sigue estos pasos para dejar tu entorno local alineado con el equipo. Estas inst
 ```
 - Reinicia Apache desde el XAMPP Control Panel.
 
-3) Composer (dependencias PHP)
-- Instala Composer (https://getcomposer.org/download/).
-- En la carpeta `backend/` del repo ejecuta:
+3) Composer (dependencias PHP - opcional)
+- Instala Composer si planeas usar librerías adicionales (https://getcomposer.org/download/).
+- En la carpeta `backend/` del repo ejecuta (solo si hay un composer.json):
 
 ```powershell
 cd DIRECCION REPOSITORIO CLONADO\backend
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === 'ed0feb545ba87161262f2d45a633e34f591ebb3381f2e0063c345ebea4d228dd0043083717770234ec00c5a9f9593792') { echo 'Installer verified'.PHP_EOL; } else { echo 'Installer corrupt'.PHP_EOL; unlink('composer-setup.php'); exit(1); }"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
+composer install
 ```
 
 4) Node / Frontend (Vite + React)
@@ -56,11 +53,22 @@ npm run dev
 
 5) Variables de entorno
 - Crea un archivo `backend/.env` basado en `backend/.env.example` (si existe). Nunca subas `.env` al repositorio.
-- Asegúrate de que `backend/.env` contiene las credenciales locales (DB, JWT secret, etc.).
+- Asegúrate de que `backend/.env` contiene las credenciales locales de tu SQL Server:
+
+```env
+DB_HOST="TU_SERVIDOR\SQLEXPRESS"
+DB_PORT=1433
+DB_NAME=ProyectoWeb
+DB_USER=tu_usuario
+DB_PASS=tu_contraseña
+FRONTEND_URL=http://localhost:5173
+```
 
 6) Comprobaciones rápidas
-- Abre en el navegador: http://proyecto-web.local
+- Abre en el navegador: http://proyecto-web.local/api/test
+- Si ves una respuesta JSON, todo está funcionando correctamente.
 - Si ves problemas revisa `C:\xampp\apache\logs\error.log` y el VirtualHost configurado.
+- Para depurar la conexión a la base de datos, puedes revisar los logs o agregar `var_dump()` en el código temporalmente.
 
 ## Reglas rápidas de contribución
 - Trabaja sobre ramas `feature/*` o `fix/*` basadas en `develop`.

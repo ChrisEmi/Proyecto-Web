@@ -1,0 +1,2 @@
+GET http://proyecto-web.local/
+Content-Type: application/json
