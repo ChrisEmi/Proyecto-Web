@@ -2,10 +2,12 @@
     "name": "proyecto-web/backend",
     "autoload": {
         "psr-4": {
+            "App\\": "src/",
             "Core\\": "src/Core/"
         }
     },
     "require": {
-        "bramus/router": "~1.6"
+        "bramus/router": "~1.6",
+        "firebase/php-jwt": "^6.11"
     }
 }

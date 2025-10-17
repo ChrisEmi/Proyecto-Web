@@ -1,2 +1,50 @@
+### Test API funcionando
 GET http://proyecto-web.local/
+Content-Type: application/json
+
+###
+
+### Test POST básico (debug)
+POST http://proyecto-web.local/test
+Content-Type: application/json
+
+###
+
+### Test Login 1
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "juan@example.com",
+    "contrasena": "mi_contraseña"
+}
+
+
+### Test Login 2
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "miguel@example.com",
+    "contrasena": "mi_contraseña"
+}
+
+###
+
+### Test Registro  
+POST http://proyecto-web.local/auth/register
+Content-Type: application/json
+
+{
+    "nombre": "Miguel",
+    "apellidos": "Pérez López",
+    "correo": "miguel@example.com",
+    "contrasena": "mi_contraseña",
+    "boleta": "20240002"
+}
+
+###
+
+### Test Logout
+POST http://proyecto-web.local/auth/logout
 Content-Type: application/json
