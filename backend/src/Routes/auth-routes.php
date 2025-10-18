@@ -3,6 +3,7 @@ require_once __DIR__ . '/../Controllers/auth-controller.php';
 use App\Controllers\AuthController;
 
 
+
 function auth_routes($router) {
     $db = \App\Core\Database::getInstance();
     
