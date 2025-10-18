@@ -22,11 +22,6 @@ class AuthController {
     }
 
     public function login($pool) {
-        if (isset($_COOKIE['token'])) {
-            http_response_code(401);
-            echo json_encode(["message" => "Sesion ya iniciada", "token" => $_COOKIE['token']]);
-            return;
-        }
         try {
             $datos = json_decode(file_get_contents('php://input'), true);
             $correo = $datos['correo'] ?? null;
@@ -40,8 +35,8 @@ class AuthController {
                 ]);
                 return;
             }
-            
-            $stmt = $pool->prepare("SELECT correo, contraseña AS contrasena, id_usuario FROM Usuario WHERE correo = :correo");
+
+            $stmt = $pool->prepare("SELECT correo, contraseña AS contrasena, id_usuario, tu.nombre_tipo AS rol FROM Usuario INNER JOIN TipoUsuario tu ON Usuario.id_tipo_usuario = tu.id_tipo_usuario WHERE correo = :correo");
             $stmt->bindParam(':correo', $correo);
             $stmt->execute();
             $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -54,7 +49,6 @@ class AuthController {
                     'expires' => time() + (60 * 60 * 24), 
                     'path' => '/',
                     'domain' => '', 
-                    'secure' => false,    
                     'httponly' => true,     
                     'samesite' => 'Lax' 
                 ]);
@@ -121,9 +115,23 @@ class AuthController {
                     }
 
                     $id_usuario = bin2hex(random_bytes(8)); 
-                    $pool->beginTransaction();
                     try {
+                        $stmtB = $pool->prepare("SELECT * FROM Estudiante WHERE boleta = :boleta");
+                        $stmtB->bindParam(':boleta', $boleta);
+                        $stmtB->execute();
+                        
+                        if ($stmtB->fetch()) {
+                            http_response_code(400);
+                            echo json_encode([
+                                "status" => "error",
+                                "message" => "Ya existe una cuenta con esa boleta"
+                            ]);
+                            return;
+                        }
+                        
                         if ($boleta) {
+                            $pool->beginTransaction();
+
                             $stmt1 = $pool->prepare("INSERT INTO Usuario(id_usuario, nombre, apellido, correo, contraseña, id_tipo_usuario) VALUES (:id_usuario, :nombre, :apellido, :correo, :contrasena, 1)");
                             $stmt1->bindParam(':id_usuario', $id_usuario);
                             $stmt1->bindParam(':nombre', $nombre);
@@ -180,9 +188,9 @@ class AuthController {
                 'expires' => time() - 3600,
                 'path' => '/',
                 'domain' => '',
-                'secure' => false, 
-                'httponly' => true,
-                'samesite' => 'Lax'
+                'secure' => true, 
+                'httponly' => false,
+                'samesite' => 'None'
             ]);
 
             // Eliminar de la superglobal para el request actual
@@ -202,6 +210,58 @@ class AuthController {
             ]);
         }
     }
+
+    public function verificarTokenCookie($pool) {
+        try {
+            $token = $_COOKIE['token'] ?? null;
+            if (!$token) {
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Token no encontrado en cookies"
+                ]);
+                return;
+            }
+            $secret = $_ENV['JWT_SECRET'];
+            try{
+                $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
+                $data = (array)($decoded->data ?? []);
+                $idUsuario = $data['id_usuario'] ?? null;
+                $stmt = $pool->prepare("SELECT id_usuario, tu.nombre_tipo AS rol FROM Usuario u INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario WHERE id_usuario = :id_usuario");
+                $stmt->bindParam(':id_usuario', $idUsuario);
+                $stmt->execute();
+                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+                if ($usuario) {
+                    http_response_code(200);
+                    echo json_encode([
+                        "status" => "success",
+                        "usuario" => $usuario
+                    ]);
+                } else {
+                    http_response_code(404);
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => "Error en la verificación del token: usuario no encontrado"
+                    ]);
+                }
+            } catch (Exception $e) {
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Token inválido: " . $e->getMessage()
+                ]);
+            }
+
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error interno del servidor: " . $e->getMessage()
+            ]);
+        }
+    }
+
+
     public function recuperarPassword($pool) {
         // Lógica de recuperación de contraseña
     }

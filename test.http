@@ -32,15 +32,15 @@ Content-Type: application/json
 ###
 
 ### Test Registro  
-POST http://proyecto-web.local/auth/register
+POST http://proyecto-web.local/auth/registro
 Content-Type: application/json
 
 {
-    "nombre": "Miguel",
-    "apellidos": "Pérez López",
-    "correo": "miguel@example.com",
+    "nombre": "Christian",
+    "apellidos": "Aguilar Torres",
+    "correo": "chris3@example.com",
     "contrasena": "mi_contraseña",
-    "boleta": "20240002"
+    "boleta": "20240005"
 }
 
 ###
@@ -66,3 +66,7 @@ Content-Type: application/json
     "contrasena": "mi_contraseña",
     "id_tipo_usuario": 1
 }
+
+### Test Verificar Token
+GET http://proyecto-web.local/auth/verificar-token
+Content-Type: application/json

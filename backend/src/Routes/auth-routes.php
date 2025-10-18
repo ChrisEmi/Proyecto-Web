@@ -12,7 +12,7 @@ function auth_routes($router) {
         $controller->login($db);
     });
     
-    $router->post('/auth/register', function() use ($db) {
+    $router->post('/auth/registro', function() use ($db) {
         $controller = new AuthController();
         $controller->registro($db);
     });
@@ -20,5 +20,10 @@ function auth_routes($router) {
     $router->post('/auth/logout', function() {
         $controller = new AuthController();
         $controller->logout();
+    });
+
+    $router->get('/auth/verificar-token', function() use ($db) {
+        $controller = new AuthController();
+        $controller->verificarTokenCookie($db);
     });
 }

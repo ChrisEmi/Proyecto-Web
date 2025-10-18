@@ -9,7 +9,7 @@ use App\Middlewares\AdminMiddleware;
 function admin_routes($router) {
     $db = \App\Core\Database::getInstance();
 
-    $router->get('/admin/obtener-usuarios', function() use ($db) {
+    $router->get('/administrador/obtener-usuarios', function() use ($db) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
@@ -17,7 +17,7 @@ function admin_routes($router) {
         });
     });
 
-    $router->post('/admin/crear-usuario', function() use ($db) {
+    $router->post('/administrador/crear-usuario', function() use ($db) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
