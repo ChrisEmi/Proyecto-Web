@@ -19,9 +19,9 @@ export const LoopInfinito = () => {
                     padding: '0',
                 }}
             >
-                <div className="flex flex-col items-center bg-white rounded-2xl shadow-lg px-10 py-12 border border-slate-200">
-                    <div className="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-emerald-50">
-                        <div className="animate-spin rounded-full border-4 border-emerald-400 border-t-transparent w-14 h-14"></div>
+                <div className="flex flex-col items-center bg-escom-100 rounded-2xl shadow-lg px-10 py-12 border border-slate-200">
+                    <div className="w-20 h-20 mb-6 flex items-center justify-center rounded-full bg-escom-200">
+                        <div className="animate-spin rounded-full border-4 border-escom-900 border-t-transparent w-14 h-14"></div>
                     </div>
                     <h1 className="text-2xl font-bold text-slate-900 mb-2">Cargando...</h1>
                     <p className="text-slate-500 text-base mb-2 text-center max-w-xs">
@@ -29,7 +29,7 @@ export const LoopInfinito = () => {
                     </p>
                     <div className="w-full h-2 bg-slate-100 rounded-full mt-4 overflow-hidden">
                         <div
-                            className="h-2 bg-emerald-400 rounded-full animate-auth-bar"
+                            className="h-2 bg-escom-900 rounded-full animate-auth-bar"
                             style={{ width: '100%' }}
                         ></div>
                     </div>
