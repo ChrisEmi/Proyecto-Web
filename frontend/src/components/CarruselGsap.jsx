@@ -4,15 +4,14 @@ import { Draggable } from 'gsap/Draggable';
 import { useGSAP } from '@gsap/react';
 import { useRef, useEffect } from 'react';
 
-gsap.registerPlugin(Flip, Draggable);
 
-export default function CarruselGsap({ evento = [] }) {
+gsap.registerPlugin(Flip, Draggable);
+export default function CarruselGsap({ evento }) {
     let wheelRef = useRef(null),
         wheelCardsRefs = useRef([]),
         headerRef = useRef(null),
         currentCard; 
     
-    // Tu función setup está perfecta
     function setup() {
         if (!wheelRef.current || !wheelCardsRefs.current.length) return; 
 
@@ -34,10 +33,10 @@ export default function CarruselGsap({ evento = [] }) {
         setup();
 
         const rotationTween = gsap.to(wheelRef.current, {
-            rotation: "-=360",
+            rotation: -360,
             ease: "none",
             duration: wheelCardsRefs.current.length * 6,
-            repeat: -1 
+            repeat: -1
         });
 
         Draggable.create(wheelRef.current, {
@@ -59,16 +58,20 @@ export default function CarruselGsap({ evento = [] }) {
             if (currentCard) {
 
                 let contentDiv = headerRef.current.querySelector('.card-content');
-                if (!contentDiv) return; 
+                if (!contentDiv) return;
                 
                 let state = Flip.getState(contentDiv);
                 currentCard.appendChild(contentDiv); // Devuelve el div
                 Flip.from(state, {
+                    duration: 0.8,
+                    ease: "power2.inOut",
                     scale: true,
-                    ease: "power1.inOut",
+                    absolute: true,
+                    onComplete: () => {
+                        rotationTween.resume();
+                    }
                 });
                 currentCard = null;
-                rotationTween.resume(); 
             }
         }
 
@@ -80,12 +83,16 @@ export default function CarruselGsap({ evento = [] }) {
                 closeCurrentCard(); 
                 currentCard = card; 
                 
+                rotationTween.pause();
+                
                 let state = Flip.getState(contentDiv);
                 headerRef.current.appendChild(contentDiv); // Mueve el div
                 Flip.from(state, {
-                    duration: 0.6,
+                    duration: 0.8,
+                    ease: "power2.inOut",
                     scale: true,
-                    ease: "power1.inOut"
+                    absolute: true,
+                    nested: true
                 });
                 
             } else {
@@ -124,90 +131,98 @@ export default function CarruselGsap({ evento = [] }) {
     return (
         <div className="w-[3200px] h-full flex justify-center items-center absolute">
             <div 
-                className="header fixed top-1/16 text-2xl w-xl mx-auto z-50" 
+                className="header fixed w-96 h-96 top-1/4 flex z-50 pointer-events-none cursor-pointer" 
                 ref={headerRef}
             >
             </div>
 
-            <section className="slider-section h-[2800px] w-[3200px]">
+            <section className="slider-section h-[22vh] w-full">
                 <div
-                    className="wheel absolute top-full left-1/2 -translate-x-1/2 -translate-y-7/16 h-full aspect-square"
+                    className="wheel absolute left-1/2 -translate-x-1/2 -translate-y-1/8 w-[300vw] h-[300vw] max-w-[2000px] max-h-[2000px] top-full"
                     ref={wheelRef} 
                 >
                     {evento.map((item, index) => (
                         <div 
-                                className="wheel-card absolute top-0 left-0 w-72 h-86 cursor-pointer" 
+                                className="wheel-card absolute top-0 left-0 w-78 h-92 cursor-pointer" 
                                 key={index}
                                 ref={(el) => (wheelCardsRefs.current[index] = el)}
                             >
                             
-                            <div className="card-content w-full h-full bg-gradient-to-b from-white to-gray-300 rounded-lg shadow-2xl border-2 border-gray-200 z-10 cursor-pointer will-change-transform overflow-hidden hover:shadow-[0_0_30px_rgba(0,0,0,0.4)] transition-all duration-300">
-                                {/* Badge de fecha en la esquina superior */}
-                                <div className="absolute top-3 right-3 z-20 bg-gradient-to-br from-escom-sombra-400 to-escom-sombra-700 text-white rounded-lg shadow-lg overflow-hidden w-16 h-16 flex flex-col items-center justify-center">
-                                    <span className="text-2xl font-black leading-none">
-                                        {item.fecha?.dia?.split(' ')[0] || '00'}
-                                    </span>
-                                    <span className="text-xs font-bold uppercase tracking-wider mt-0.5">
-                                        {item.fecha?.mes?.substring(0, 3) || item.fecha?.dia?.split(' ')[2]?.substring(0, 3)?.toUpperCase() || 'MES'}
-                                    </span>
-                                </div>
+                            <div className="card-content group w-full h-full bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer will-change-transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
                                 
-                                {/* Imagen como fondo */}
-                                <div className="relative w-full h-2/3 overflow-hidden">
+                                <div className="relative w-full h-[55%] overflow-hidden">
                                     <img 
                                         src={item.imagen.src} 
                                         alt={item.imagen.alt} 
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                                     
-                                    {/* Título sobre la imagen */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-3">
-                                        <h1 className='text-white text-2xl font-bold drop-shadow-lg line-clamp-2'>
+                                    {/* Overlay gradiente más suave */}
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+                                    
+                                    {/* Badge de fecha - diseño circular minimalista */}
+                                    <div className="absolute top-4 right-4 bg-white rounded-2xl shadow-2xl overflow-hidden w-16 h-20 flex flex-col">
+                                        <div className="bg-escom-sombra-600 h-6 flex items-center justify-center">
+                                            <span className="text-white text-[10px] font-bold uppercase tracking-widest">
+                                                {item.fecha?.mes?.substring(0, 3) || 'MES'}
+                                            </span>
+                                        </div>
+                                        <div className="flex-1 flex items-center justify-center bg-white">
+                                            <span className="text-escom-sombra-800 text-3xl font-black leading-none">
+                                                {item.fecha?.dia?.split(' ')[0] || '00'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Título sobre la imagen - mejor posicionamiento */}
+                                    <div className="absolute bottom-0 left-0 right-0 p-4 pb-5">
+                                        <h1 className='text-white text-lg font-extrabold drop-shadow-2xl line-clamp-2 leading-snug'>
                                             {item.titulo}
                                         </h1>
                                     </div>
                                 </div>
                                 
-                                {/* Contenido inferior */}
-                                <div className="flex flex-col justify-between p-3 h-1/3 bg-white">
-                                    <div>
-                                        <p className='text-gray-700 text-sm line-clamp-3'>
-                                            {item.descripcion}
-                                        </p>
-
-                                        {/* Etiquetas: tipo de evento y relacionado */}
-                                        <div className="mt-2 flex flex-wrap gap-2">
-                                            {item.tipo && (
-                                                <span className="px-2 py-1 bg-escom-sombra-200 text-white text-xs font-semibold rounded-full">
-                                                    {item.tipo}
-                                                </span>
-                                            )}
-
-                                            {/* 'relacionado' puede ser string o array con múltiples colores */}
-                                            {item.relacionado && (Array.isArray(item.relacionado) ? (
-                                                item.relacionado.slice(0, 3).map((r, i) => {
-                                                    const colores = [
-                                                        'bg-escom-sombra-400 text-white',
-                                                        'bg-escom-800 text-white',
-                                                        'bg-escom-sombra-100 text-white',
-                                                    ];
-                                                    return (
-                                                        <span 
-                                                            key={i} 
-                                                            className={`px-2 py-1 text-xs rounded-full ${colores[i % colores.length]}`}
-                                                        >
-                                                            {r}
-                                                        </span>
-                                                    );
-                                                })
-                                            ) : (
-                                                <span className="px-2 py-1 bg-escom-sombra-400 text-white text-xs rounded-full">
-                                                    {item.relacionado}
-                                                </span>
-                                            ))}
-                                        </div>
+                                {/* Contenido inferior - ajustado a 45% */}
+                                <div className="flex flex-col h-[45%] p-4 bg-white">
+                                    
+                                    {/* Categoría y tags */}
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        {item.tipo && (
+                                            <span className="px-3 py-1 bg-escom-sombra-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-md">
+                                                {item.tipo}
+                                            </span>
+                                        )}
+                                        {item.relacionado && (Array.isArray(item.relacionado) ? (
+                                            item.relacionado.slice(0, 2).map((r, i) => {
+                                                const estilos = [
+                                                    'bg-blue-50 text-blue-600 border border-blue-200',
+                                                    'bg-purple-50 text-purple-600 border border-purple-200',
+                                                ];
+                                                return (
+                                                    <span 
+                                                        key={i} 
+                                                        className={`px-2.5 py-1 text-[10px] font-semibold rounded-md ${estilos[i % estilos.length]}`}
+                                                    >
+                                                        {r}
+                                                    </span>
+                                                );
+                                            })
+                                        ) : (
+                                            <span className="px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-semibold rounded-md">
+                                                {item.relacionado}
+                                            </span>
+                                        ))}
                                     </div>
+
+                                    {/* Descripción */}
+                                    <p className='text-gray-600 text-xs line-clamp-3 mb-3 leading-relaxed flex-1'>
+                                        {item.descripcion}
+                                    </p>
+
+                                    {/* Botón de acción - siempre visible pero cambia en hover */}
+                                    <button className="w-full bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold text-xs hover:bg-gradient-to-r hover:from-escom-sombra-500 hover:to-escom-sombra-700 hover:text-white transition-all duration-300 transform group-hover:scale-[1.02]">
+                                        Ver detalles →
+                                    </button>
                                 </div>
                             </div>
                         </div>
