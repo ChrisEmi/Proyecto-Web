@@ -39,19 +39,7 @@ export default function CarruselGsap({ evento }) {
             repeat: -1
         });
 
-        Draggable.create(wheelRef.current, {
-            allowContextMenu: true,
-            type: "rotation",
-            trigger: wheelRef.current,
-            inertia: true,
-            snap: {
-                rotation: gsap.utils.snap(360 / wheelCardsRefs.current.length) 
-            },
-            onDragStart: () => {
-                rotationTween.pause();
-            },
-        });
-
+        
     
         
         function closeCurrentCard() {

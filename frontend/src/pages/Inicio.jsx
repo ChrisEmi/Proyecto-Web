@@ -12,8 +12,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const Inicio = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const tl = useRef()
+  
 
   useEffect(() => {
     // Guardar posición actual del scroll
@@ -35,19 +34,6 @@ const Inicio = () => {
   }, []);
 
   useGSAP(() => {
-    tl.current = gsap.timeline({ paused: true })
-      .to("#nav-bg", { 
-          opacity: 0.7, 
-          duration: 0.9,
-          blur: '5px',
-          ease: 'power1.inOut' 
-      })
-      .to("#nav-menu", { 
-          x: "0%",
-          duration: 0.9, 
-          ease: 'power1.inOut' 
-      }, 0);
-
 
     const sections = gsap.utils.toArray("#section-horizontal .content");
     const horizontalScroll = gsap.to(sections, {
@@ -69,22 +55,7 @@ const Inicio = () => {
   }, []);
 
 
-    const botonMenu = () => {
-      if (menuOpen) {
-        tl.current.reverse();
-      }else {
-        tl.current.play();
-      }
-      setMenuOpen(!menuOpen);
-      
-  }
-  
-  const cerrarMenu = () => {
-    if (menuOpen) { 
-      tl.current.reverse();
-      setMenuOpen(false);
-    }
-  }
+    
 
   return (
     <div className="overscroll-none h-[300vh] bg-white">
@@ -105,62 +76,11 @@ const Inicio = () => {
       }
       `}</style>
 
-      <div className="fixed top-4 right-4 z-50">
-        <button
-          onClick={botonMenu}
-          className="p-2 focus:outline-none transition-all cursor-pointer"
-          aria-expanded={menuOpen}
-          aria-label="Abrir menú"
-        >
-          <IconoMenu className="size-8 sm:size-10 lg:size-14 text-white/90 hover:text-white/60 transition-all " />
-        </button>
-      </div>
-
-      <>
-        <div 
-          onClick={cerrarMenu}
-          className={`
-            fixed inset-0 bg-escom-sombra-800 z-40
-            opacity-0 ${menuOpen ? '' : 'pointer-events-none'}
-          `}
-          id="nav-bg"
-        >
-
-        </div>
-        
-        <div 
-          id="nav-menu"
-          className={`
-            fixed top-0 right-0 w-1/2 h-full bg-escom-sombra-900 
-            transform opacity-100 z-40
-            translate-x-full ${menuOpen ? '' : 'pointer-events-none'}
-          `}
-        >
-          <div className="flex flex-col p-6 space-y-4">
-            <a 
-              href="#inicio" 
-              className="text-white text-2xl font-semibold hover:text-escom-sombra-100 transition-all"
-            >
-              Inicio
-            </a>
-            <a 
-              href="#eventos" 
-              className="text-white text-2xl font-semibold hover:text-escom-sombra-100 transition-all"
-            >
-              Eventos
-            </a>
-          </div>
-        </div>
-      </>
+      
 
       <section id="inicio" className="inicio bg-gradient-to-b from-escom-sombra-400 to-escom-sombra-700 min-h-screen w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 lg:py-0 z-20">
-        <a href="https://www.escom.ipn.mx/" target="_blank" rel="noopener noreferrer">
-          <IconoEscom className="size-16 sm:size-20 lg:size-24 text-white flex-shrink-0 absolute top-4 left-4 sm:left-8 lg:left-15" />
-        </a>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full max-w-8xl">
-
           <div className="flex flex-col items-start justify-center space-y-6 sm:space-y-8 w-full lg:w-3/4 mx-auto order-2 lg:order-1">
-            
             <div className="flex items-center gap-4 sm:gap-6 w-full">
               <h1 className="texto-animado text-left text-white text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-extrabold leading-tight">
                 Actividades Culturales y Recreativas de la ESCOMunidad
@@ -228,16 +148,7 @@ const Inicio = () => {
             </p>
           </div>
           
-          <div className="flex flex-wrap gap-2 sm:gap-3 mb-6 sm:mb-8 justify-center px-4">
-            {['🎵 Música', '🎨 Cultura', '⚽ Deportes', '💻 Tecnología', '🎭 Teatro'].map((categoria, i) => (
-              <button 
-                key={i}
-                className="px-3 sm:px-4 lg:px-6 py-1.5 sm:py-2 bg-white border-2 border-gray-200 rounded-full text-gray-700 font-semibold text-xs sm:text-sm hover:border-escom-sombra-500 hover:text-escom-sombra-700 hover:bg-escom-sombra-50 transition-all duration-300 shadow-sm hover:shadow-md"
-              >
-                {categoria}
-              </button>
-            ))}
-          </div>
+          
 
           {/* Carrusel de eventos */}
           <div className="w-full flex-1 flex justify-center items-center relative px-4">

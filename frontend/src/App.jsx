@@ -1,5 +1,12 @@
 import Router from "./routes/RouterApp.jsx";
+import NavMenu from "./components/NavMenu.jsx";
+
 const App = () => {
-  return <Router />;
+  return (
+    <>
+      <NavMenu />
+      <Router />
+    </>
+  );
 }
 export default App;
