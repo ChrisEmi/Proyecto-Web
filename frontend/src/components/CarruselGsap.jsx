@@ -119,7 +119,7 @@ export default function CarruselGsap({ evento }) {
     return (
         <div className="w-[3200px] h-full flex justify-center items-center absolute">
             <div 
-                className="header fixed w-96 h-96 top-1/4 flex z-50 pointer-events-none cursor-pointer" 
+                className="header fixed w-72 h-96 sm:w-80 sm:h-[28rem] lg:w-96 lg:h-[32rem] top-1/4 sm:top-1/5 lg:top-1/4 flex z-50 pointer-events-none cursor-pointer" 
                 ref={headerRef}
             >
             </div>
@@ -131,52 +131,49 @@ export default function CarruselGsap({ evento }) {
                 >
                     {evento.map((item, index) => (
                         <div 
-                                className="wheel-card absolute top-0 left-0 w-78 h-92 cursor-pointer" 
+                                className="wheel-card absolute top-0 left-0 w-72 h-96 sm:w-80 sm:h-[28rem] lg:w-78 lg:h-[28rem] cursor-pointer" 
                                 key={index}
                                 ref={(el) => (wheelCardsRefs.current[index] = el)}
                             >
                             
-                            <div className="card-content group w-full h-full bg-white rounded-2xl shadow-xl overflow-hidden cursor-pointer will-change-transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                            <div className="card-content group w-full h-full bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden cursor-pointer will-change-transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
                                 
-                                <div className="relative w-full h-[55%] overflow-hidden">
+                                {/* Imagen */}
+                                <div className="relative w-full h-[70%] sm:h-[72%] lg:h-[75%] overflow-hidden">
                                     <img 
                                         src={item.imagen.src} 
                                         alt={item.imagen.alt} 
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     
-                                    {/* Overlay gradiente más suave */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
                                     
-                                    {/* Badge de fecha - diseño circular minimalista */}
-                                    <div className="absolute top-4 right-4 bg-white rounded-2xl shadow-2xl overflow-hidden w-16 h-20 flex flex-col">
-                                        <div className="bg-escom-sombra-600 h-6 flex items-center justify-center">
-                                            <span className="text-white text-[10px] font-bold uppercase tracking-widest">
-                                                {item.fecha?.mes?.substring(0, 3) || 'MES'}
-                                            </span>
+                                    {/* Badge de fecha */}
+                                    {item.fecha && (
+                                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white rounded-lg sm:rounded-xl shadow-lg p-2 sm:p-3 text-center min-w-[50px] sm:min-w-[60px]">
+                                            <div className="text-2xl sm:text-3xl font-black text-escom-sombra-700 leading-none">
+                                                {item.fecha.dia}
+                                            </div>
+                                            <div className="text-[10px] sm:text-xs font-bold text-gray-600 uppercase mt-0.5 sm:mt-1">
+                                                {item.fecha.mes}
+                                            </div>
                                         </div>
-                                        <div className="flex-1 flex items-center justify-center bg-white">
-                                            <span className="text-escom-sombra-800 text-3xl font-black leading-none">
-                                                {item.fecha?.dia?.split(' ')[0] || '00'}
-                                            </span>
-                                        </div>
-                                    </div>
+                                    )}
                                     
-                                    {/* Título sobre la imagen - mejor posicionamiento */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-4 pb-5">
-                                        <h1 className='text-white text-lg font-extrabold drop-shadow-2xl line-clamp-2 leading-snug'>
+                                    {/* Título */}
+                                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 pb-4 sm:pb-5">
+                                        <h1 className='text-white text-lg sm:text-xl lg:text-2xl font-extrabold drop-shadow-4xl line-clamp-2 leading-snug'>
                                             {item.titulo}
                                         </h1>
                                     </div>
                                 </div>
                                 
-                                {/* Contenido inferior - ajustado a 45% */}
-                                <div className="flex flex-col h-[45%] p-4 bg-white">
+                                {/* Tags y contenido */}
+                                <div className="flex flex-col h-[30%] sm:h-[28%] lg:h-[25%] p-3 sm:p-4 bg-white justify-between">
                                     
-                                    {/* Categoría y tags */}
-                                    <div className="flex flex-wrap gap-2 mb-3">
+                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
                                         {item.tipo && (
-                                            <span className="px-3 py-1 bg-escom-sombra-600 text-white text-[10px] font-bold uppercase tracking-wider rounded-md">
+                                            <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-escom-sombra-600 text-white text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider rounded-md">
                                                 {item.tipo}
                                             </span>
                                         )}
@@ -189,28 +186,36 @@ export default function CarruselGsap({ evento }) {
                                                 return (
                                                     <span 
                                                         key={i} 
-                                                        className={`px-2.5 py-1 text-[10px] font-semibold rounded-md ${estilos[i % estilos.length]}`}
+                                                        className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] lg:text-xs font-semibold rounded-md ${estilos[i % estilos.length]}`}
                                                     >
                                                         {r}
                                                     </span>
                                                 );
                                             })
                                         ) : (
-                                            <span className="px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-semibold rounded-md">
+                                            <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-50 text-blue-600 border border-blue-200 text-[9px] sm:text-[10px] lg:text-xs font-semibold rounded-md">
                                                 {item.relacionado}
                                             </span>
                                         ))}
                                     </div>
 
-                                    {/* Descripción */}
-                                    <p className='text-gray-600 text-xs line-clamp-3 mb-3 leading-relaxed flex-1'>
-                                        {item.descripcion}
-                                    </p>
-
-                                    {/* Botón de acción - siempre visible pero cambia en hover */}
-                                    <button className="w-full bg-gray-100 text-gray-700 py-2.5 rounded-lg font-semibold text-xs hover:bg-gradient-to-r hover:from-escom-sombra-500 hover:to-escom-sombra-700 hover:text-white transition-all duration-300 transform group-hover:scale-[1.02]">
-                                        Ver detalles →
+                                    {/* Botón Ver Evento */}
+                                    <button 
+                                        className="w-full bg-gradient-to-r from-escom-sombra-600 to-escom-sombra-800 text-white py-2 sm:py-2.5 lg:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm hover:from-escom-sombra-700 hover:to-escom-sombra-900 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mt-2"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            console.log('Ver evento:', item.id);
+                                        }}
+                                    >
+                                        <span className="flex items-center justify-center gap-1.5 sm:gap-2">
+                                            <span className="hidden sm:inline">Ver Evento Completo</span>
+                                            <span className="sm:hidden">Ver Evento</span>
+                                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                                            </svg>
+                                        </span>
                                     </button>
+                                    
                                 </div>
                             </div>
                         </div>

@@ -1,194 +1,196 @@
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Mousewheel, Pagination, Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 import { useRef, useState, useEffect } from 'react';
 import gsap from 'gsap';
-import { Flip } from 'gsap/Flip';
 
-gsap.registerPlugin(Flip);
 
-export default function Carrusel({ slides, className }) {
-    const [modalData, setModalData] = useState(null); // null o { src, index }
-    const imageRefs = useRef([]); // Un array para las imágenes del carrusel
-    const modalImageRef = useRef(null); // Una ref para la imagen GRANDE del modal
-    const modalBgRef = useRef(null); // Una ref para el FONDO del modal
+export default function Carrusel({ slides = [] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const isTweeningRef = useRef(false);
+  
+  const slideRefs = useRef([]);
+  const navItemRefs = useRef([]);
+  const textRef = useRef(null);
+  
+  const touchStartXRef = useRef(0);
 
-    const openModal = (image, index) => {
-        const clickedImg = imageRefs.current[index];
-        if (!clickedImg) return;
 
-        const state = Flip.getState(clickedImg);
+  const updateNav = (activeIndex) => {
+    navItemRefs.current.forEach((item, index) => {
+      if (!item) return;
+      const text = item.querySelector("span");
+      const bar = item.querySelector(".nav-bar");
+
+      if (index === activeIndex) {
+        item.classList.add("active");
+        gsap.to(text, { opacity: 1, duration: 0.4 });
+        gsap.to(bar, { opacity: 1, duration: 0.4 });
+      } else {
+        item.classList.remove("active");
+        gsap.to(text, { opacity: 0.5, duration: 0.4 });
+        gsap.to(bar, { opacity: 0.3, duration: 0.4 });
+      }
+    });
+  };
+
+  const animateText = (nextIndex) => {
+    if (!slides[nextIndex]) return;
+    const nextText = `${slides[nextIndex].title}`;
+    const tl = gsap.timeline();
+
+    tl.to(textRef.current, {
+      opacity: 0,
+      duration: 0.3,
+      ease: 'power1.in',
+    })
+    .set(textRef.current, {
+      innerHTML: nextText,
+      y: 50,
+    })
+    .to(textRef.current, {
+      opacity: 1,
+      y: 0,
+      duration: 1.0,
+      ease: 'power2.out',
+    }, 1.5); 
+    };
     
-        setModalData({ src: image.src, index: index, state: state, caption: image.caption });
-    };
+  const gotoSlide = (direction) => {
+    if (isTweeningRef.current) return;
+    
+    const totalSlides = slides.length;
+    let nextIndex = currentIndex + direction;
 
-    const closeModal = () => {
-        if (!modalData || !modalImageRef.current) return;
+    if (nextIndex >= totalSlides) nextIndex = 0;
+    else if (nextIndex < 0) nextIndex = totalSlides - 1;
 
-        // Obtiene el elemento DOM de la imagen PEQUEÑA a la que volveremos
-        const targetImg = imageRefs.current[modalData.index];
-        if (!targetImg) {
-            setModalData(null); // Salida segura si la ref no existe
-            return;
-        }
+    animateSlideTransition(nextIndex);
+  };
 
-        // Anima la imagen GRANDE para que "vuelva" a la posición de la PEQUEÑA
-        Flip.to(modalData.state, {
-            targets: modalImageRef.current,
-            duration: 0.7,
-            ease: 'power4.inOut',
-            // Cuando la animación termine, oculta el modal
-            onComplete: () => {
-                setModalData(null);
-            }
-        });
+  const gotoSlideDirect = (index) => {
+    if (isTweeningRef.current || currentIndex === index) return;
+    animateSlideTransition(index);
+  };
 
-        // Anima la opacidad del fondo
-        gsap.to(modalBgRef.current, { 
-            opacity: 0, 
-            duration: 1
-        });
-    };
-    useEffect(() => {
-        if (modalData && modalImageRef.current && modalBgRef.current) {
-            
-            Flip.from(modalData.state, {
-                targets: modalImageRef.current,
-                duration: 3,
-                ease: 'power1.inOut',
-            });
+  const animateSlideTransition = (nextIndex) => {
+    if (isTweeningRef.current) return;
+    isTweeningRef.current = true;
 
-            // Anima la opacidad del fondo
-            gsap.to(modalBgRef.current, { 
-                opacity: 1, 
-                duration: 0.2
-            });
-        }
-    }, [modalData]);
+    const currentSlide = slideRefs.current[currentIndex];
+    const nextSlide = slideRefs.current[nextIndex];
 
-    return (
-        <div className={`carrusel relative ${className}`}>
-            
-            <style jsx global>{`
-                .modal-bg {
-                    opacity: 0; /* Inicia transparente para GSAP */
-                    background: rgba(0, 0, 0, 0.3);
-                    backdrop-filter: blur(5px);
-                }
+    if (!currentSlide || !nextSlide) {
+      isTweeningRef.current = false;
+      return;
+    }
 
-                img {
-                    border-radius: 12px;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-                .carrusel {
-                    width: 100%;
-                    height: 100%;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                }
-                .swiper {
-                    width: 100%;
-                    padding: 50px 0;
-                }
-                .swiper-slide {
-                    position: relative;
-                    width: 60%;
-                    height: 250px;
-                    border-radius: 12px;
-                    overflow: hidden;
-                    user-select: none;
-                    transition: width 1s ease;
-                }
-                .swiper-slide-active {
-                    transform: translateY(20px);
-                    width: 600px;
-                }
-                .swiper-slide::after {
-                    content: "";
-                    position: absolute;
-                    inset: 0;
-                    width: 100%;
-                    background: rgba(0, 0, 0, 1);
-                    filter: blur(100px);
-                    mix-blend-mode: multiply;
-                    z-index: 1;
-                    transition: background 1s ease;
-                }
-                .swiper-slide-active::after {
-                    background: rgba(0, 0, 0, 0);
-                }
-                .swiper-slide img {
-                    width: 100%;
-                    object-fit: cover;
-                    transition: transform 1s ease; /* Transición al zoom */
-                }
-                .swiper-pagination-bullet{
-                    width: 16px;
-                    height: 16px;
-                    border-radius: 50%;
-                    background: white;
-                    opacity: 0.4;
-                    transition: all 0.3s ease-in-out;
-                }
-                .swiper-pagination-bullet-active{
-                    width: 36px;
-                    height: 16px;
-                    border-radius: 12px;
-                    background: white;
-                    opacity: 1;
-                    transition: all 0.3s ease-in-out;
-                }
-            `}</style>
-            
-            <Swiper
-                modules={[Mousewheel, Pagination, Navigation, Autoplay]}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                initialSlide={2}
-                centeredSlides={true}
-                loop={true}
-                slidesPerView="auto"
-                spaceBetween={20}
-                speed={1000}
-                slideToClickedSlide={true}
-                mousewheel={{ forceToAxis: true, sensitivity: 1 }}
-                pagination={{ clickable: true }}
-            >
-                {slides.map((image, index) => (
-                    <SwiperSlide 
-                        key={index} 
-                        className='cursor-pointer' 
-                        onClick={() => openModal(image, index)}
-                    >
-                        <img 
-                            src={image.src} 
-                            alt={`Imagen ${index + 1}`} 
-                            ref={(el) => (imageRefs.current[index] = el)}
-                        />
-                    </SwiperSlide>
-                ))}
-            </Swiper>
-            
-            {modalData && (
-                <div 
-                    className="modal-bg fixed inset-0 flex items-center justify-center z-50 py-17 px-5"
-                    onClick={closeModal}
-                    ref={modalBgRef}
-                >
-                    <img 
-                        src={modalData.src} 
-                        alt="Vista completa"
-                        className="rounded-3xl max-w-full max-h-full object-contain"
-                        onClick={(e) => e.stopPropagation()} 
-                        ref={modalImageRef}
-                    />
-                    
-                </div>
-            )}
-        </div>
-    )
+    updateNav(nextIndex);
+    animateText(nextIndex);
+
+    gsap.set(nextSlide, { zIndex: 2, xPercent: 100 });
+    gsap.set(currentSlide, { zIndex: 1 });
+
+    gsap.to(nextSlide, {
+      xPercent: 0,
+      duration: 2.0, 
+      ease: 'power2.easeOut',
+      onComplete: () => {
+        gsap.set(currentSlide, { zIndex: 0 });
+        isTweeningRef.current = false;
+        setCurrentIndex(nextIndex);
+      },
+    });
+  };
+
+
+  const handleTouchStart = (e) => {
+    touchStartXRef.current = e.touches ? e.touches[0].screenX : e.clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (isTweeningRef.current) return;
+    const touchEndX = e.changedTouches ? e.changedTouches[0].screenX : e.clientX;
+    const deltaX = touchEndX - touchStartXRef.current;
+
+    if (deltaX < -50) gotoSlide(1); // Swiped left
+    else if (deltaX > 50) gotoSlide(-1); // Swiped right
+  };
+
+
+  useEffect(() => {
+    if (!slides || slides.length === 0 || !textRef.current) return;
+
+    gsap.set(slideRefs.current[0], { xPercent: 0, zIndex: 2 });
+    gsap.set(slideRefs.current.slice(1), { xPercent: 100, zIndex: 1 });
+
+    updateNav(0);
+    
+    textRef.current.innerHTML = `${slides[0].title}`;
+    gsap.set(textRef.current, { opacity: 1, y: 0 });
+
+    slideRefs.current = slideRefs.current.slice(0, slides.length);
+    navItemRefs.current = navItemRefs.current.slice(0, slides.length);
+
+  }, [slides]);
+
+
+  return (
+    <div
+      id="wrapper"
+      className="relative w-full h-full overflow-hidden text-white"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      onMouseDown={handleTouchStart}
+      onMouseUp={handleTouchEnd}
+    >
+      <div className="relative w-full h-full">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className="absolute top-0 left-0 w-full h-full"
+            ref={(el) => (slideRefs.current[index] = el)}
+          >
+            <img 
+              src={slide.imageSrc} 
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+          </div>
+        ))}
+      </div>
+
+      <nav className="absolute z-10 top-6 left-6 sm:top-8 sm:left-8 flex gap-4 sm:gap-5 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full">
+        {slides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className="nav-item cursor-pointer flex items-center gap-2"
+            ref={(el) => (navItemRefs.current[index] = el)}
+            onClick={() => gotoSlideDirect(index)}
+          >
+            <span className="text-xs sm:text-sm font-medium text-white transition-opacity duration-400">
+              {slide.id}
+            </span>
+            <div className="nav-bar w-8 sm:w-10 h-0.5 bg-white transition-opacity duration-400"></div>
+          </div>
+        ))}
+      </nav>
+
+      <h2
+        id="text"
+        ref={textRef}
+        className="absolute z-10 bottom-10 left-6 sm:bottom-10 sm:left-8 text-3xl sm:text-4xl lg:text-5xl font-bold text-white max-w-[60%] sm:max-w-[50%] leading-tight"
+      >
+      </h2>
+
+      <button
+        id="next"
+        onClick={() => gotoSlide(1)}
+        className="absolute z-10 bottom-10 right-6 sm:bottom-10 sm:right-8 flex justify-center text-white 
+                   w-12 h-12 sm:w-14 sm:h-14 bg-black/30 backdrop-blur-md rounded-full
+                   text-2xl transition-all duration-300 items-center hover:bg-white/20 hover:scale-110"
+        aria-label="Siguiente"
+      >
+        &rarr;
+      </button>
+    </div>
+  );
 }
