@@ -1,16 +1,59 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, use } from 'react';
 import gsap from 'gsap';
+import { useGSAP } from '@gsap/react';
 
 
 export default function Carrusel({ slides = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
   const isTweeningRef = useRef(false);
+  const isMenuOpenRef = useRef(false);
   
   const slideRefs = useRef([]);
   const navItemRefs = useRef([]);
   const textRef = useRef(null);
+  const progressMenuRef = useRef(); // Elemento DOM
+  const progressTween = useRef(); // Tween de GSAP
   
   const touchStartXRef = useRef(0);
+
+  useGSAP(() => {
+    if (isPaused || isMenuOpenRef.current || !progressMenuRef.current) {
+      progressTween.current?.pause();
+      return;
+    }
+    
+    progressTween.current?.kill();
+
+    const progressBar = progressMenuRef.current.querySelector('div');
+    if (!progressBar) return;
+
+    progressTween.current = gsap.fromTo(progressBar, 
+      { width: '0%' },
+      {
+        width: '100%',
+        duration: 5,
+        ease: 'none',
+        onComplete: () => {
+          if (!isPaused && !isMenuOpenRef.current) {
+            gotoSlide(1);
+          }
+        }
+      }
+    );
+    
+    return () => progressTween.current?.kill();
+  }, [currentIndex, isPaused]);
+
+  // Manejar pausa/resume del tween
+  useEffect(() => {
+    if (isPaused || isMenuOpenRef.current) {
+      progressTween.current?.pause();
+    } else {
+      progressTween.current?.resume();
+    }
+  }, [isPaused]);
 
 
   const updateNav = (activeIndex) => {
@@ -54,7 +97,7 @@ export default function Carrusel({ slides = [] }) {
     };
     
   const gotoSlide = (direction) => {
-    if (isTweeningRef.current) return;
+    if (isTweeningRef.current || isMenuOpenRef.current) return;
     
     const totalSlides = slides.length;
     let nextIndex = currentIndex + direction;
@@ -66,7 +109,7 @@ export default function Carrusel({ slides = [] }) {
   };
 
   const gotoSlideDirect = (index) => {
-    if (isTweeningRef.current || currentIndex === index) return;
+    if (isTweeningRef.current || currentIndex === index || isMenuOpenRef.current) return;
     animateSlideTransition(index);
   };
 
@@ -129,6 +172,17 @@ export default function Carrusel({ slides = [] }) {
     slideRefs.current = slideRefs.current.slice(0, slides.length);
     navItemRefs.current = navItemRefs.current.slice(0, slides.length);
 
+    // Listener para bloquear interacciones cuando el menú está abierto
+    const handleMenuToggle = (event) => {
+      isMenuOpenRef.current = event.detail.isOpen;
+    };
+
+    window.addEventListener('menuToggle', handleMenuToggle);
+
+    return () => {
+      window.removeEventListener('menuToggle', handleMenuToggle);
+    };
+
   }, [slides]);
 
 
@@ -140,6 +194,8 @@ export default function Carrusel({ slides = [] }) {
       onTouchEnd={handleTouchEnd}
       onMouseDown={handleTouchStart}
       onMouseUp={handleTouchEnd}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
     >
       <div className="relative w-full h-full">
         {slides.map((slide, index) => (
@@ -153,12 +209,12 @@ export default function Carrusel({ slides = [] }) {
               alt={slide.title}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-escom-sombra-500/60 via-transparent to-transparent" />
           </div>
         ))}
       </div>
 
-      <nav className="absolute z-10 top-6 left-6 sm:top-8 sm:left-8 flex gap-4 sm:gap-5 bg-black/30 backdrop-blur-md px-4 py-2 rounded-full">
+      <nav className="absolute z-10 top-6 left-6 sm:top-8 sm:left-8 flex gap-4 sm:gap-5 bg-escom-sombra-300/30 backdrop-blur-md px-4 py-2 rounded-full">
         {slides.map((slide, index) => (
           <div
             key={slide.id}
@@ -166,10 +222,15 @@ export default function Carrusel({ slides = [] }) {
             ref={(el) => (navItemRefs.current[index] = el)}
             onClick={() => gotoSlideDirect(index)}
           >
-            <span className="text-xs sm:text-sm font-medium text-white transition-opacity duration-400">
+            <span className="text-xs sm:text-sm font-medium text-escom-100 transition-opacity duration-400">
               {slide.id}
             </span>
-            <div className="nav-bar w-8 sm:w-10 h-0.5 bg-white transition-opacity duration-400"></div>
+            <div 
+              ref={index === currentIndex ? progressMenuRef : null}
+              className="nav-bar w-8 sm:w-16 h-1 bg-white/30 transition-opacity duration-400 rounded-full overflow-hidden"
+            >
+              <div className="h-full bg-white" style={{ width: index === currentIndex ? '0%' : '100%' }}></div>
+            </div>
           </div>
         ))}
       </nav>
@@ -185,11 +246,13 @@ export default function Carrusel({ slides = [] }) {
         id="next"
         onClick={() => gotoSlide(1)}
         className="absolute z-10 bottom-10 right-6 sm:bottom-10 sm:right-8 flex justify-center text-white 
-                   w-12 h-12 sm:w-14 sm:h-14 bg-black/30 backdrop-blur-md rounded-full
+                   w-12 h-12 sm:w-14 sm:h-14 bg-escom-sombra-300/30 backdrop-blur-md rounded-full
                    text-2xl transition-all duration-300 items-center hover:bg-white/20 hover:scale-110"
         aria-label="Siguiente"
       >
-        &rarr;
+        <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
       </button>
     </div>
   );

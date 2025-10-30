@@ -21,24 +21,35 @@ export default function NavMenu() {
     const [botonCuenta, setBotonCuenta] = useState(false);
 
     const tl = useRef(),
-        tl2 = useRef(),
-        splitNavBotones = useRef();
+        tl2 = useRef();
     library.add(fas, far, fab)
 
     const botonMenu = () => {
+        const newMenuState = !menuOpen;
+        
         if (menuOpen) {
             tl.current.reverse();
         }else {
             tl.current.play();
             tl2.current.reverse();
         }
-        setMenuOpen(!menuOpen);
+        setMenuOpen(newMenuState);
+        
+        // Emitir evento personalizado para que otras páginas sepan del cambio
+        window.dispatchEvent(new CustomEvent('menuToggle', { 
+            detail: { isOpen: newMenuState } 
+        }));
     }
   
     const cerrarMenu = () => {
         if (menuOpen) { 
         tl.current.reverse();
         setMenuOpen(false);
+        
+        // Emitir evento de menú cerrado
+        window.dispatchEvent(new CustomEvent('menuToggle', { 
+            detail: { isOpen: false } 
+        }));
         }
     }
 
@@ -48,11 +59,11 @@ export default function NavMenu() {
             if (elementos.length > 0) {
                 const splitText = new SplitText(elementos, { type: "lines" });
                 gsap.from(splitText.lines, {
-                    x: 100,
-                    filter: 'blur(10px)',
+                    y: 50,
+                    filter: 'blur(5px)',
                     autoAlpha: 0,
-                    duration: 0.5,
-                    stagger: 0.2,
+                    duration: 0.3,
+                    stagger: 0.15,
                     ease: "power1.Out"
                 });
             }
@@ -86,7 +97,7 @@ export default function NavMenu() {
             .to("#bg-logo", {
                 autoAlpha: 1,
                 duration: 0.5,
-                backdropFilter: 'blur(34px)',
+                
                 ease: 'power1.inOut'
             }, 0)
             .to("#nav-menu", {
@@ -120,8 +131,8 @@ export default function NavMenu() {
 
     return (
         <>
-            <div className={`nav-container group fixed top-0 left-0 right-0 z-50 ${menuOpen ? 'pointer-events-none' : ''}`}>
-                <div className="absolute inset-x-0 top-0 h-20 lg:h-24 bg-gradient-to-br from-escom-sombra-700/40 via-escom-sombra-500/60 to-escom-sombra-400/70 backdrop-blur-xl border-b border-white/5 shadow-xl shadow-black/20 -translate-y-0 group-hover:translate-y-0 md:translate-y-0 lg:-translate-y-full transition-all duration-500 ease-out">
+            <div className={`nav-container group fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ${menuOpen ? '-translate-y-full md:translate-y-0 md:pointer-events-none' : ''}`}>
+                <div className="absolute inset-x-0 top-0 h-20 lg:h-24 bg-gradient-to-br from-escom-sombra-700/40 via-escom-sombra-500/60 to-escom-sombra-400/70 border-b border-white/5 shadow-xl shadow-black/20 -translate-y-0 group-hover:translate-y-0 md:translate-y-0 lg:-translate-y-full transition-all duration-500 ease-out">
                     <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 h-full flex justify-between items-center">
                         <Link to="/" className="flex items-center gap-3 lg:gap-4 group/logo transform hover:scale-105 transition-all duration-300">
                             <div className="relative">
@@ -186,64 +197,70 @@ export default function NavMenu() {
                     id="nav-menu"
                     style={{ backdropFilter: 'blur(0px)' }}
                     className={`
-                    fixed top-1/16 right-0 w-full lg:w-1/2 lg:top-0 h-full bg-gradient-to-br from-escom-sombra-600/50 to-escom-sombra-800
+                    fixed top-0 right-0 w-full md:w-3/4 lg:w-1/2 h-full bg-gradient-to-br from-escom-sombra-600/50 to-escom-sombra-800
                     transform opacity-100 z-40
                     translate-x-full ${menuOpen ? '' : 'pointer-events-none'}
                     `}
                 >
-                    <div className="flex flex-row gap-12 w-full h-2/16 py-14 pl-12 items-center">
+                    <div className="flex flex-col md:flex-row gap-4 md:gap-12 w-full h-auto md:h-2/16 py-6 md:py-14 px-4 md:pl-12 items-start md:items-center">
                         <button onClick={manejarBotonInicio}>
-                            <span className={`text-xl font-semibold rounded-4xl px-10 py-4 transition-all cursor-pointer ${botonInicio ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>Inicio    <FontAwesomeIcon icon="fa-regular fa-house" /></span>
+                            <span className={`text-sm md:text-xl font-semibold rounded-4xl px-4 md:px-10 py-2 md:py-4 transition-all cursor-pointer ${botonInicio ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>
+                                Inicio <FontAwesomeIcon icon="fa-regular fa-house" />
+                            </span>
                         </button>
                         <button onClick={manejarBotonEventos}>
-                            <span className={`text-xl font-semibold rounded-4xl px-10 py-4 transition-all cursor-pointer ${botonEventos ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>Eventos    <FontAwesomeIcon icon="fa-regular fa-calendar" /></span>
+                            <span className={`text-sm md:text-xl font-semibold rounded-4xl px-4 md:px-10 py-2 md:py-4 transition-all cursor-pointer ${botonEventos ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>
+                                Eventos <FontAwesomeIcon icon="fa-regular fa-calendar" />
+                            </span>
                         </button>
                         <button onClick={manejarBotonCuenta}>
-                            <span className={`text-xl font-semibold rounded-4xl px-10 py-4 transition-all cursor-pointer ${botonCuenta ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>Cuenta    <FontAwesomeIcon icon="fa-regular fa-user" /></span>
+                            <span className={`text-sm md:text-xl font-semibold rounded-4xl px-4 md:px-10 py-2 md:py-4 transition-all cursor-pointer ${botonCuenta ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>
+                                Cuenta <FontAwesomeIcon icon="fa-regular fa-user" />
+                            </span>
                         </button>
                         <button
                                 onClick={botonMenu}
-                                className="relative p-2.5 sm:p-3 lg:px-4 lg:py-3 ml-20 focus:outline-none transition-all duration-300 cursor-pointer bg-white hover:bg-white/80 active:bg-white/70 rounded-full group/btn backdrop-blur-smhover:border-white/30 hover:shadow-lg hover:shadow-escom-200/20"
-                                aria-label="Abrir menú"
+                                className="relative p-2 md:p-2.5 lg:px-4 lg:py-3 md:ml-20 focus:outline-none transition-all duration-300 cursor-pointer bg-white hover:bg-white/80 active:bg-white/70 rounded-full group/btn backdrop-blur-smhover:border-white/30 hover:shadow-lg hover:shadow-escom-200/20"
+                                aria-label="Cerrar menú"
                             >
                                 <div className="flex items-center gap-2">
-                                    <FontAwesomeIcon icon="fa-solid fa-close" className="text-lg sm:text-2xl !text-escom-sombra-500 group-hover/btn:text-escom-200 transition-all duration-300" />
+                                    <FontAwesomeIcon icon="fa-solid fa-close" className="text-lg md:text-lg sm:text-2xl !text-escom-sombra-500 group-hover/btn:text-escom-200 transition-all duration-300" />
                                     <span className="hidden lg:block text-sm font-semibold !text-escom-sombra-500 group-hover/btn:text-escom-200 transition-all duration-300">Cerrar</span>
                                 </div>
                             </button>
 
                     </div>
-                    <div className="flex flex-col w-full h-2/3 p-15 gap-6 justify-center">
+                    <div className="flex flex-col w-full h-auto md:h-2/3 px-4 md:p-15 gap-3 md:gap-6 justify-start md:justify-center overflow-y-auto">
                         {botonInicio && (
                             <>
-                                <a onClick={cerrarMenu} href="#inicio" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</a>
-                                <a onClick={cerrarMenu} href="#section-horizontal" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Presentacion</a>
-                                <a onClick={cerrarMenu} href="#redes-sociales" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Redes Sociales</a>
-                                <a onClick={cerrarMenu} href="#contacto" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Contacto</a>
+                                <a onClick={cerrarMenu} href="#inicio" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</a>
+                                <a onClick={cerrarMenu} href="#section-horizontal" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Presentacion</a>
+                                <a onClick={cerrarMenu} href="#actividades" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</a>
+                                <a onClick={cerrarMenu} href="#contacto" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Contacto</a>
                             </>
                         )}
                         {botonEventos && (
                             <>
-                                <a onClick={cerrarMenu} href="#calendario" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</a>
-                                <a onClick={cerrarMenu} href="#eventos-proximos" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Próximos</a>
-                                <a onClick={cerrarMenu} href="#eventos-anteriores" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Anteriores</a>
-                                <a onClick={cerrarMenu} href="acerca-de" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Acerca de</a>
+                                <a onClick={cerrarMenu} href="#calendario" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</a>
+                                <a onClick={cerrarMenu} href="#eventos-proximos" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Próximos</a>
+                                <a onClick={cerrarMenu} href="#eventos-anteriores" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Anteriores</a>
+                                <a onClick={cerrarMenu} href="acerca-de" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Acerca de</a>
                             </>
                         )}
                         {botonCuenta && (
                             <>
                                 {!user ? (
                                     <>
-                                        <a onClick={cerrarMenu} href="iniciar-sesion" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</a>
-                                        <a onClick={cerrarMenu} href="registrarse" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</a>
+                                        <a onClick={cerrarMenu} href="iniciar-sesion" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</a>
+                                        <a onClick={cerrarMenu} href="registrarse" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</a>
                                     </>
                                 ) : (
                                     <>
-                                        <a onClick={cerrarMenu} href="panel-principal" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Panel Principal</a>
-                                        <a onClick={cerrarMenu} href="#perfil" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</a>
-                                        <a onClick={cerrarMenu} href="#mis-eventos" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</a>
-                                        <a onClick={cerrarMenu} href="#ajustes" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Ajustes de Cuenta</a>
-                                        <a onClick={cerrarMenu} href="#cerrar-sesion" className="boton-menu-op text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Cerrar Sesión</a>
+                                        <a onClick={cerrarMenu} href="panel-principal" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Panel Principal</a>
+                                        <a onClick={cerrarMenu} href="#perfil" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</a>
+                                        <a onClick={cerrarMenu} href="#mis-eventos" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</a>
+                                        <a onClick={cerrarMenu} href="#ajustes" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Ajustes de Cuenta</a>
+                                        <a onClick={cerrarMenu} href="#cerrar-sesion" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Cerrar Sesión</a>
                                     </>
                                 )}
                             </>

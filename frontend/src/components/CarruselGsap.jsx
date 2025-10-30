@@ -48,13 +48,21 @@ export default function CarruselGsap({ evento }) {
                 let contentDiv = headerRef.current.querySelector('.card-content');
                 if (!contentDiv) return;
                 
+                // Ocultar botón X
+                const closeBtn = contentDiv.querySelector('.card-close-btn');
+                if (closeBtn) {
+                    gsap.to(closeBtn, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
+                }
+                
                 let state = Flip.getState(contentDiv);
                 currentCard.appendChild(contentDiv); // Devuelve el div
                 Flip.from(state, {
-                    duration: 0.8,
-                    ease: "power2.inOut",
+                    duration: 1.0,
+                    ease: "power3.inOut",
                     scale: true,
                     absolute: true,
+                    simple: true,
+                    prune: false,
                     onComplete: () => {
                         rotationTween.resume();
                     }
@@ -75,12 +83,22 @@ export default function CarruselGsap({ evento }) {
                 
                 let state = Flip.getState(contentDiv);
                 headerRef.current.appendChild(contentDiv); // Mueve el div
+                
+                // Mostrar botón X cuando está abierta
+                const closeBtn = contentDiv.querySelector('.card-close-btn');
+                
                 Flip.from(state, {
-                    duration: 0.8,
-                    ease: "power2.inOut",
+                    duration: 1.0,
+                    ease: "power3.inOut",
                     scale: true,
                     absolute: true,
-                    nested: true
+                    simple: true,
+                    prune: false,
+                    onComplete: () => {
+                        if (closeBtn) {
+                            gsap.to(closeBtn, { opacity: 0.60, pointerEvents: 'auto', duration: 0.3 });
+                        }
+                    }
                 });
                 
             } else {
@@ -92,7 +110,27 @@ export default function CarruselGsap({ evento }) {
             card.addEventListener("click", onCardClick);
         });
 
-        headerRef.current.addEventListener("click", closeCurrentCard);
+        // Click en el header cierra la card
+        const handleHeaderClick = (e) => {
+            // Solo cerrar si se hace click en el fondo o en el botón X
+            if (e.target === headerRef.current || e.target.closest('.card-close-btn')) {
+                closeCurrentCard();
+            }
+        };
+        
+        headerRef.current.addEventListener("click", handleHeaderClick);
+
+        const handleMenuToggle = (event) => {
+            if (event.detail.isOpen) {
+                rotationTween.pause();
+            } else {
+                if (!currentCard) {
+                    rotationTween.resume();
+                }
+            }
+        };
+
+        window.addEventListener('menuToggle', handleMenuToggle);
 
         return () => {
             wheelCardsRefs.current.forEach(card => {
@@ -101,8 +139,9 @@ export default function CarruselGsap({ evento }) {
                 }
             });
             if (headerRef.current) {
-                headerRef.current.removeEventListener("click", closeCurrentCard);
+                headerRef.current.removeEventListener("click", handleHeaderClick);
             }
+            window.removeEventListener('menuToggle', handleMenuToggle);
         };
         
     }, { dependencies: [evento] });
@@ -119,7 +158,7 @@ export default function CarruselGsap({ evento }) {
     return (
         <div className="w-[3200px] h-full flex justify-center items-center absolute">
             <div 
-                className="header fixed w-72 h-96 sm:w-80 sm:h-[28rem] lg:w-96 lg:h-[32rem] top-1/4 sm:top-1/5 lg:top-1/4 flex z-50 pointer-events-none cursor-pointer" 
+                className="header fixed w-[480px] h-[640px] sm:w-[520px] sm:h-[680px] lg:w-[560px] lg:h-[720px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex z-50 pointer-events-none cursor-pointer" 
                 ref={headerRef}
             >
             </div>
@@ -131,90 +170,93 @@ export default function CarruselGsap({ evento }) {
                 >
                     {evento.map((item, index) => (
                         <div 
-                                className="wheel-card absolute top-0 left-0 w-72 h-96 sm:w-80 sm:h-[28rem] lg:w-78 lg:h-[28rem] cursor-pointer" 
+                                className="wheel-card absolute top-0 left-0 w-80 h-[450px] sm:w-[360px] sm:h-[480px] lg:w-[400px] lg:h-[450px] cursor-pointer" 
                                 key={index}
                                 ref={(el) => (wheelCardsRefs.current[index] = el)}
                             >
                             
-                            <div className="card-content group w-full h-full bg-white rounded-xl sm:rounded-2xl shadow-xl overflow-hidden cursor-pointer will-change-transform transition-all duration-300 hover:shadow-2xl hover:-translate-y-2">
+                            <div className="card-content font-lexend group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer shadow-2xl">
                                 
-                                {/* Imagen */}
-                                <div className="relative w-full h-[70%] sm:h-[72%] lg:h-[75%] overflow-hidden">
-                                    <img 
-                                        src={item.imagen.src} 
-                                        alt={item.imagen.alt} 
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
-                                    
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-                                    
-                                    {/* Badge de fecha */}
-                                    {item.fecha && (
-                                        <div className="absolute top-3 left-3 sm:top-4 sm:left-4 bg-white rounded-lg sm:rounded-xl shadow-lg p-2 sm:p-3 text-center min-w-[50px] sm:min-w-[60px]">
-                                            <div className="text-2xl sm:text-3xl font-black text-escom-sombra-700 leading-none">
-                                                {item.fecha.dia}
-                                            </div>
-                                            <div className="text-[10px] sm:text-xs font-bold text-gray-600 uppercase mt-0.5 sm:mt-1">
-                                                {item.fecha.mes}
-                                            </div>
+                                {/* Imagen de fondo */}
+                                <img 
+                                    src={item.imagen.src} 
+                                    alt={item.imagen.alt} 
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                
+                                {/* Gradiente simple */}
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/95"></div>
+                                <button 
+                                    className="card-close-btn absolute top-4 left-4 bg-escom-sombra-400 hover:bg-escom-sombra-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors duration-200 z-20 opacity-0 pointer-events-none"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        
+                                    }}
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+
+                                {item.fecha && (
+                                    <div className="absolute top-4 right-4 rounded-xl shadow-lg px-3 bg-escom-300/30 py-2 text-center backdrop-blur-md">
+                                        <div className="text-4xl bg-clip-text bg-gradient-to-b font-black text-transparent from-escom-100 to-escom-200 leading-none">
+                                            {item.fecha.dia}
                                         </div>
-                                    )}
-                                    
-                                    {/* Título */}
-                                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4 pb-4 sm:pb-5">
-                                        <h1 className='text-white text-lg sm:text-xl lg:text-2xl font-extrabold drop-shadow-4xl line-clamp-2 leading-snug'>
-                                            {item.titulo}
-                                        </h1>
+                                        <div className="text-xl font-bold text-escom-100 uppercase">
+                                            {item.fecha.mes}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
                                 
-                                {/* Tags y contenido */}
-                                <div className="flex flex-col h-[30%] sm:h-[28%] lg:h-[25%] p-3 sm:p-4 bg-white justify-between">
+                                {/* Contenido inferior */}
+                                <div className="absolute bottom-0 left-0 right-0 p-5 space-y-3">
                                     
-                                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                                        {item.tipo && (
-                                            <span className="px-2 py-0.5 sm:px-3 sm:py-1 bg-escom-sombra-600 text-white text-[9px] sm:text-[10px] lg:text-xs font-bold uppercase tracking-wider rounded-md">
-                                                {item.tipo}
+                                    {/* Tipo de evento */}
+                                    {item.tipo && (
+                                        <span className="inline-block px-3 py-1 bg-escom-400/90 text-escom-sombra-900 text-xs font-bold uppercase tracking-wide rounded-lg">
+                                            {item.tipo}
+                                        </span>
+                                    )}
+
+                                    {/* Título */}
+                                    <h1 className='text-xl sm:text-3xl bg-clip-text bg-gradient-to-b font-black text-transparent from-escom-100 to-escom-200'>
+                                        {item.titulo}
+                                    </h1>
+
+                                    {/* Info del evento: Horario, Ubicación, Cupo - Compacto */}
+                                    <div className="flex flex-wrap gap-2">
+                                        {/* Horario */}
+                                        {item.horario && (
+                                            <span className="flex items-center gap-1 bg-escom-400/60 px-2 py-1 rounded-xl">
+                                                <svg className="w-3 h-3 text-escom-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                </svg>
+                                                <span className="text-white/90 text-xs font-medium">{item.horario}</span>
                                             </span>
                                         )}
-                                        {item.relacionado && (Array.isArray(item.relacionado) ? (
-                                            item.relacionado.slice(0, 2).map((r, i) => {
-                                                const estilos = [
-                                                    'bg-blue-50 text-blue-600 border border-blue-200',
-                                                    'bg-purple-50 text-purple-600 border border-purple-200',
-                                                ];
-                                                return (
-                                                    <span 
-                                                        key={i} 
-                                                        className={`px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] lg:text-xs font-semibold rounded-md ${estilos[i % estilos.length]}`}
-                                                    >
-                                                        {r}
-                                                    </span>
-                                                );
-                                            })
-                                        ) : (
-                                            <span className="px-2 py-0.5 sm:px-2.5 sm:py-1 bg-blue-50 text-blue-600 border border-blue-200 text-[9px] sm:text-[10px] lg:text-xs font-semibold rounded-md">
-                                                {item.relacionado}
-                                            </span>
-                                        ))}
-                                    </div>
 
-                                    {/* Botón Ver Evento */}
-                                    <button 
-                                        className="w-full bg-gradient-to-r from-escom-sombra-600 to-escom-sombra-800 text-white py-2 sm:py-2.5 lg:py-3 px-4 sm:px-6 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm hover:from-escom-sombra-700 hover:to-escom-sombra-900 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl mt-2"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            console.log('Ver evento:', item.id);
-                                        }}
-                                    >
-                                        <span className="flex items-center justify-center gap-1.5 sm:gap-2">
-                                            <span className="hidden sm:inline">Ver Evento Completo</span>
-                                            <span className="sm:hidden">Ver Evento</span>
-                                            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                            </svg>
-                                        </span>
-                                    </button>
+                                        {/* Ubicación */}
+                                        {item.ubicacion && (
+                                            <span className="flex items-center gap-1 bg-escom-200/60 px-2 py-1 rounded-xl">
+                                                <svg className="w-3 h-3 text-escom-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                </svg>
+                                                <span className="text-white/90 text-xs font-semibold truncate max-w-[120px]">{item.ubicacion}</span>
+                                            </span>
+                                        )}
+
+                                        {/* Cupo */}
+                                        {item.cupo && (
+                                            <span className="flex items-center gap-1 bg-escom-300/60 px-2 py-1 rounded-xl">
+                                                <svg className="w-3 h-3 text-escom-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                                </svg>
+                                                <span className="text-white/90 text-xs font-semibold">{item.cupo}</span>
+                                            </span>
+                                        )}
+                                    </div>
                                     
                                 </div>
                             </div>
