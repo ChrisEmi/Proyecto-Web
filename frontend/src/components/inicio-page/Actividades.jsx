@@ -46,7 +46,7 @@ export function Actividades() {
       gsap.to(".card-presentacion", {
         opacity: 0,
         duration: 0.25,
-        y: -10,
+        x: -10,
         onComplete: () => {
           setActiveCardId(newActiveId);
         },
@@ -107,7 +107,7 @@ export function Actividades() {
           } else {
             gsap.to(".card-presentacion", {
               opacity: 1,
-              y: 0,
+              x: 0,
             });
           }
           stateRef.current = null;
@@ -360,7 +360,7 @@ export function Actividades() {
                     Ver más
                   </button>
                 </div>
-                <div className="w-2/5 h-full relative overflow-hidden rounded-l-2xl">
+                <div className="w-2/5 h-full relative overflow-hidden rounded-r-2xl">
                   <img
                     src="https://scontent.fmex12-1.fna.fbcdn.net/v/t39.30808-6/560468497_1320564196527461_7451893167480850825_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=f727a1&_nc_ohc=0ESi43w5e-IQ7kNvwHc9qj5&_nc_oc=AdkvC1Z_WBUjnOZBhiRVrcBy7e7rG4rwvEoElR8lBM5aQYrhxOnb0gP-dfuqFyglFoNtmEq0TRGWj3440IyFa62i&_nc_zt=23&_nc_ht=scontent.fmex12-1.fna&_nc_gid=W9QvpIiF9xYdFuV8AAFNTA&oh=00_AffUzpo7YMNute4qTHyMOOwjBmfTRKX__13Xa9vGhSLs1g&oe=6908EA27"
                     alt="Equipo de ESCOM Futbol"
