@@ -2,7 +2,7 @@ import { IconoEscom } from "./assets/ElementosSvg";
 
 const Footer = () => {
   return (
-      <footer className="bg-escom-200 text-escom-800 py-8 mt-12 w-full">
+      <footer className="bg-escom-200 text-escom-800 py-8 w-full">
           <div className="container mx-auto px-4 md:px-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 my-8">
                     <div className="flex items-center gap-4">

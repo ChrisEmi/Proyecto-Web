@@ -9,10 +9,10 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Flip } from "gsap/Flip";
 
-import HeroInicio from "../components/inicio-page/HeroInicio";
-import EventosHorizontal from "../components/inicio-page/EventosHorizontal";
-import Actividades from "../components/inicio-page/Actividades";
-import Contacto from "../components/inicio-page/Contacto";
+import HeroInicio from "../components/inicio-sections/HeroInicio";
+import EventosHorizontal from "../components/inicio-sections/EventosHorizontal";
+import Actividades from "../components/inicio-sections/Actividades";
+import Contacto from "../components/inicio-sections/Contacto";
 
 gsap.registerPlugin(ScrollTrigger, Flip);
 

@@ -121,14 +121,14 @@ export function Actividades() {
   return (
     <>
       <section
-        className="relative overflow-hidden h-[105vh] w-full"
+        className="relative overflow-hidden h-[110vh] w-full"
         id="actividades"
       >
         <div
           ref={containerRef}
-          className={`w-full h-full p-20 bg-gradient-to-b from-escom-200 to-escom-800 flex flex-col gap-10 font-lexend justify-center items-center`}
+          className={`w-full h-full p-20 bg-gradient-to-b from-escom-100 to-escom-500 flex flex-col gap-10 font-lexend justify-center items-center`}
         >
-        <div className="flex flex-col items-center gap-6 w-full">
+        <div className="flex flex-col items-center gap-2 w-full p-8">
           <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-escom-900 to-escom-sombra-700 leading-tight">
             Actividades ESCOMunidad
           </h1>
@@ -140,17 +140,16 @@ export function Actividades() {
             <div
               data-flip-id="deportivas-card"
               className={`
-              bg-gradient-to-tl from-escom-300 to-white flex rounded-2xl shadow-2x
-              ${
-                activeCardId === "deportivas"
+                bg-gradient-to-tl from-escom-300 to-white flex rounded-2xl shadow-2x
+                ${activeCardId === "deportivas"
                   ? "w-full h-full p-5"
                   : activeCardId
                   ? "w-0 h-0 p-0 opacity-0"
                   : "w-1/2"
               }
-            `}
+              `}
             >
-                         {" "}
+              
               <div
                 className={`card-presentacion card-presentacion-deportivas flex overflow-hidden ${
                   activeCardId === "deportivas" ? "hidden" : "h-full w-full"
@@ -330,18 +329,15 @@ export function Actividades() {
             <div
               data-flip-id="culturales-card"
               className={`
-              bg-gradient-to-tl from-escom-sombra-300 to-escom-700 flex rounded-2xl
-              ${
-                activeCardId === "culturales"
+              bg-gradient-to-tl from-escom-sombra-300 to-escom-700 flex rounded-2xl
+              ${activeCardId === "culturales"
                   ? "w-full h-full p-5"
                   : activeCardId
-                  ? "w-0 h-0 p-0 opacity-0 pointer-events-none"
-                  : "w-1/2"
-              }
-            `}
+                    ? "w-0 h-0 p-0 opacity-0 pointer-events-none"
+                    : "w-1/2"
+                }`}
+
             >
-              {/* 1. 'card-presentacion' ahora es un 'flex-row' (por defecto con 'flex') */}
-                         {" "}
               <div
                 className={`card-presentacion card-presentacion-culturales flex overflow-hidden ${
                   activeCardId === "culturales" ? "hidden" : "h-full w-full"
@@ -368,7 +364,6 @@ export function Actividades() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-l from-black/70 to-transparent transition-opacity duration-300 group-hover:bg-black/10"></div>
                 </div>
-                           {" "}
               </div>
               <div
                 className={`h-full flex flex-col gap-2 items-center text-escom-200
