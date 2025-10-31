@@ -1,14 +1,18 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:5173");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+// Permitir envío de cookies desde el frontend (fetch/axios con credentials)
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
 
-require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../src/Core/database.php';
-require __DIR__ . '/../vendor/autoload.php';
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
-use App\Core\Database;
+require_once __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 $router = new \Bramus\Router\Router();
 
@@ -24,11 +28,21 @@ if (is_readable($envPath)) {
     }
 }
 
-$conn = Database::getInstance();
-
 $router->get('/', function() {
     echo json_encode(["status" => "success", "message" => "API is running"]);
 });
+
+
+// Incluir las rutas de autenticación
+require_once __DIR__ . '/../src/Routes/auth-routes.php';
+auth_routes($router);
+
+
+// require_once __DIR__ . '/../src/Routes/evento-routes.php';
+
+
+require_once __DIR__ . '/../src/Routes/admin-routes.php';
+admin_routes($router);
 
 $router->run();
 

@@ -1,2 +1,72 @@
+### Test API funcionando
 GET http://proyecto-web.local/
+Content-Type: application/json
+
+###
+
+### Test POST básico (debug)
+POST http://proyecto-web.local/test
+Content-Type: application/json
+
+###
+
+### Test Login 1
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "admin@example.com",
+    "contrasena": "mi_contraseña"
+}
+
+
+### Test Login 2
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "miguel@example.com",
+    "contrasena": "mi_contraseña"
+}
+
+###
+
+### Test Registro  
+POST http://proyecto-web.local/auth/registro
+Content-Type: application/json
+
+{
+    "nombre": "Christian",
+    "apellidos": "Aguilar Torres",
+    "correo": "chris3@example.com",
+    "contrasena": "mi_contraseña",
+    "boleta": "20240005"
+}
+
+###
+
+### Test Logout
+POST http://proyecto-web.local/auth/logout
+Content-Type: application/json
+
+
+###
+### Test Obtener todos los usuarios (Admin)
+GET http://proyecto-web.local/admin/obtener-usuarios
+Content-Type: application/json
+
+### Test Crear usuario (Admin)
+POST http://proyecto-web.local/admin/crear-usuario
+Content-Type: application/json
+
+{
+    "nombre": "Miguel",
+    "apellido": "Pérez López",
+    "correo": "miguelperez2@example.com",
+    "contrasena": "mi_contraseña",
+    "id_tipo_usuario": 1
+}
+
+### Test Verificar Token
+GET http://proyecto-web.local/auth/verificar-token
 Content-Type: application/json
