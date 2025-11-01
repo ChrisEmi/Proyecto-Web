@@ -1,10 +1,130 @@
 import React from 'react';
+import { useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import EscomDecorativeBackground from '../EscomDecorativeBackground';
 import CarruselGsap from '../CarruselGsap';
 
+gsap.registerPlugin(ScrollTrigger);
+
 const EventosHorizontal = ({ eventos }) => {
+  const sectionRef = useRef(null);
+  const scrollTriggersRef = useRef([]);
+
+  const createScrollTriggers = (selector) => {
+    if (scrollTriggersRef.current) {
+      scrollTriggersRef.current.forEach(st => st.kill());
+      scrollTriggersRef.current = []; // Reiniciar el array
+    }
+    const sections = selector(".content"); 
+    if (sections.length === 0) {
+      console.warn("GSAP: No se encontraron secciones '.content' en EventosHorizontal.");
+      return null;
+    }
+
+    const horizontalScroll = gsap.to(sections, {
+      xPercent: -100 * (sections.length - 1),
+      ease: "none",
+      scrollTrigger: {
+        trigger: sectionRef.current, 
+        start: "top top",
+        end: () => "+=" + (window.innerHeight * sections.length * 2),
+        pin: true,
+        scrub: 1,
+        anticipatePin: 1,
+      },
+    });
+
+    const cards = [
+      { id: "#card-1", endTranslateX: "-2000", rotate: "25" },
+      { id: "#card-2", endTranslateX: "-3000", rotate: "-20" },
+      { id: "#card-3", endTranslateX: "-1500", rotate: "25" },
+      { id: "#card-4", endTranslateX: "-1800", rotate: "-10" },
+    ];
+
+    const cardTriggers = cards.map((card) => {
+      const cardElement = selector(card.id)[0]; // [0] porque selector devuelve un array
+      if (!cardElement) {
+        console.warn(`GSAP: Card ${card.id} no encontrada.`);
+        return null;
+      }
+
+      return ScrollTrigger.create({
+        trigger: cardElement, // Usar el elemento encontrado
+        start: "top top",
+        end: "+=" + (window.innerHeight * 10),
+        scrub: true,
+        onUpdate: (self) => {
+          
+          gsap.to(cardElement, { 
+            x: `${self.progress * card.endTranslateX}px`,
+            rotate: `${self.progress * card.rotate * 2}`,
+            duration: 0.5,
+            ease: "power1.out",
+          });
+        }
+      });
+    }).filter(Boolean); 
+    scrollTriggersRef.current = [horizontalScroll.scrollTrigger, ...cardTriggers];
+    return horizontalScroll;
+  };
+  
+  useGSAP((context) => {
+    const { selector } = context; 
+    const handleMenuToggle = (event) => {
+      const horizontalSection = sectionRef.current; // Usar el ref
+      
+      if (event.detail.isOpen) {
+        if (horizontalSection) {
+          horizontalSection.style.visibility = 'hidden';
+          horizontalSection.style.willChange = 'auto';
+        }
+        
+        if (scrollTriggersRef.current) {
+          scrollTriggersRef.current.forEach(st => st.kill());
+          scrollTriggersRef.current = [];
+        }
+      } else {
+        if (horizontalSection) {
+          horizontalSection.style.visibility = 'visible';
+          horizontalSection.style.willChange = 'transform';
+        }
+        createScrollTriggers(selector); // Pasamos el selector
+      }
+    };
+
+    // Crear triggers en la carga inicial
+    createScrollTriggers(selector); 
+
+    window.addEventListener('menuToggle', handleMenuToggle);
+
+    // Función de limpieza correcta
+    return () => {
+      window.removeEventListener('menuToggle', handleMenuToggle);
+      if (scrollTriggersRef.current) {
+        scrollTriggersRef.current.forEach(st => st.kill());
+        scrollTriggersRef.current = [];
+      }
+    };
+  }, { scope: sectionRef });
+
+
   return (
-    <section className="relative bg-gradient-to-b from-white via-escom-50 to-escom-200 flex overflow-hidden" id="section-horizontal">
+    <>
+      <style jsx>{`
+        #section-horizontal {
+          overflow: hidden;
+        }
+        
+        #section-horizontal .content {
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+        }
+    `}</style>
+    <section ref={sectionRef} className="relative bg-gradient-to-b from-white via-escom-50 to-escom-200 flex overflow-hidden" id="section-horizontal">
       <div id="eventos" className="content w-[105vw] relative flex flex-col items-center justify-start pt-8 sm:pt-12 lg:pt-16 p-4 sm:p-6 lg:p-8">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl px-4">
           <div className="inline-flex items-center gap-2 bg-gradient-to-b from-escom-900 to-escom-sombra-700 opacity-90 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
@@ -80,8 +200,10 @@ const EventosHorizontal = ({ eventos }) => {
           <img src="https://static.where-e.com/Mexico/State_Of_Mexico_City/Patera_Vallejo_I_Seccion/Escom-Escuela-Superior-De-Computo-Ipn_0249fce7050e8241d3221d044f034e62.jpg" alt="Escom Letras" />
         </div>
       </div>
-    </section>
+      </section>
+    </>
   );
+  
 };
 
 export default EventosHorizontal;

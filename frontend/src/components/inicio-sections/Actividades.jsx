@@ -2,13 +2,15 @@ import React, { useState, useRef, useLayoutEffect } from "react";
 import { useAuth } from "../../api/Context/AuthContext";
 import { gsap } from "gsap";
 import { Flip } from "gsap/Flip";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
+import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(Flip);
+gsap.registerPlugin(Flip, ScrollTrigger);
 
 const getCardContent = (id) => {
   const card = document.querySelector(`[data-flip-id="${id}-card"]`);
@@ -25,6 +27,8 @@ export function Actividades() {
   const stateRef = useRef();
   const containerRef = useRef();
   const isOpening = useRef(false);
+  const containerTituloRef = useRef();
+  const containerContenidoRef = useRef();
 
   useLayoutEffect(() => {
     const allContent = document.querySelectorAll(".card-content-item");
@@ -72,7 +76,7 @@ export function Actividades() {
     }
   };
 
-  // --- EFECTO DE ANIMACIÓN (ACTUALIZADO) ---
+  
   useLayoutEffect(() => {
     if (stateRef.current) {
       // 3. Ejecuta el Flip (solo de las tarjetas)
@@ -81,11 +85,8 @@ export function Actividades() {
         ease: "power3.inOut",
         scale: true,
         simple: true,
-
-        // 4. CUANDO FLIP TERMINE...
         onComplete: () => {
           if (isOpening.current) {
-            // SI ABRE: Anima la entrada del título y el contenido
             const contentItems = getCardContent(activeCardId);
             gsap.set(contentItems, { y: 20 });
 
@@ -96,7 +97,6 @@ export function Actividades() {
               delay: 0.1,
             });
 
-            // Muestra el contenido
             gsap.to(contentItems, {
               opacity: 1,
               y: 0,
@@ -116,30 +116,76 @@ export function Actividades() {
     }
   }, [activeCardId]);
 
+  useGSAP(() => {
+    const elements = containerTituloRef.current.children;
+
+    gsap.from(elements, {
+      y: 100,
+      opacity: 0,
+      filter: "blur(5px)",
+      duration: 1.5,
+      ease: "power3.out",
+      stagger: 0.2,
+      scrollTrigger: {
+        trigger: containerTituloRef.current,
+        start: "top center",
+        end: "bottom bottom",
+      },
+    });
+
+    gsap.from(".card-container-deportivas", {
+      x: -200,
+      opacity: 0,
+      filter: "blur(5px)",
+      duration: 2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top center",
+        end: "bottom bottom",
+      },
+    });
+
+    gsap.from(".card-container-culturales", {
+      x: 200,
+      opacity: 0,
+      filter: "blur(5px)",
+      duration: 2,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: "top center",
+        end: "bottom bottom",
+        
+      },
+    });
+
+  }, { scope: containerRef });
+
   const { user } = useAuth();
 
   return (
     <>
       <section
         className="relative overflow-hidden h-[110vh] w-full"
-        id="actividades"
+        id="actividades" ref={containerRef}
       >
         <div
-          ref={containerRef}
-          className={`w-full h-full p-20 bg-gradient-to-b from-escom-100 to-escom-500 flex flex-col gap-10 font-lexend justify-center items-center`}
+          
+          className={`w-full h-full p-20 bg-gradient-to-tl from-escom-900 to-escom-sombra-700 flex flex-col gap-10 font-lexend justify-center items-center`}
         >
-        <div className="flex flex-col items-center gap-2 w-full p-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-escom-900 to-escom-sombra-700 leading-tight">
+        <div ref={containerTituloRef} className="flex flex-col items-center gap-6 w-full p-8">
+          <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white">
             Actividades ESCOMunidad
           </h1>
-          <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-escom-sombra-200 font-light ">
+          <p  className="text-base sm:text-lg lg:text-xl xl:text-2xl text-escom-100 font-light ">
             Explora las diversas actividades que ofrece la ESCOMunidad para enriquecer tu experiencia educativa.
           </p>
         </div>
-          <div className="flex gap-10 h-full">
+          <div ref={containerContenidoRef} className="flex gap-10 h-full">
             <div
               data-flip-id="deportivas-card"
-              className={`
+              className={`card-container-deportivas
                 bg-gradient-to-tl from-escom-300 to-white flex rounded-2xl shadow-2x
                 ${activeCardId === "deportivas"
                   ? "w-full h-full p-5"
@@ -165,12 +211,8 @@ export function Actividades() {
                 </div>
                 <div className="w-3/5 h-full flex flex-col justify-center items-center p-6 gap-6 text-escom-sombra-400">
                   <h2 className="text-4xl font-bold">Actividades Deportivas</h2>
-                  <p className="text-center">
-                    Las actividades deportivas son una parte fundamental de la
-                    vida estudiantil...
-                  </p>
                   <button
-                    className="mt-6 px-4 py-2 bg-gradient-to-r from-escom-900 to-escom-600 text-escom-200 hover:shadow-xl rounded-full w-1/2 cursor-pointer transition-all duration-300 hover:scale-105"
+                    className="mt-6 px-4 py-2 bg-gradient-to-r from-escom-900 to-escom-600 text-white hover:shadow-xl rounded-full w-1/2 cursor-pointer transition-all duration-300 hover:scale-105"
                     onClick={() => handleClick("deportivas")}
                   >
                     Ver más
@@ -328,7 +370,7 @@ export function Actividades() {
             {/* --- TARJETA CULTURALES --- */}
             <div
               data-flip-id="culturales-card"
-              className={`
+              className={`card-container-culturales
               bg-gradient-to-tl from-escom-sombra-300 to-escom-700 flex rounded-2xl
               ${activeCardId === "culturales"
                   ? "w-full h-full p-5"
@@ -343,12 +385,9 @@ export function Actividades() {
                   activeCardId === "culturales" ? "hidden" : "h-full w-full"
                 }`}
               >
-                <div className="w-3/5 h-full flex flex-col justify-center items-center p-6 gap-6 text-escom-200">
+                <div className="w-3/5 h-full flex flex-col justify-center items-center p-6 gap-6 text-white">
                   <h2 className="text-4xl font-bold">Actividades Culturales</h2>
-                  <p className="text-center">
-                    Las actividades culturales son esenciales para el desarrollo
-                    integral de los estudiantes...
-                  </p>
+                  
                   <button
                     className="mt-6 px-4 py-2 bg-gradient-to-r from-escom-300 to-escom-100 text-escom-900 hover:shadow-xl rounded-full w-1/2 cursor-pointer transition-all duration-300 hover:scale-105"
                     onClick={() => handleClick("culturales")}

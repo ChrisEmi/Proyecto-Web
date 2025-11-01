@@ -1,5 +1,9 @@
 import React, { useEffect, useRef } from 'react'; // 1. Importar useRef
 import L from 'leaflet';
+import { useGSAP } from '@gsap/react';
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
 import 'leaflet/dist/leaflet.css';
 import * as maptiler from '@maptiler/leaflet-maptilersdk';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -38,6 +42,7 @@ const Contacto = () => {
   
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const sectionRef = useRef(null);
 
   useEffect(() => {
     if (mapContainerRef.current && !mapInstanceRef.current) {
@@ -63,10 +68,36 @@ const Contacto = () => {
     };
   }, []);
 
-  
+  useGSAP(() => {
+
+    gsap.from(".titulo", {
+      y: -200,
+      filter: "blur(10px)",
+      duration: 1.5,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top center",
+        end: "center bottom",
+      }
+    });
+    gsap.from(".container-cards", {
+      x: 3000,
+      scale: 0.3,
+      filter: "blur(10px)",
+      duration: 3.5,
+      ease: "power3.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top center",
+          end: "center bottom",
+        }
+      });
+      
+  }, [sectionRef]);
 
   return (
-    <section className="bg-gradient-to-b from-white to-escom-100 flex flex-col overflow-hidden h-[105vh] w-full relative" id="contacto">
+    <section ref={sectionRef} className="bg-gradient-to-b from-white to-escom-100 flex flex-col overflow-hidden h-[105vh] w-full relative" id="contacto">
       <style jsx>{`
         .leaflet-popup-content-wrapper {
           width: 70px;
@@ -94,7 +125,7 @@ const Contacto = () => {
           border: none;
         }
     `}</style>
-      <div className="flex flex-col items-center gap-6 w-full p-8">
+      <div className="titulo flex flex-col items-center gap-6 w-full p-8">
           <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-br from-escom-700 to-escom-sombra-600 leading-tight">
             Contacto
           </h1>
@@ -102,8 +133,8 @@ const Contacto = () => {
             Estamos aquí para ayudarte. Si tienes alguna pregunta, sugerencia o simplemente quieres ponerte en contacto con nosotros, no dudes en hacerlo a través de los siguientes medios
           </p>
       </div>
-      <div className="flex gap-8 w-full h-full justify-center items-center p-16 ">
-        <div className="flex flex-col gap-6 w-2/5 h-full p-9 rounded-xl shadow-2xl text-escom-sombra-400 bg-gradient-to-b from-white to-escom-100 hover:shadow-escom-sombra-900/50 transition-all duration-300 hover:scale-[1.03] justify-start">
+      <div className="container-cards flex gap-8 w-full h-full justify-center items-center p-16 ">
+        <div className="card-datos flex flex-col gap-6 w-2/5 h-full p-9 rounded-xl shadow-2xl text-escom-sombra-400 bg-gradient-to-b from-white to-escom-100 hover:shadow-escom-sombra-900/50 transition-all duration-300 hover:scale-[1.03] justify-start">
           <h2 className='font-bold text-2xl'>Dirección <FontAwesomeIcon icon="fa-solid fa-compass" /></h2>
           <p className='font-medium text-xl'>Escuela Superior de Cómputo Av. Juan de Dios Bátiz s/n esq. Av. Miguel Othón de Mendizabal. Colonia Lindavista. Alcaldia: Gustavo A. Madero. C. P. 07738. Ciudad de México.</p>
           <h2 className='font-bold text-2xl'>Teléfono <FontAwesomeIcon icon="fa-solid fa-phone" /></h2>
@@ -129,7 +160,7 @@ const Contacto = () => {
               </a>
           </div>
         </div>
-        <div className="w-3/5 h-full flex justify-center items-center rounded-xl shadow-2xl overflow-hidden hover:shadow-escom-sombra-900/50 transition-all duration-300 hover:scale-[1.03]">
+        <div className="card-mapa w-3/5 h-full flex justify-center items-center rounded-xl shadow-2xl overflow-hidden hover:shadow-escom-sombra-900/50 transition-all duration-300 hover:scale-[1.03]">
           <div ref={mapContainerRef} className="w-full h-full"></div>
         </div>
       </div>
