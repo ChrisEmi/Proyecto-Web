@@ -4,6 +4,7 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import Inicio from "../pages/Inicio.jsx";
 import Login from "../pages/usuarios/Login.jsx";
 import Registro from "../pages/usuarios/Registro.jsx";
+import SinPermiso from "../pages/SinPermiso.jsx";
 
 import { AuthGuard } from "../guards/AuthGuard.jsx";
 import { RolGuard } from "../guards/RolGuard.jsx";
@@ -33,6 +34,7 @@ const Router = () => {
           </Route>
         </Route>
 
+        <Route path="/sin-permiso" element={<SinPermiso />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Suspense>

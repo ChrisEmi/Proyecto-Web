@@ -58,14 +58,11 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         let isMounted = true;
-
         async function checkLogin() {
             try {
                 const res = await AuthAPI.verificarTokenCookie();
                 if (isMounted) {
                     if (res.data && res.data.usuario) {
-
-                        
                         setAuthSesion(true);
                         setUsuario(res.data.usuario);
                     } else {
@@ -80,9 +77,9 @@ export const AuthProvider = ({ children }) => {
                     setUsuario(null);
                 }
             } finally {
-            if (isMounted) {
-                setLoading(false);
-            }
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
         checkLogin();

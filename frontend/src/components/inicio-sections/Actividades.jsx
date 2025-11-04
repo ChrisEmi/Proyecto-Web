@@ -167,73 +167,79 @@ export function Actividades() {
   return (
     <>
       <section
-        className="relative overflow-hidden h-[110vh] w-full"
+        className="relative overflow-hidden min-h-[120vh] flex justify-center items-center w-full bg-gradient-to-b from-escom-200 via-white to-escom-300 py-12 md:py-16 lg:py-20"
         id="actividades" ref={containerRef}
       >
         <div
           
-          className={`w-full h-full p-20 bg-gradient-to-tl from-escom-900 to-escom-sombra-700 flex flex-col gap-10 font-lexend justify-center items-center`}
+          className={`w-full h-full px-4 sm:px-8 md:px-12 lg:px-20 flex flex-col gap-8 md:gap-10 font-lexend justify-center items-center`}
         >
-        <div ref={containerTituloRef} className="flex flex-col items-center gap-6 w-full p-8">
-          <h1 className="text-4xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold text-white">
+        <div ref={containerTituloRef} className="flex flex-col items-center gap-3 md:gap-4 w-full mb-4 md:mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-escom-900 via-escom-700 to-escom-sombra-500 text-center">
             Actividades ESCOMunidad
           </h1>
-          <p  className="text-base sm:text-lg lg:text-xl xl:text-2xl text-escom-100 font-light ">
+          <p className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl text-escom-sombra-400 font-normal max-w-3xl text-center px-4">
             Explora las diversas actividades que ofrece la ESCOMunidad para enriquecer tu experiencia educativa.
           </p>
         </div>
-          <div ref={containerContenidoRef} className="flex gap-10 h-full">
+          <div ref={containerContenidoRef} className="flex flex-col md:flex-row gap-6 md:gap-8 lg:gap-10 w-full">
             <div
               data-flip-id="deportivas-card"
               className={`card-container-deportivas
-                bg-gradient-to-tl from-escom-300 to-white flex rounded-2xl shadow-2x
+                bg-gradient-to-tl from-escom-300 to-escom-100 flex rounded-2xl shadow-2xl
                 ${activeCardId === "deportivas"
-                  ? "w-full h-full p-5"
+                  ? "w-full h-[700px] md:h-full p-3 md:p-5"
                   : activeCardId
                   ? "w-0 h-0 p-0 opacity-0"
-                  : "w-1/2"
+                  : "w-full md:w-1/2 h-[400px] md:h-[700px]"
               }
               `}
             >
               
               <div
-                className={`card-presentacion card-presentacion-deportivas flex overflow-hidden ${
+                className={`card-presentacion card-presentacion-deportivas group rounded-2xl flex flex-col md:flex-row overflow-hidden ${
                   activeCardId === "deportivas" ? "hidden" : "h-full w-full"
                 }`}
               >
-                <div className="w-2/5 h-full relative overflow-hidden rounded-l-2xl">
+                <div className="w-full md:w-2/5 h-48 md:h-full relative overflow-hidden">
                   <img
-                    src="https://scontent.fmex12-1.fna.fbcdn.net/v/t39.30808-6/558495827_1320564696527411_7563966663239096144_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=f727a1&_nc_ohc=0b6BXErUGkEQ7kNvwFuNSYJ&_nc_oc=AdnvtiHUzVzprRMyvP3GQKTKM38ycRtSIFkxMVCr4mLDX_u-AVj9PHrzTik9I-n_ZSe9dNifjE11yZeiN398bO9A&_nc_zt=23&_nc_ht=scontent.fmex12-1.fna&_nc_gid=tW-sRX1Op2vKrGM_BqmDzA&oh=00_AffvgUjHp1wOQfO-IkqiQ5nQVMylAD4k0NaPRx-DjxoaNw&oe=6908F224"
-                    alt="Equipo de ESCOM Futbol"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" 
+                    src="../../../assets/actividades-deportivas.jpg"
+                    alt="Actividades Deportivas"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 brightness-90" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-transparent transition-opacity duration-300 group-hover:bg-black/10"></div>
+                  <div className="absolute inset-0 bg-gradient-to-br from-escom-900/30 via-transparent to-escom-sombra-700/40"></div>
                 </div>
-                <div className="w-3/5 h-full flex flex-col justify-center items-center p-6 gap-6 text-escom-sombra-400">
-                  <h2 className="text-4xl font-bold">Actividades Deportivas</h2>
-                  <button
-                    className="mt-6 px-4 py-2 bg-gradient-to-r from-escom-900 to-escom-600 text-white hover:shadow-xl rounded-full w-1/2 cursor-pointer transition-all duration-300 hover:scale-105"
-                    onClick={() => handleClick("deportivas")}
-                  >
-                    Ver más
-                  </button>
+                <div className="w-full md:w-3/5 h-auto md:h-full flex flex-col justify-center items-start p-6 md:p-8 lg:p-10 gap-3 md:gap-4 lg:gap-5 bg-gradient-to-br from-escom-200 to-escom-100 relative overflow-hidden">
+                  <div className="relative z-10 flex flex-col gap-2 md:gap-3 lg:gap-4">
+                    <span className="text-escom-700 font-semibold text-xs md:text-sm uppercase tracking-wider">Deporte</span>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-escom-900 leading-tight">Actividades Deportivas</h2>
+                    <p className="text-escom-sombra-400 text-sm md:text-base leading-relaxed">
+                      Forma parte de nuestros equipos representativos y compite en torneos inter-politécnicos
+                    </p>
+                    <button
+                      className="mt-2 md:mt-4 px-6 md:px-8 py-2 md:py-3 bg-escom-700 text-white hover:bg-escom-900 font-semibold rounded-full w-fit cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm md:text-base"
+                      onClick={() => handleClick("deportivas")}
+                    >
+                      Ver más
+                    </button>
+                  </div>
                 </div>
               </div>
               <div
-                className={`h-full flex flex-col gap-2 items-center text-escom-sombra-500
-              ${activeCardId === "deportivas" ? "relative" : "hidden"}
+                className={`h-full w-full flex flex-col gap-2 items-center text-escom-sombra-500 overflow-y-auto
+              ${activeCardId === "deportivas" ? "relative p-4" : "hidden"}
              card-content-item`}
               >
-                <h2 className="text-4xl font-bold p-5">
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold p-3 md:p-5 sticky top-0 rounded-2xl backdrop-blur-sm z-10 w-full text-center">
                   Actividades Deportivas
                 </h2>
-                <div className=" flex w-full h-full gap-3">
-                  <div className="bg-gradient-to-r from-escom-100 to-escom-200 rounded-4xl p-5 w-full flex items-center flex-col gap-3  relative shadow-2xl">
-                    <span className="text-5xl">
+                <div className="flex flex-col md:flex-row w-full h-auto gap-3 px-2">
+                  <div className="bg-gradient-to-r from-escom-100 to-escom-200 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex items-center flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[300px]">
+                    <span className="text-4xl md:text-5xl">
                       <FontAwesomeIcon icon="fa-regular fa-futbol" />
                     </span>
-                    <h3 className="text-3xl font-bold">Fútbol</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">Fútbol</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Se parte experiencias unicas con nosotros en el equipo de
                       fútbol oficial de la ESCOM, y representa los colores de
                       nuestra institución.
@@ -260,16 +266,16 @@ export function Actividades() {
                         Masculino/Femenino
                       </span>
                     </div>
-                    <button className="absolute bottom-4 px-4 py-2 bg-escom-900 text-white rounded-full w-3/4 cursor-pointer">
+                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full md:w-3/4 cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
-                  <div className="bg-escom-200 rounded-4xl p-5 w-full flex items-center flex-col gap-3 relative shadow-2xl">
-                    <span className="text-5xl">
+                  <div className="bg-escom-200 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex items-center flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[300px]">
+                    <span className="text-4xl md:text-5xl">
                       <FontAwesomeIcon icon="fa-solid fa-volleyball" />
                     </span>
-                    <h3 className="text-3xl font-bold">Voleibol</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">Voleibol</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Se parte experiencias unicas con nosotros en el equipo de
                       voleibol oficial de la ESCOM, y representa los colores de
                       nuestra institución.
@@ -292,21 +298,21 @@ export function Actividades() {
                         Masculino/Femenino
                       </span>
                     </div>
-                    <button className="absolute bottom-4 px-4 py-2 bg-escom-900 text-white rounded-full w-3/4 cursor-pointer">
+                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full md:w-3/4 cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
-                  <div className="bg-gradient-to-l from-escom-100 to-escom-200 rounded-4xl p-5 w-full flex flex-col gap-3  relative shadow-2xl">
-                    <span className="text-5xl text-center">
+                  <div className="bg-gradient-to-l from-escom-100 to-escom-200 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[300px]">
+                    <span className="text-4xl md:text-5xl text-center">
                       <FontAwesomeIcon icon="fa-solid fa-users" />
                     </span>
-                    <h3 className="text-3xl font-bold text-center">Clubes</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-center">Clubes</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Los clubes son espacios de convivencia y aprendizaje donde
                       puedes desarrollar tus habilidades y conocer a personas
                       con intereses similares.
                     </p>
-                    <ul className="list-disc list-inside">
+                    <ul className="list-disc list-inside text-sm md:text-base">
                       <li>Club de Ajedrez</li>
                       <li>Club de Robótica</li>
                       <li>Club de Programación</li>
@@ -315,10 +321,10 @@ export function Actividades() {
                     </ul>
                   </div>
                 </div>
-                <div className="w-full flex justify-center items-center gap-3 text-escom-100">
-                  <div className="w-full bg-escom-sombra-400 rounded-4xl p-5">
-                    <h2 className="text-2xl font-semibold">Informes</h2>
-                    <div className="flex flex-col">
+                <div className="w-full flex flex-col md:flex-row justify-center items-stretch gap-3 text-escom-100 mt-4">
+                  <div className="w-full md:w-1/2 bg-escom-sombra-400 rounded-4xl p-4 md:p-5">
+                    <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">Informes</h2>
+                    <div className="flex flex-col text-sm md:text-base">
                       <span>
                         <FontAwesomeIcon icon="fa-solid fa-phone" /> Tel
                         57296000 Ext. 52063
@@ -329,9 +335,9 @@ export function Actividades() {
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-escom-sombra-400 rounded-4xl p-5 text-right">
-                    <h2 className="text-2xl">Documentos</h2>
-                    <div className="flex flex-col">
+                  <div className="w-full md:w-1/2 bg-escom-sombra-400 rounded-4xl p-4 md:p-5 md:text-right">
+                    <h2 className="text-lg md:text-xl lg:text-2xl">Documentos</h2>
+                    <div className="flex flex-col text-sm md:text-base">
                       <span>
                         Documento A:{" "}
                         <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
@@ -356,7 +362,7 @@ export function Actividades() {
                   </div>
                 </div>
                 <button
-                  className="absolute top-0 right-0 px-4 py-2 bg-escom-700 text-white rounded-lg card-content-item cursor-pointer z-50"
+                  className="absolute top-0 right-0 px-4 py-2  bg-escom-700 text-white rounded-lg card-content-item cursor-pointer z-50"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClick(null);
@@ -370,55 +376,59 @@ export function Actividades() {
             {/* --- TARJETA CULTURALES --- */}
             <div
               data-flip-id="culturales-card"
-              className={`card-container-culturales
-              bg-gradient-to-tl from-escom-sombra-300 to-escom-700 flex rounded-2xl
+              className={`card-container-culturales 
+              bg-gradient-to-tl from-escom-sombra-300 to-escom-700 flex rounded-2xl shadow-2xl
               ${activeCardId === "culturales"
-                  ? "w-full h-full p-5"
+                  ? "w-full h-[700px] md:h-full p-3 md:p-5"
                   : activeCardId
-                    ? "w-0 h-0 p-0 opacity-0 pointer-events-none"
-                    : "w-1/2"
+                  ? "w-0 h-0 p-0 opacity-0"
+                  : "w-full md:w-1/2 h-[400px] md:h-[700px]"
                 }`}
 
             >
               <div
-                className={`card-presentacion card-presentacion-culturales flex overflow-hidden ${
+                className={`card-presentacion card-presentacion-culturales group flex flex-col-reverse md:flex-row rounded-2xl overflow-hidden ${
                   activeCardId === "culturales" ? "hidden" : "h-full w-full"
                 }`}
               >
-                <div className="w-3/5 h-full flex flex-col justify-center items-center p-6 gap-6 text-white">
-                  <h2 className="text-4xl font-bold">Actividades Culturales</h2>
-                  
-                  <button
-                    className="mt-6 px-4 py-2 bg-gradient-to-r from-escom-300 to-escom-100 text-escom-900 hover:shadow-xl rounded-full w-1/2 cursor-pointer transition-all duration-300 hover:scale-105"
-                    onClick={() => handleClick("culturales")}
-                  >
-                    Ver más
-                  </button>
+                <div className="w-full md:w-3/5 h-auto md:h-full flex flex-col justify-center items-start p-6 md:p-8 lg:p-10 gap-3 md:gap-4 lg:gap-5 bg-gradient-to-bl from-escom-700 via-escom-sombra-50 to-escom-800 relative overflow-hidden">
+                  <div className="relative z-10 flex flex-col gap-2 md:gap-3 lg:gap-4">
+                    <span className="text-escom-300 font-semibold text-xs md:text-sm uppercase tracking-wider">Cultura</span>
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white leading-tight">Actividades Culturales</h2>
+                    <p className="text-escom-100 text-sm md:text-base leading-relaxed">
+                      Desarrolla tu creatividad y talento artístico en nuestros talleres culturales
+                    </p>
+                    <button
+                      className="mt-2 md:mt-4 px-6 md:px-8 py-2 md:py-3 bg-white text-escom-900 hover:bg-escom-300 font-semibold rounded-full w-fit cursor-pointer transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl text-sm md:text-base"
+                      onClick={() => handleClick("culturales")}
+                    >
+                      Ver más
+                    </button>
+                  </div>
                 </div>
-                <div className="w-2/5 h-full relative overflow-hidden rounded-r-2xl">
+                <div className="w-full md:w-2/5 h-48 md:h-full relative overflow-hidden">
                   <img
-                    src="https://scontent.fmex12-1.fna.fbcdn.net/v/t39.30808-6/560468497_1320564196527461_7451893167480850825_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=f727a1&_nc_ohc=0ESi43w5e-IQ7kNvwHc9qj5&_nc_oc=AdkvC1Z_WBUjnOZBhiRVrcBy7e7rG4rwvEoElR8lBM5aQYrhxOnb0gP-dfuqFyglFoNtmEq0TRGWj3440IyFa62i&_nc_zt=23&_nc_ht=scontent.fmex12-1.fna&_nc_gid=W9QvpIiF9xYdFuV8AAFNTA&oh=00_AffUzpo7YMNute4qTHyMOOwjBmfTRKX__13Xa9vGhSLs1g&oe=6908EA27"
-                    alt="Equipo de ESCOM Futbol"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    src="../../../assets/actividades-culturales.jpg"
+                    alt="Actividades Culturales"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110 brightness-90"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-l from-black/70 to-transparent transition-opacity duration-300 group-hover:bg-black/10"></div>
                 </div>
               </div>
               <div
-                className={`h-full flex flex-col gap-2 items-center text-escom-200
-              ${activeCardId === "culturales" ? "relative" : "hidden"}
-             card-content-item`}
+                className={`h-full w-full flex flex-col gap-2 items-center text-escom-200 overflow-y-auto
+                  ${activeCardId === "culturales" ? "relative p-4" : "hidden"}
+                card-content-item`}
               >
-                <h2 className="text-4xl font-bold p-5">
-                  Actividades Culturales
+                <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold p-3 md:p-5 sticky top-0 rounded-2xl backdrop-blur-sm z-10 w-full text-center">
+                  Actividades Deportivas
                 </h2>
-                <div className=" flex w-full h-full gap-3">
-                  <div className="bg-gradient-to-r from-escom-sombra-300 to-escom-700 rounded-4xl p-5 w-full flex items-center flex-col gap-3  relative shadow-2xl">
-                    <span className="text-5xl">
+                <div className="flex flex-col md:flex-row w-full h-auto gap-3 px-2">
+                  <div className="bg-gradient-to-r from-escom-sombra-300 to-escom-700 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex items-center flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[400px]">
+                    <span className="text-3xl md:text-4xl lg:text-5xl">
                       <FontAwesomeIcon icon="fa-solid fa-palette" />
                     </span>
-                    <h3 className="text-3xl font-bold">Artes Plasticas</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">Artes Plasticas</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Aprende a expresar tus emociones y sentimientos por medio
                       de la pintura y el dibujo.
                     </p>
@@ -436,17 +446,17 @@ export function Actividades() {
                         Martha Aurora Torres Hernández
                       </span>
                     </div>
-                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer">
+                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
 
-                  <div className="bg-escom-700 rounded-4xl p-5 w-full flex items-center flex-col gap-3 relative shadow-2xl">
-                    <span className="text-5xl">
+                  <div className="bg-escom-700 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex items-center flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[400px]">
+                    <span className="text-3xl md:text-4xl lg:text-5xl">
                       <FontAwesomeIcon icon="fa-solid fa-feather-pointed" />
                     </span>
-                    <h3 className="text-3xl font-bold">Creacion Literaria</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">Creacion Literaria</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Podrás adquirir técnicas y métodos para formar hábitos de
                       lectura y escritura. Además prepara a los alumnos para
                       participar en concursos de poesía, cuento, lectura en
@@ -462,16 +472,16 @@ export function Actividades() {
                         Hernández Vera
                       </span>
                     </div>
-                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer">
+                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
-                  <div className="bg-escom-700 rounded-4xl p-5 w-full flex items-center flex-col gap-3 relative shadow-2xl">
-                    <span className="text-5xl">
+                  <div className="bg-escom-700 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex items-center flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[400px]">
+                    <span className="text-3xl md:text-4xl lg:text-5xl">
                       <FontAwesomeIcon icon="fa-solid fa-masks-theater" />
                     </span>
-                    <h3 className="text-3xl font-bold">Teatro</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold">Teatro</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Aprende a expresarte en público a través de diversas
                       técnicas teatrales, contribuyendo así a un mejor
                       desarrollo integral.
@@ -490,31 +500,31 @@ export function Actividades() {
                         Verónica Hernández
                       </span>
                     </div>
-                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer">
+                    <button className="absolute bottom-4 px-4 py-2 bg-escom-300 text-escom-900 rounded-full w-3/4 cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
-                  <div className="bg-gradient-to-l from-escom-sombra-300 to-escom-700 rounded-4xl p-5 w-full flex flex-col gap-3  relative shadow-2xl">
-                    <span className="text-5xl text-center">
+                  <div className="bg-gradient-to-l from-escom-sombra-300 to-escom-700 rounded-4xl p-4 md:p-5 w-full md:w-1/3 flex flex-col gap-2 md:gap-3 relative shadow-2xl min-h-[400px]">
+                    <span className="text-3xl md:text-4xl lg:text-5xl text-center">
                       <FontAwesomeIcon icon="fa-solid fa-users" />
                     </span>
-                    <h3 className="text-3xl font-bold text-center">Clubes</h3>
-                    <p className="text-justify">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-center">Clubes</h3>
+                    <p className="text-justify text-sm md:text-base">
                       Los clubes son espacios de convivencia y aprendizaje donde
                       puedes desarrollar tus habilidades y conocer a personas
                       con intereses similares.
                     </p>
-                    <ul className="list-disc list-inside">
+                    <ul className="list-disc list-inside text-sm md:text-base">
                       <li>Tuna ESCOM</li>
                       <li>Algoritmo de baile</li>
                       <li>Anime</li>
                     </ul>
                   </div>
                 </div>
-                <div className="w-full flex justify-center items-center gap-3 text-escom-sombra-100">
-                  <div className="w-full bg-escom-400 rounded-4xl p-5">
-                    <h2 className="text-2xl font-semibold">Informes</h2>
-                    <div className="flex flex-col">
+                <div className="w-full flex flex-col md:flex-row justify-center items-stretch gap-3 text-escom-sombra-100 mt-4">
+                  <div className="w-full md:w-1/2 bg-escom-400 rounded-4xl p-4 md:p-5">
+                    <h2 className="text-lg md:text-xl lg:text-2xl font-semibold">Informes</h2>
+                    <div className="flex flex-col text-sm md:text-base">
                       <span>
                         <FontAwesomeIcon icon="fa-solid fa-phone" /> Tel
                         57296000 Ext. 52063
@@ -525,9 +535,9 @@ export function Actividades() {
                       </span>
                     </div>
                   </div>
-                  <div className="w-full bg-escom-400 rounded-4xl p-5 text-right">
-                    <h2 className="text-2xl">Documentos</h2>
-                    <div className="flex flex-col">
+                  <div className="w-full md:w-1/2 bg-escom-400 rounded-4xl p-4 md:p-5 md:text-right">
+                    <h2 className="text-lg md:text-xl lg:text-2xl">Documentos</h2>
+                    <div className="flex flex-col text-sm md:text-base">
                       <span>
                         Documento A:{" "}
                         <FontAwesomeIcon icon="fa-solid fa-file-pdf" />

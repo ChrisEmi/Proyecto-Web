@@ -9,7 +9,7 @@ export const RolGuard = ({ allowedRoles = ['Estudiante', 'Administrador', 'Organ
     return <LoopCarga />;
   }
   if (!usuario || !allowedRoles.includes(usuario.rol)) {
-    return <Navigate to="/unauthorized" replace />; 
+    return <Navigate to="/sin-permiso" replace />;
   }
 
     return <Outlet />;

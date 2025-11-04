@@ -125,7 +125,7 @@ const EventosHorizontal = ({ eventos }) => {
         }
     `}</style>
     <section ref={sectionRef} className="relative bg-gradient-to-b from-white via-escom-50 to-escom-200 flex overflow-hidden" id="section-horizontal">
-      <div id="eventos" className="content w-[105vw] relative flex flex-col items-center justify-start pt-8 sm:pt-12 lg:pt-16 p-4 sm:p-6 lg:p-8">
+      <div id="eventos" className="content w-[105vw] h-[110vh] relative flex flex-col items-center justify-start pt-8 sm:pt-12 lg:pt-16 p-4 sm:p-6 lg:p-8 sm:w-[100vw]">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl px-4">
           <div className="inline-flex items-center gap-2 bg-gradient-to-b from-escom-900 to-escom-sombra-700 opacity-90 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
             <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
@@ -187,16 +187,16 @@ const EventosHorizontal = ({ eventos }) => {
       
         <h1 className="w-full text-escom-sombra-200 text-[42vw] font-lexend font-bold text-center margin-0 z-20 relative drop-shadow-escom-sombra-300 drop-shadow-xl" >ESCOMunidad</h1>
         
-        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-1/4 left-[22%] z-20 hover:shadow-escom-sombra-300/50 transition-shadow duration-300 " id="card-1">
+        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-1/4 left-[22%] z-20" id="card-1">
           <img src="https://www.escom.ipn.mx/nuevoingreso26_1/media/escomExplanada.jpeg" alt="Escom Explanada" />
         </div>
-        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-2/3 left-[42%] z-20 hover:shadow-escom-sombra-500/50 transition-shadow duration-300" id="card-2">
-          <img src="https://scontent.fmex12-1.fna.fbcdn.net/v/t39.30808-6/559364536_1321470329770181_7959511031863689881_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=f727a1&_nc_ohc=x36_H28r-XQQ7kNvwFMKmA0&_nc_oc=AdlX9F9AlxswxcghmdGgq0wfLxFAWXR5iY68SGV4C1-tolmYgBZz4qFW6_eauEZn7I32bCiCObofyYbrHrc1tNja&_nc_zt=23&_nc_ht=scontent.fmex12-1.fna&_nc_gid=XF931Y6bEfwbJdjVdETJsA&oh=00_Afc-KwCtoXAHtX0LgrhMDgoSdJJSxCCqUGUq26b-QCSUuw&oe=6904F9CA" alt="Esccom Auditorio" className="size-full object-cover"/>
+        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-2/3 left-[42%] z-20" id="card-2">
+          <img src="../../../assets/escom-auditorio.jpg" alt="Esccom Auditorio" className="size-full object-cover"/>
         </div>
-        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-1/3 left-[62%] hover:shadow-escom-sombra-700/50 transition-shadow duration-300" id="card-3">  
-          <img src="https://scontent.fmex12-1.fna.fbcdn.net/v/t39.30808-6/502484684_1229017662348782_7532268406260301056_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=f727a1&_nc_ohc=lEnq9fWYghoQ7kNvwH26Iu2&_nc_oc=AdnLte47a9-QU5o_VMqGmDMJRDXUC8Bzt2c5EhK5efllnTlHOM5Ik_pwmRVIMMfPdKDH9C5Gb6mQ01mrZaqxZSlv&_nc_zt=23&_nc_ht=scontent.fmex12-1.fna&_nc_gid=1YWzXAri2m6CKc5D7k8I4w&oh=00_Afcx8WSN9bkBlnCbY_8x4TreqHkFGrl-oj7xEvwvEn04VQ&oe=6904E4EA" alt="Escom Letras" />
+        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-1/3 left-[62%]" id="card-3">  
+          <img src="../../../assets/escom-letras.jpg" alt="Escom Letras" />
         </div>
-        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-10/16 left-[85%] z-20 hover:shadow-escom-sombra-800/50 transition-shadow duration-300" id="card-4">  
+        <div className="card absolute w-[400px] h-auto rounded-3xl overflow-hidden top-10/16 left-[85%] z-20" id="card-4">  
           <img src="https://static.where-e.com/Mexico/State_Of_Mexico_City/Patera_Vallejo_I_Seccion/Escom-Escuela-Superior-De-Computo-Ipn_0249fce7050e8241d3221d044f034e62.jpg" alt="Escom Letras" />
         </div>
       </div>

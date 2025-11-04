@@ -1,3 +1,5 @@
+
+
 const Registro = () => {
   return (
     <div className="max-w-md mx-auto mt-10 p-6 border border-gray-300 rounded shadow">

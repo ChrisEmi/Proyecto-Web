@@ -9,12 +9,12 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { AuthContext } from "../api/Context/AuthContext.jsx";
+import { useAuth } from "../api/Context/AuthContext.jsx";
 
 gsap.registerPlugin(SplitText);
 
 export default function NavMenu() {
-    const { user } = useContext(AuthContext);
+    const { usuario, cerrarSesion } = useAuth();
     const [menuOpen, setMenuOpen] = useState(false);
     const [botonInicio, setBotonInicio] = useState(true);
     const [botonEventos, setBotonEventos] = useState(false);
@@ -233,34 +233,37 @@ export default function NavMenu() {
                     <div className="flex flex-col w-full h-auto md:h-2/3 px-4 md:p-15 gap-3 md:gap-6 justify-start md:justify-center overflow-y-auto">
                         {botonInicio && (
                             <>
-                                <a onClick={cerrarMenu} href="#inicio" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</a>
-                                <a onClick={cerrarMenu} href="#section-horizontal" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Presentacion</a>
-                                <a onClick={cerrarMenu} href="#actividades" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</a>
-                                <a onClick={cerrarMenu} href="#contacto" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Contacto</a>
+                                <Link to="/#inicio" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</Link>
+                                <Link to="/#section-horizontal" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Presentacion</Link>
+                                <Link to="/#actividades" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</Link>
+                                <Link to="/#contacto" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Contacto</Link>
                             </>
                         )}
                         {botonEventos && (
                             <>
-                                <a onClick={cerrarMenu} href="#calendario" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</a>
-                                <a onClick={cerrarMenu} href="#eventos-proximos" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Próximos</a>
-                                <a onClick={cerrarMenu} href="#eventos-anteriores" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Anteriores</a>
-                                <a onClick={cerrarMenu} href="acerca-de" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Acerca de</a>
+                                <Link to="#calendario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</Link>
+                                <Link to="#eventos-proximos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Próximos</Link>
+                                <Link to="#eventos-anteriores" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Anteriores</Link>
+                                <Link to="#acerca-de" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Acerca de</Link>
                             </>
                         )}
                         {botonCuenta && (
                             <>
-                                {!user ? (
+                                {!usuario ? (
                                     <>
-                                        <a onClick={cerrarMenu} href="iniciar-sesion" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</a>
-                                        <a onClick={cerrarMenu} href="registrarse" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</a>
+                                        <Link to="iniciar-sesion" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</Link>
+                                        <Link to="registrarse" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</Link>
                                     </>
                                 ) : (
                                     <>
-                                        <a onClick={cerrarMenu} href="panel-principal" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Panel Principal</a>
-                                        <a onClick={cerrarMenu} href="#perfil" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</a>
-                                        <a onClick={cerrarMenu} href="#mis-eventos" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</a>
-                                        <a onClick={cerrarMenu} href="#ajustes" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Ajustes de Cuenta</a>
-                                        <a onClick={cerrarMenu} href="#cerrar-sesion" className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Cerrar Sesión</a>
+                                        <Link to="panel-principal" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Panel</Link>
+                                        <Link to="#perfil" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</Link>
+                                        <Link to="#mis-eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</Link>
+                                        <Link to="#ajustes" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Ajustes</Link>
+                                        <a onClick={() => {
+                                                cerrarMenu();
+                                                cerrarSesion();
+                                        }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Cerrar Sesión</a>
                                     </>
                                 )}
                             </>
