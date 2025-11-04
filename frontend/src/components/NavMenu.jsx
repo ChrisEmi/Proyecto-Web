@@ -251,8 +251,8 @@ export default function NavMenu() {
                             <>
                                 {!usuario ? (
                                     <>
-                                        <Link to="iniciar-sesion" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</Link>
-                                        <Link to="registrarse" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</Link>
+                                        <Link to="/login" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</Link>
+                                        <Link to="/registrarse" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</Link>
                                     </>
                                 ) : (
                                     <>
