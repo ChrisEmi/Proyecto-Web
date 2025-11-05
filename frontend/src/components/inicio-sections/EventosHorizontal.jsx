@@ -3,8 +3,8 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import EscomDecorativeBackground from '../EscomDecorativeBackground';
-import CarruselGsap from '../CarruselGsap';
+import EscomDecorativeBackground from '../assets/EscomDecorativeBackground';
+import CarruselGsap from './Components/CarruselGsap';
 
 gsap.registerPlugin(ScrollTrigger);
 

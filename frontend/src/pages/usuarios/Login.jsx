@@ -35,7 +35,7 @@ const Login = () => {
               </clipPath>
             </defs>
           </svg>
-          <img src="../../public/assets/escom-login.jpg" alt="Imagen de inicio de sesión" className="w-full h-full object-cover" />
+          <img src="../../public/assets/escom-login.jpeg" alt="Imagen de inicio de sesión" className="w-full h-[800px] object-cover" />
           <div className="absolute top-0 h-full w-full bg-gradient-to-r from-escom-900/90 via-escom-700/70 to-transparent"></div>
 
           <div className="absolute top-0 left-0 w-full h-full flex flex-col justify-center p-6 md:p-8 lg:p-12 xl:p-16 text-white">
@@ -53,7 +53,7 @@ const Login = () => {
 
         <form className="relative w-full md:w-1/2 lg:w-3/8 flex flex-col justify-center items-center p-6 md:p-8 lg:p-12 bg-white" onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col items-center w-full mb-6 md:mb-8 lg:mb-0 lg:absolute lg:top-8">
-            <IconoEscom className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40 text-escom-700 mb-2 md:mb-4"/>
+            <IconoEscom className="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32 xl:w-40 xl:h-40 text-escom-700"/>
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black text-escom-900 text-center">
               Iniciar Sesión
             </h1>

@@ -266,7 +266,7 @@ export function Actividades() {
                         Masculino/Femenino
                       </span>
                     </div>
-                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full md:w-3/4 cursor-pointer text-sm md:text-base">
+                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
@@ -298,7 +298,7 @@ export function Actividades() {
                         Masculino/Femenino
                       </span>
                     </div>
-                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full md:w-3/4 cursor-pointer text-sm md:text-base">
+                    <button className="mt-auto px-4 py-2 bg-escom-900 text-white rounded-full w-full cursor-pointer text-sm md:text-base">
                       {user != null ? "Gestionar Actividad" : "Unirme"}
                     </button>
                   </div>
@@ -362,13 +362,13 @@ export function Actividades() {
                   </div>
                 </div>
                 <button
-                  className="absolute top-0 right-0 px-4 py-2  bg-escom-700 text-white rounded-lg card-content-item cursor-pointer z-50"
+                  className="absolute top-0 right-0 px-4 py-4 bg-white/25 text-escom-sombra-300 transition-all duration-300 rounded-full card-content-item cursor-pointer z-50 hover:text-escom-700 hover:bg-white/35"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClick(null);
                   }}
                 >
-                  Cerrar
+                  <FontAwesomeIcon icon="fa-solid fa-close" className="text-lg md:text-lg sm:text-2xl " />
                 </button>
               </div>
             </div>
@@ -562,13 +562,13 @@ export function Actividades() {
                   </div>
                 </div>
                 <button
-                  className="absolute top-0 right-0 px-4 py-2 bg-escom-700 text-white rounded-lg card-content-item cursor-pointer z-50"
+                  className="absolute top-0 right-0 px-4 py-4 bg-white/25 text-escom-200 transition-all duration-300 rounded-full card-content-item cursor-pointer z-50 hover:text-escom-400 hover:bg-white/35"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleClick(null);
                   }}
                 >
-                  Cerrar
+                  <FontAwesomeIcon icon="fa-solid fa-close" className="text-lg md:text-lg sm:text-2xl " />
                 </button>
               </div>
             </div>
