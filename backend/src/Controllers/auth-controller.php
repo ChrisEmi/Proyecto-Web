@@ -4,6 +4,7 @@ use PDO;
 use Exception;
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Firebase\JWT\JWT;
+use App\Database\QuerysAuth;
 
 class AuthController {
     private function jwt($id, $correo) {
@@ -36,10 +37,8 @@ class AuthController {
                 return;
             }
 
-            $stmt = $pool->prepare("SELECT correo, contraseña AS contrasena, id_usuario, tu.nombre_tipo AS rol FROM Usuario INNER JOIN TipoUsuario tu ON Usuario.id_tipo_usuario = tu.id_tipo_usuario WHERE correo = :correo");
-            $stmt->bindParam(':correo', $correo);
-            $stmt->execute();
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+            $usuarioModel = new QuerysAuth($pool);
+            $usuario = $usuarioModel->buscarPorCorreo($correo);
             
             if ($usuario && password_verify($contrasena, $usuario['contrasena'])) {
                 unset($usuario['contrasena']);
@@ -53,12 +52,6 @@ class AuthController {
                     'samesite' => 'Lax' 
                 ]);
 
-
-                echo json_encode([
-                    "status" => "success",
-                    "message" => "Login exitoso",
-                    "usuario" => $usuario
-                ]);
             } else {
                 http_response_code(401);
                 echo json_encode([
@@ -75,111 +68,84 @@ class AuthController {
         }
     }
     public function registro($pool) {
-        if (isset($_COOKIE['token'])) {
-            http_response_code(401);
-            echo json_encode(["message" => "Sesion ya iniciada", "token" => $_COOKIE['token']]);
+        try {
+            $usuarioModel = new QuerysAuth($pool);
 
-        } else {
-            try {
-                $datos = json_decode(file_get_contents('php://input'), true);
-                
-                $nombre = $datos['nombre'] ?? null;
-                $apellidos = $datos['apellidos'] ?? null;
-                $correo = $datos['correo'] ?? null;
-                $contrasena = $datos['contrasena'] ?? null;
-                $boleta = $datos['boleta'] ?? null;
-                
-                if ($nombre && $correo && $contrasena) {
-                    if (strlen($contrasena) < 8) {
-                        http_response_code(400);
-                        echo json_encode([
-                            "status" => "error",
-                            "message" => "La contrasena debe tener al menos 8 caracteres"
-                        ]);
-                        return;
-                    }
+            $datos = json_decode(file_get_contents('php://input'), true);
+            $id_usuario = bin2hex(random_bytes(8));
+            $datos_estudiante = [
+                'id_usuario' => $id_usuario,
+                'nombre' => $datos['nombre'],
+                'apellido_paterno' => $datos['apellido_paterno'],
+                'apellido_materno' => $datos['apellido_materno'] ?? null,
+                'correo' => $datos['correo'],
+                'contrasena' => $datos['contrasena'],
+                'contrasena_hashed' => password_hash($datos['contrasena'], PASSWORD_BCRYPT),
+                'boleta' => $datos['boleta'],
+            ];
 
-                    $contrasena_hash = password_hash($contrasena, PASSWORD_BCRYPT);
-
-                    $stmt = $pool->prepare("SELECT id_usuario FROM Usuario WHERE correo = :correo");
-                    $stmt->bindParam(':correo', $correo);
-                    $stmt->execute();
-                    
-                    if ($stmt->fetch()) {
-                        http_response_code(400);
-                        echo json_encode([
-                            "status" => "error",
-                            "message" => "El correo ya esta registrado"
-                        ]);
-                        return;
-                    }
-
-                    $id_usuario = bin2hex(random_bytes(8)); 
-                    try {
-                        $stmtB = $pool->prepare("SELECT * FROM Estudiante WHERE boleta = :boleta");
-                        $stmtB->bindParam(':boleta', $boleta);
-                        $stmtB->execute();
-                        
-                        if ($stmtB->fetch()) {
-                            http_response_code(400);
-                            echo json_encode([
-                                "status" => "error",
-                                "message" => "Ya existe una cuenta con esa boleta"
-                            ]);
-                            return;
-                        }
-                        
-                        if ($boleta) {
-                            $pool->beginTransaction();
-
-                            $stmt1 = $pool->prepare("INSERT INTO Usuario(id_usuario, nombre, apellido, correo, contraseña, id_tipo_usuario) VALUES (:id_usuario, :nombre, :apellido, :correo, :contrasena, 1)");
-                            $stmt1->bindParam(':id_usuario', $id_usuario);
-                            $stmt1->bindParam(':nombre', $nombre);
-                            $stmt1->bindParam(':apellido', $apellidos);
-                            $stmt1->bindParam(':correo', $correo);
-                            $stmt1->bindParam(':contrasena', $contrasena_hash);
-                            $stmt1->execute();
-                            
-                            $stmt2 = $pool->prepare("INSERT INTO Estudiante(id_usuario, boleta) VALUES (:id_usuario, :boleta)");
-                            $stmt2->bindParam(':id_usuario', $id_usuario);
-                            $stmt2->bindParam(':boleta', $boleta);
-                            $stmt2->execute();
-                            
-                            $pool->commit();
-                            
-                            $this->login($pool);
-                        }
-                        else {
-                                http_response_code(500);
-                                echo json_encode([
-                                    "status" => "error",
-                                    "message" => "El registro solo es para estudiantes"
-                                ]);
-
-                        }
-                    } catch (Exception $e) {
-                        $pool->rollBack();
-                        http_response_code(500);
-                        echo json_encode([
-                            "status" => "error",
-                            "message" => "Error al registrar usuario: " . $e->getMessage()
-                        ]);
-                    }
-                } else {
+            if ($datos_estudiante['nombre'] && $datos_estudiante['correo'] && $datos_estudiante['contrasena']) {
+                if (strlen($datos_estudiante['contrasena']) < 8) {
                     http_response_code(400);
                     echo json_encode([
                         "status" => "error",
-                        "message" => "Faltan datos requeridos (nombre, correo y contraseña)"
+                        "message" => "La contrasena debe tener al menos 8 caracteres"
+                    ]);
+                    return;
+                }
+
+                $usuarioCorreo = $usuarioModel->buscarPorCorreo($datos_estudiante['correo']);
+
+                if ($usuarioCorreo) {
+                    http_response_code(400);
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => "El correo ya esta registrado"
+                    ]);
+                    return;
+                }
+                try {
+                    $usuarioBoleta = $usuarioModel->buscarPorBoleta($datos_estudiante['boleta']);
+                    if ($usuarioBoleta) {
+                        http_response_code(400);
+                        echo json_encode([
+                            "status" => "error",
+                            "message" => "Ya existe una cuenta con esa boleta"
+                        ]);
+                        return;
+                    }
+                    
+                    if ($datos_estudiante['boleta']) {
+                        $usuarioModel->crearUsuario($datos_estudiante);
+                    } else {
+                        http_response_code(400);
+                        echo json_encode([
+                            "status" => "error",
+                            "message" => "La boleta es requerida para el registro"
+                        ]);
+                        return;
+                    }
+                } catch (Exception $e) {
+                    http_response_code(500);
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => "Error al registrar usuario: " . $e->getMessage()
                     ]);
                 }
-            } catch (Exception $e) {
+            } else {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Faltan datos requeridos (nombre, correo y contraseña)"
+                ]);
+            }
+        } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 "status" => "error",
                 "message" => "Error interno del servidor: " . $e->getMessage()
             ]);
         }
-    }
     }
     public function logout() {
         try {
@@ -193,7 +159,6 @@ class AuthController {
                 'samesite' => 'None'
             ]);
 
-            // Eliminar de la superglobal para el request actual
             if (isset($_COOKIE['token'])) {
                 unset($_COOKIE['token']);
             }
@@ -213,6 +178,7 @@ class AuthController {
 
     public function verificarTokenCookie($pool) {
         try {
+            $usuarioModel = new QuerysAuth($pool);
             $token = $_COOKIE['token'] ?? null;
             if (!$token) {
                 http_response_code(401);
@@ -223,19 +189,19 @@ class AuthController {
                 return;
             }
             $secret = $_ENV['JWT_SECRET'];
+
             try{
                 $decoded = JWT::decode($token, new \Firebase\JWT\Key($secret, 'HS256'));
                 $data = (array)($decoded->data ?? []);
                 $idUsuario = $data['id_usuario'] ?? null;
-                $stmt = $pool->prepare("SELECT id_usuario, tu.nombre_tipo AS rol FROM Usuario u INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario WHERE id_usuario = :id_usuario");
-                $stmt->bindParam(':id_usuario', $idUsuario);
-                $stmt->execute();
-                $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-                if ($usuario) {
+
+                $usuarioRol = $usuarioModel->buscarRolporId($idUsuario);
+
+                if ($usuarioRol) {
                     http_response_code(200);
                     echo json_encode([
                         "status" => "success",
-                        "usuario" => $usuario
+                        "usuario" => $usuarioRol
                     ]);
                 } else {
                     http_response_code(404);

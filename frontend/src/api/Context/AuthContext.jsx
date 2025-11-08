@@ -16,8 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [authSesion, setAuthSesion] = useState(false)
     const [loading, setLoading] = useState(true)
     const [errors, setErrors] = useState()
-    // const [perfil, setPerfil] = useState(null)
-
+    
     const registrarUsuario = async (user) => {
         try {
             const res = await AuthAPI.registro(user);

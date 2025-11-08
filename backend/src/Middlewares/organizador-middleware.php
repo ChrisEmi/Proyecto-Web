@@ -3,16 +3,16 @@ namespace App\Middlewares;
 use Exception;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use App\Core\AuthContext;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 use App\Core\Database;
-use App\Core\AuthContext;
 
 
-class AdminMiddleware {
-    private function esAdmin($id_usuario, $pool) {
+class OrganizadorMiddleware {
+    private function esOrganizador($id_usuario, $pool) {
         try {
-            $stmt = $pool->prepare("SELECT COUNT(*) FROM Usuario WHERE id_usuario = :id_usuario AND id_tipo_usuario = (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre_tipo = 'Administrador')");
+            $stmt = $pool->prepare("SELECT COUNT(*) FROM Usuario WHERE id_usuario = :id_usuario AND id_tipo_usuario = (SELECT id_tipo_usuario FROM TipoUsuario WHERE nombre_tipo = 'Organizador')");
             $stmt->bindParam(':id_usuario', $id_usuario);
             $stmt->execute();
             return $stmt->fetchColumn() > 0;
@@ -41,8 +41,8 @@ class AdminMiddleware {
             AuthContext::setUsuario($data);
             $db = Database::getInstance();
 
-            if (!$this->esAdmin($idUsuario, $db)) {
-                self::abort(403, 'Acceso prohibido: se requiere rol Administrador');
+            if (!$this->esOrganizador($idUsuario, $db)) {
+                self::abort(403, 'Acceso prohibido: se requiere rol Organizador');
                 return;
             }
             $next();
