@@ -26,4 +26,9 @@ function auth_routes($router) {
         $controller = new AuthController();
         $controller->verificarTokenCookie($db);
     });
+
+    $router->post('/auth/registro-admin', function() use ($db) {
+        $controller = new AuthController();
+        $controller->registroAdmin($db);
+    });
 }

@@ -17,11 +17,27 @@ function admin_routes($router) {
         });
     });
 
-    $router->post('/administrador/crear-usuario', function() use ($db) {
+    $router->post('/administrador/crear-organizador', function() use ($db) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
-            $controller->crearUsuario($db);
+            $controller->crearOrganizador($db);
+        });
+    });
+
+    $router->post('/administrador/crear-administrador', function() use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db) {
+            $controller = new AdminController();
+            $controller->crearAdministrador($db);
+        });
+    });
+
+    $router->post('/administrador/verificar-evento', function() use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db) {
+            $controller = new AdminController();
+            $controller->verificarEvento($db);
         });
     });
 

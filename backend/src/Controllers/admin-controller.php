@@ -8,9 +8,6 @@ use App\Database\QuerysAuth;
 use App\Database\QuerysEventos;
 use App\Core\AuthContext;
 
-require_once __DIR__ . '/../../vendor/autoload.php';
-
-
 class AdminController {
     private function contrasenaAleatoria($longitud = 8) {
         $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -46,22 +43,13 @@ class AdminController {
 
     public function crearOrganizador($pool) {
         try {
-            $datos = json_decode(file_get_contents("php://input"), true);
+            $input = json_decode(file_get_contents("php://input"), true);
             $contrasena = $this->contrasenaAleatoria();
             $id_usuario = bin2hex(random_bytes(8));
-            $datos = [
-                'id_usuario' => $id_usuario,
-                'nombre' => $datos['nombre'],
-                'apellido_paterno' => $datos['apellido_paterno'],
-                'apellido_materno' => $datos['apellido_materno'] ?? null,
-                'correo' => $datos['correo'],
-                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
-                'boleta' => $datos['boleta'] ?? null,
-            ];
 
             $usuarioModel = new QuerysAuth($pool);
 
-            if ($usuarioModel->buscarPorCorreo($datos['correo'])) {
+            if ($usuarioModel->buscarPorCorreo($input['correo'])) {
                 http_response_code(400);
                 echo json_encode([
                     "status" => "error",
@@ -69,6 +57,16 @@ class AdminController {
                 ]);
                 return;
             }
+
+            $datos = [
+                'id_usuario' => $id_usuario,
+                'nombre' => $input['nombre'],
+                'apellido_paterno' => $input['apellido_paterno'],
+                'apellido_materno' => $input['apellido_materno'] ?? null,
+                'correo' => $input['correo'],
+                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
+                'empresa' => $input['empresa'] ?? null,
+            ];
 
             $usuarioModel = new QuerysAdmin($pool);
             $usuarioModel->crearOrganizadorQuery($datos);
@@ -91,22 +89,13 @@ class AdminController {
 
     public function crearAdministrador($pool) {
         try {
-            $datos = json_decode(file_get_contents("php://input"), true);
+            $input = json_decode(file_get_contents("php://input"), true);
             $contrasena = $this->contrasenaAleatoria();
             $id_usuario = bin2hex(random_bytes(8));
-            $datos = [
-                'id_usuario' => $id_usuario,
-                'nombre' => $datos['nombre'],
-                'apellido_paterno' => $datos['apellido_paterno'],
-                'apellido_materno' => $datos['apellido_materno'] ?? null,
-                'correo' => $datos['correo'],
-                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
-                'boleta' => $datos['boleta'] ?? null,
-            ];
 
             $usuarioModel = new QuerysAuth($pool);
 
-            if ($usuarioModel->buscarPorCorreo($datos['correo'])) {
+            if ($usuarioModel->buscarPorCorreo($input['correo'])) {
                 http_response_code(400);
                 echo json_encode([
                     "status" => "error",
@@ -114,6 +103,15 @@ class AdminController {
                 ]);
                 return;
             }
+
+            $datos = [
+                'id_usuario' => $id_usuario,
+                'nombre' => $input['nombre'],
+                'apellido_paterno' => $input['apellido_paterno'],
+                'apellido_materno' => $input['apellido_materno'] ?? null,
+                'correo' => $input['correo'],
+                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
+            ];
 
             $usuarioModel = new QuerysAdmin($pool);
             $usuarioModel->crearAdministradorQuery($datos);
@@ -151,7 +149,7 @@ class AdminController {
             }
 
             $eventoModel = new QuerysEventos($pool);
-            $evento = $eventoModel->obtenerEventoPorId($id_evento);
+            $evento = $eventoModel->obtenerEventoPorIdQuery($id_evento);
 
             if (!$evento) {
                 http_response_code(404);
@@ -162,7 +160,7 @@ class AdminController {
                 return;
             }
 
-            $eventoModel->actualizarEstadoEvento($id_evento, $id_admin);
+            $eventoModel->actualizarEstadoEventoQuery($id_evento, $id_admin);
             http_response_code(200);
             echo json_encode([
                 "status" => "success",

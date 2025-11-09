@@ -33,13 +33,11 @@ $router->get('/', function() {
 });
 
 
-// Incluir las rutas de autenticación
 require_once __DIR__ . '/../src/Routes/auth-routes.php';
 auth_routes($router);
 
-
-// require_once __DIR__ . '/../src/Routes/evento-routes.php';
-
+require_once __DIR__ . '/../src/Routes/evento-routes.php';
+evento_routes($router);
 
 require_once __DIR__ . '/../src/Routes/admin-routes.php';
 admin_routes($router);

@@ -40,9 +40,10 @@ class QuerysAdmin
             $stmt1->bindParam(':contrasena', $data['contrasena_hashed']);
             $stmt1->execute();
 
+            $empresa = $data['empresa'] ?? null;
             $stmt2 = $this->pool->prepare($sql2);
             $stmt2->bindParam(':id_usuario', $data['id_usuario']);
-            $stmt2->bindParam(':empresa', $data['empresa'] ?? null);
+            $stmt2->bindParam(':empresa', $empresa);
             $stmt2->execute();
 
             $this->pool->commit();
