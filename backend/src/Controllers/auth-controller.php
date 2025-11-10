@@ -89,6 +89,7 @@ class AuthController {
                 'apellido_materno' => $datos['apellido_materno'] ?? null,
                 'correo' => $datos['correo'],
                 'contrasena' => $datos['contrasena'],
+                'confirmar_contrasena' => $datos['confirmar_contrasena'],
                 'contrasena_hashed' => password_hash($datos['contrasena'], PASSWORD_BCRYPT),
             ];
 
@@ -132,66 +133,76 @@ class AuthController {
                 'apellido_materno' => $datos['apellido_materno'] ?? null,
                 'correo' => $datos['correo'],
                 'contrasena' => $datos['contrasena'],
+                'confirmar_contrasena' => $datos['confirmar_contrasena'],
                 'contrasena_hashed' => password_hash($datos['contrasena'], PASSWORD_BCRYPT),
                 'boleta' => $datos['boleta'],
             ];
-
-            if ($datos_estudiante['nombre'] && $datos_estudiante['correo'] && $datos_estudiante['contrasena']) {
-                if (strlen($datos_estudiante['contrasena']) < 8) {
-                    http_response_code(400);
-                    echo json_encode([
-                        "status" => "error",
-                        "message" => "La contrasena debe tener al menos 8 caracteres"
-                    ]);
-                    return;
-                }
-
-                $usuarioCorreo = $usuarioModel->buscarPorCorreo($datos_estudiante['correo']);
-
-                if ($usuarioCorreo) {
-                    http_response_code(400);
-                    echo json_encode([
-                        "status" => "error",
-                        "message" => "El correo ya esta registrado"
-                    ]);
-                    return;
-                }
-                try {
-                    $usuarioBoleta = $usuarioModel->buscarPorBoleta($datos_estudiante['boleta']);
-                    if ($usuarioBoleta) {
-                        http_response_code(400);
-                        echo json_encode([
-                            "status" => "error",
-                            "message" => "Ya existe una cuenta con esa boleta"
-                        ]);
-                        return;
-                    }
-                    
-                    if ($datos_estudiante['boleta']) {
-                        $usuarioModel->crearUsuario($datos_estudiante);
-                        $this->login($pool);
-                    } else {
-                        http_response_code(400);
-                        echo json_encode([
-                            "status" => "error",
-                            "message" => "La boleta es requerida para el registro"
-                        ]);
-                        return;
-                    }
-                } catch (Exception $e) {
-                    http_response_code(500);
-                    echo json_encode([
-                        "status" => "error",
-                        "message" => "Error al registrar usuario: " . $e->getMessage()
-                    ]);
-                }
-            } else {
+            if($datos['contrasena'] !== $datos['confirmar_contrasena']){
                 http_response_code(400);
                 echo json_encode([
                     "status" => "error",
-                    "message" => "Faltan datos requeridos (nombre, correo y contraseña)"
+                    "message" => "Las contraseñas no coinciden"
                 ]);
+                return;
+            }else{
+                if ($datos_estudiante['nombre'] && $datos_estudiante['correo'] && $datos_estudiante['contrasena']) {
+                    if (strlen($datos_estudiante['contrasena']) < 8) {
+                        http_response_code(400);
+                        echo json_encode([
+                            "status" => "error",
+                            "message" => "La contrasena debe tener al menos 8 caracteres"
+                        ]);
+                        return;
+                    }
+
+                    $usuarioCorreo = $usuarioModel->buscarPorCorreo($datos_estudiante['correo']);
+
+                    if ($usuarioCorreo) {
+                        http_response_code(400);
+                        echo json_encode([
+                            "status" => "error",
+                            "message" => "El correo ya esta registrado"
+                        ]);
+                        return;
+                    }
+                    try {
+                        $usuarioBoleta = $usuarioModel->buscarPorBoleta($datos_estudiante['boleta']);
+                        if ($usuarioBoleta) {
+                            http_response_code(400);
+                            echo json_encode([
+                                "status" => "error",
+                                "message" => "Ya existe una cuenta con esa boleta"
+                            ]);
+                            return;
+                        }
+                        
+                        if ($datos_estudiante['boleta']) {
+                            $usuarioModel->crearUsuario($datos_estudiante);
+                            $this->login($pool);
+                        } else {
+                            http_response_code(400);
+                            echo json_encode([
+                                "status" => "error",
+                                "message" => "La boleta es requerida para el registro"
+                            ]);
+                            return;
+                        }
+                    } catch (Exception $e) {
+                        http_response_code(500);
+                        echo json_encode([
+                            "status" => "error",
+                            "message" => "Error al registrar usuario: " . $e->getMessage()
+                        ]);
+                    }
+                } else {
+                    http_response_code(400);
+                    echo json_encode([
+                        "status" => "error",
+                        "message" => "Faltan datos requeridos (nombre, correo y contraseña)"
+                    ]);
+                }
             }
+            
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([

@@ -252,7 +252,7 @@ export default function NavMenu() {
                                 {!usuario ? (
                                     <>
                                         <Link to="/login" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Iniciar Sesión</Link>
-                                        <Link to="/registrarse" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</Link>
+                                        <Link to="/registro" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Registrarse</Link>
                                     </>
                                 ) : (
                                     <>
@@ -263,7 +263,7 @@ export default function NavMenu() {
                                         <a onClick={() => {
                                                 cerrarMenu();
                                                 cerrarSesion();
-                                        }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Cerrar Sesión</a>
+                                        }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200 cursor-pointer">Cerrar Sesión</a>
                                     </>
                                 )}
                             </>
