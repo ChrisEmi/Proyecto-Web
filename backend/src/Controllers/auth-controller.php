@@ -54,6 +54,13 @@ class AuthController {
                 ]);
 
                 http_response_code(200);
+                echo json_encode([
+                    "status" => "success",
+                    "usuario" => [
+                        "id_usuario" => $usuario['id_usuario'],
+                        "rol" => $usuario['rol'],
+                    ]
+                ]);
 
             } else {
                 http_response_code(401);

@@ -4,11 +4,13 @@ import Footer from "./components/Footer.jsx";
 
 const App = () => {
   return (
-    <>
+    <div className="flex flex-col min-h-screen">
       <NavMenu />
-      <Router />
+      <main className="flex-grow">
+        <Router />
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
 export default App;

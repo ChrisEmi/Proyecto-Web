@@ -1,7 +1,65 @@
 import React from 'react';
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { SplitText } from "gsap/SplitText";
+gsap.registerPlugin(SplitText);
+
 import Carrusel from './Components/Carrusel';
+import { IconoEscom } from '../assets/ElementosSvg';
 
 const HeroInicio = () => {
+  useGSAP(() => {
+    const splitTitulo = new SplitText(".titulo-hero", { type: "words" });
+    const splitESCOMunidad = new SplitText(".escomunidad-hero", { type: "chars" });
+    const tl = gsap.timeline();
+    
+    tl.fromTo(splitTitulo.words,
+      { opacity: 0, y: 30, filter: "blur(4px)" },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8, 
+        ease: "power3.out", 
+        stagger: 0.08,
+        filter: "blur(0px)",
+        delay: 0.5 
+      }
+    ).fromTo(splitESCOMunidad.chars, 
+      { opacity: 0, y: 20, filter: "blur(4px)" },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.6, 
+        ease: "power2.out",
+        filter: "blur(0px)",
+        stagger: 0.03
+      }, 
+      "-=0.3"
+    ).fromTo(".parrafo-hero",
+      { opacity: 0, y: 20, filter: "blur(4px)" },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.7, 
+        ease: "power2.out",
+        filter: "blur(0px)",
+      },
+      "-=0.2"
+    ).fromTo(".carrusel",
+      { opacity: 0, y: 40 },
+      { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.9, 
+        ease: "power2.out" 
+      },
+      "-=0.4"
+    );
+
+  }, [])
+
+
+
   return (
     <section 
       id="inicio" 
@@ -11,22 +69,21 @@ const HeroInicio = () => {
       <div className="w-full max-w-screen-2xl mx-auto">
         <div className="text-center mb-8 lg:mb-12">
           
-          <h1 className="text-white text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight drop-shadow-2xl mb-6 px-4">
+          <h1 className="titulo-hero text-white text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight drop-shadow-2xl mb-6 px-4">
             Actividades Culturales y Recreativas
-            <span className="block text-escom-200 mt-2">de la ESCOMunidad</span>
+            <span className="escomunidad-hero block text-escom-200 mt-2">de la ESCOMunidad</span>
           </h1>
 
-          <p className="text-white/90 text-lg sm:text-xl lg:text-2xl text-center leading-relaxed max-w-4xl mx-auto px-4">
+          <p className="parrafo-hero text-white/90 text-lg sm:text-xl lg:text-2xl text-center leading-relaxed max-w-4xl mx-auto px-4">
             Descubre, participa y conecta. Encuentra todos los eventos, 
             talleres y torneos en un solo lugar.
           </p>
         </div>
 
         <div 
-          className="slider w-full h-125 
+          className="carrusel w-full h-125 
                     bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl  
-                    shadow-2xl overflow-hidden mb-8 lg:mb-12
-                    transform transition-all duration-500 hover:scale-[1.01]"
+                    shadow-2xl overflow-hidden mb-8 lg:mb-12"
         >
           <Carrusel
             slides={[

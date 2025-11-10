@@ -112,7 +112,7 @@ const EventosHorizontal = ({ eventos }) => {
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         #section-horizontal {
           overflow: hidden;
         }
