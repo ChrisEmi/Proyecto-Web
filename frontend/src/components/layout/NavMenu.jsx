@@ -245,7 +245,7 @@ export default function NavMenu() {
                             <div className="flex items-center pr-4">
                                 <div className="flex flex-col">
                                     <span className="text-white font-semibold text-lg md:text-xl text-right">
-                                        {usuario.nombre} {usuario.apellido_paterno}
+                                        {usuario.nombre?.split(' ')[0]} {usuario.apellido_paterno}
                                     </span>
                                     <span className={`text-sm md:text-base font-medium text-right ${
                                         usuario.nombre_tipo === 'Administrador' ? 'text-blue-400' :
@@ -306,7 +306,6 @@ export default function NavMenu() {
                                 </span>
                             </button>
 
-                            {/* Botón cerrar para desktop */}
                             <button
                                 onClick={botonMenu}
                                 className="hidden md:flex ml-auto p-2.5 lg:px-4 lg:py-3 focus:outline-none transition-all duration-300 cursor-pointer bg-white hover:bg-white/80 active:bg-white/70 rounded-full group/btn hover:shadow-lg items-center gap-2"
@@ -317,7 +316,7 @@ export default function NavMenu() {
                             </button>
                         </div>
                     </div>
-                    <div className="flex flex-col h-auto px-4 md:p-15 gap-3 md:gap-10 justify-start md:justify-center overflow-y-auto">
+                    <div className={`flex flex-col w-full px-4 md:p-15 gap-3 md:gap-10  md:justify-center ${botonCuenta && !usuario ? 'mt-50' : 'mt-5'} overflow-y-auto`}>
                         {botonInicio && (
                             <>
                                 <a href="/#inicio" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</a>
@@ -341,24 +340,26 @@ export default function NavMenu() {
                                         <Link to="/control/admin/usuarios" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Usuarios</Link>
                                         <Link to="/control/admin/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos</Link>
                                         <Link to="/control/admin/ajustes" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</Link>
+                                        <Link to="/control/admin/ajustes" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Personalizacion</Link>
                                         <Link to="/control/admin/crear-usuario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Crear Usuario</Link>
                                     </>
                                 )}
                                 
                                 {usuario.nombre_tipo === 'Organizador' && (
                                     <>
+                                        <Link to="/organizador/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</Link>
                                         <Link to="/organizador/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</Link>
-                                        <Link to="/organizador/crear-evento" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Crear Evento</Link>
                                         <Link to="/organizador/inscritos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inscritos</Link>
+                                        <Link to="/organizador/crear-evento" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Crear Evento</Link>
                                     </>
                                 )}
                                 
                                 {usuario.nombre_tipo === 'Estudiante' && (
                                     <>
-                                        <Link to="/alumno" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Inicio</Link>
-                                        <Link to="/alumno/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</Link>
-                                        <Link to="/alumno/explorar" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Explorar Eventos</Link>
-                                        <Link to="/alumno/historial" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Historial</Link>
+                                        <Link to="/alumno/calendario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</Link>
+                                        <Link to="/alumno/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos</Link>
+                                        <Link to="/alumno/actividades" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</Link>
+                                        <Link to="/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Explorar Eventos</Link>
                                     </>
                                 )}
                             </>
@@ -383,8 +384,9 @@ export default function NavMenu() {
                                         {usuario.nombre_tipo === 'Organizador' && (
                                             <>
                                                 <Link to="/organizador" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Panel</Link>
-                                                <Link to="/organizador/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Mis Eventos</Link>
-                                                <Link to="/organizador/perfil" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</Link>
+                                                <Link to="/organizador/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Notificaciones</Link>
+                                                <Link to="/organizador/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Perfil</Link>
+                                                <Link to="/organizador/perfil" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Ajustes</Link>
                                             </>
                                         )}
                                         
@@ -398,7 +400,7 @@ export default function NavMenu() {
                                         <a onClick={() => {
                                                 cerrarMenu();
                                                 cerrarSesion();
-                                        }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white cursor-pointer">Cerrar Sesión</a>
+                                        }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white cursor-pointer hover:text-escom-200">Cerrar Sesión</a>
                                     </>
                                 )}
                             </>
