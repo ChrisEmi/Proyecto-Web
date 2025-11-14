@@ -15,10 +15,10 @@ class QuerysAuth
 
     public function buscarPorCorreo(string $correo)
     {
-        $sql = "SELECT correo, contraseña AS contrasena, id_usuario, tu.nombre_tipo AS rol 
-                FROM Usuario 
-                INNER JOIN TipoUsuario tu ON Usuario.id_tipo_usuario = tu.id_tipo_usuario 
-                WHERE correo = :correo";
+        $sql = "SELECT u.correo, u.contraseña AS contrasena, u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, tu.nombre_tipo AS rol 
+                FROM Usuario u
+                INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario 
+                WHERE u.correo = :correo";
 
         $stmt = $this->pool->prepare($sql);
         $stmt->bindParam(':correo', $correo);
@@ -64,7 +64,7 @@ class QuerysAuth
 
     public function buscarRolporId(string $id_usuario)
     {
-        $sql = "SELECT tu.nombre_tipo AS rol 
+        $sql = "SELECT tu.nombre_tipo, u.nombre, u.apellido_paterno
                 FROM Usuario u
                 INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario 
                 WHERE u.id_usuario = :id_usuario";

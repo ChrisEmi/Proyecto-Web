@@ -29,3 +29,9 @@
     --color-escom-sombra-900: #0E161D;
     --color-escom-sombra-950: #070D12;
 }
+
+.main-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #143C58 transparent;
+}
+

@@ -1,11 +1,3 @@
-/**
- * Fondo Decorativo Optimizado para ESCOM
- * Usa SVG en lugar de múltiples divs para mejor rendimiento
- * - Un solo elemento SVG vs 30+ divs
- * - GPU accelerated
- * - Menos repaints y reflows
- */
-
 const EscomDecorativeBackground = ({ id, className = "" }) => {
   return (
     <svg 

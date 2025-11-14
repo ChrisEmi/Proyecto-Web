@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { useAuth } from "../api/Context/AuthContext";
+import { useAuth } from "../../api/Context/AuthContext";
 
 export const LoopInfinito = () => { 
     const { loading } = useAuth();

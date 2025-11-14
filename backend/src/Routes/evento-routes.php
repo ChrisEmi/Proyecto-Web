@@ -23,6 +23,11 @@ function evento_routes($router) {
         $controller->obtenerEventos($db, $ordenar_por, $direccion);
     });
 
+    $router->get('/evento/obtener/{id_evento}', function($id_evento) use ($db) {
+        $controller = new EventoController();
+        $controller->obtenerEventoPorId($db, $id_evento);
+    });
+
     $router->post('/evento/crear', function() use ($db) {
         $middleware = new OrganizadorMiddleware();
         $middleware->handle(function() use ($db) {
@@ -31,11 +36,11 @@ function evento_routes($router) {
         });
     });
 
-    $router->put('/evento/actualizar', function() use ($db) {
+    $router->put('/evento/actualizar/{id_evento}', function($id_evento) use ($db) {
         $middleware = new OrganizadorMiddleware();
-        $middleware->handle(function() use ($db) {
+        $middleware->handle(function() use ($db, $id_evento) {
             $controller = new EventoController();
-            $controller->actualizarEvento($db);
+            $controller->actualizarEvento($db, $id_evento);
         });
     });
 
@@ -71,19 +76,19 @@ function evento_routes($router) {
         });
     });
 
-    $router->post('/evento/inscripcion-usuario', function() use ($db) {
+    $router->post('/evento/inscripcion-usuario/{id_evento}', function($id_evento) use ($db) {
         $middleware = new EstudianteMiddleware();
-        $middleware->handle(function() use ($db) {
+        $middleware->handle(function() use ($db, $id_evento) {
             $controller = new EventoController();
-            $controller->inscribirUsuarioEvento($db);
+            $controller->inscribirUsuarioEvento($db, $id_evento);
         });
     });
 
-    $router->post('/evento/cancelar-inscripcion', function() use ($db) {
+    $router->post('/evento/cancelar-inscripcion/{id_evento}', function($id_evento) use ($db) {
         $middleware = new EstudianteMiddleware();
-        $middleware->handle(function() use ($db) {
+        $middleware->handle(function() use ($db, $id_evento) {
             $controller = new EventoController();
-            $controller->desinscribirUsuarioEvento($db);
+            $controller->desinscribirUsuarioEvento($db, $id_evento);
         });
     });
 

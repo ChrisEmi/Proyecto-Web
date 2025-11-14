@@ -111,7 +111,9 @@ class QuerysEventos
         }
     }
 
-    public function actualizarEventoQuery(array $data){
+    
+
+    public function actualizarEventoQuery(array $data, string $id_evento){
         $this->pool->beginTransaction();
 
         try {
@@ -121,7 +123,7 @@ class QuerysEventos
                     WHERE id_evento = :id_evento";
 
             $stmt = $this->pool->prepare($sql);
-            $stmt->bindParam(':id_evento', $data['id_evento']);
+            $stmt->bindParam(':id_evento', $id_evento);
             $stmt->bindParam(':titulo_evento', $data['titulo_evento']);
             $stmt->bindParam(':descripcion', $data['descripcion']);
             $stmt->bindParam(':fecha', $data['fecha']);

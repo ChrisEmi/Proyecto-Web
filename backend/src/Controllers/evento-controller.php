@@ -31,12 +31,14 @@ class EventoController {
         }
     }
 
-    public function actualizarEvento($pool){
+    
+
+    public function actualizarEvento($pool, $id_evento){
         try {
             $datos = json_decode(file_get_contents('php://input'), true);
 
             $eventoModel = new QuerysEventos($pool);
-            $eventoModel->actualizarEventoQuery($datos);
+            $eventoModel->actualizarEventoQuery($datos, $id_evento);
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
@@ -60,7 +62,7 @@ class EventoController {
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $eventos
+                "eventos" => $eventos
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -71,12 +73,9 @@ class EventoController {
         }
     }
 
-    public function inscribirUsuarioEvento($pool){
+    public function inscribirUsuarioEvento($pool, $id_evento){
         $id_usuario = AuthContext::obtenerIdUsuario();
         try {
-            $datos = json_decode(file_get_contents('php://input'), true);
-            $id_evento = $datos['id_evento'] ?? null;
-
             if (!$id_evento) {
                 http_response_code(400);
                 echo json_encode([
@@ -102,12 +101,9 @@ class EventoController {
         }
     }
 
-    public function desinscribirUsuarioEvento($pool){
+    public function desinscribirUsuarioEvento($pool, $id_evento){
         $id_usuario = AuthContext::obtenerIdUsuario();
         try {
-            $datos = json_decode(file_get_contents('php://input'), true);
-            $id_evento = $datos['id_evento'] ?? null;
-
             if (!$id_evento) {
                 http_response_code(400);
                 echo json_encode([
@@ -142,7 +138,7 @@ class EventoController {
                 http_response_code(200);
                 echo json_encode([
                     "status" => "success",
-                    "data" => $evento
+                    "evento" => $evento
                 ]);
             } else {
                 http_response_code(404);
@@ -197,7 +193,7 @@ class EventoController {
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $eventos
+                "eventos" => $eventos
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -228,7 +224,7 @@ class EventoController {
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $inscripciones
+                "inscripciones" => $inscripciones
             ]);
         } catch (Exception $e) {
             http_response_code(500);

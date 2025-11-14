@@ -13,7 +13,23 @@ function admin_routes($router) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
-            $controller->obtenerUsuarios($db);
+            $controller->obtenerUsuarios($db, null, 'nombre', 'ASC');
+        });
+    });
+
+    $router->get('/administrador/obtener-usuarios/todos/{ordenar_por}/{direccion}', function($ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerUsuarios($db, null, $ordenar_por, $direccion);
+        });
+    });
+
+    $router->get('/administrador/obtener-usuarios/{rol}/{ordenar_por}/{direccion}', function($rol, $ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $rol, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerUsuarios($db, $rol, $ordenar_por, $direccion);
         });
     });
 

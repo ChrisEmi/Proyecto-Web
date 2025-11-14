@@ -1,0 +1,180 @@
+
+/* Contenedor principal del calendario */
+.rbc-calendar {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 1rem;
+}
+
+.rbc-toolbar {
+    padding: 2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eceef0a4;
+    border-radius: 0.5rem;
+}
+
+/* Botones de navegación (Anterior, Hoy, Siguiente) */
+.rbc-toolbar button {
+    padding: 1rem 1.5rem;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.rbc-toolbar button:hover {
+    background-color: #143C58;
+    color: white;
+    border-color: #143C58;
+}
+
+.rbc-toolbar button.rbc-active {
+    background-color: #143C58;
+    color: white;
+    border-color: #143C58;
+}
+
+.rbc-toolbar-label {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #143C58;
+    text-transform: capitalize;
+}
+
+/* Encabezados de los días de la semana */
+.rbc-header {
+    padding: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+    background-color: #f1f5f9;
+    border-bottom: 2px solid #e2e8f0;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+/* Celdas de los días */
+.rbc-day-bg {
+    background-color: white;
+    border: 1px solid #e2e8f0;
+}
+
+/* Día actual (hoy) */
+.rbc-today {
+    background-color: #dbeafe !important;
+}
+
+/* Días fuera del mes actual */
+.rbc-off-range-bg {
+    background-color: #f8fafc;
+}
+
+/* Número del día en la celda */
+.rbc-date-cell {
+    padding: 0.5rem;
+    text-align: right;
+}
+
+.rbc-date-cell > a {
+    color: #334155;
+    font-weight: 500;
+}
+
+.rbc-date-cell.rbc-now > a {
+    background-color: #143C58;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 50%;
+}
+
+/* Eventos */
+.rbc-event {
+    padding: 0.25rem 0.5rem;
+    background-color: #3b82f6;
+    border: none;
+    border-radius: 0.25rem;
+    color: white;
+    font-size: 0.875rem;
+}
+
+.rbc-event:hover {
+    background-color: #2563eb;
+}
+
+/* Evento seleccionado */
+.rbc-event.rbc-selected {
+    background-color: #143C58;
+}
+
+/* Botón "ver más" cuando hay muchos eventos */
+.rbc-show-more {
+    color: #3b82f6;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0.25rem;
+}
+
+.rbc-show-more:hover {
+    color: #143C58;
+    text-decoration: underline;
+}
+
+/* Vista de semana y día - slots de tiempo */
+.rbc-time-slot {
+    border-top: 1px solid #e2e8f0;
+}
+
+.rbc-time-header-content {
+    border-left: 1px solid #e2e8f0;
+}
+
+.rbc-time-content {
+    border-top: 2px solid #cbd5e1;
+}
+
+/* Etiquetas de hora en vista semanal */
+.rbc-time-slot .rbc-label {
+    color: #64748b;
+    font-size: 0.75rem;
+}
+
+/* Vista de Agenda */
+.rbc-agenda-view {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.5rem;
+}
+
+.rbc-agenda-view table {
+    width: 100%;
+}
+
+.rbc-agenda-date-cell {
+    padding: 1rem;
+    color: #143C58;
+    font-weight: 600;
+}
+
+.rbc-agenda-time-cell {
+    padding: 0.75rem;
+    color: #64748b;
+}
+
+.rbc-agenda-event-cell {
+    padding: 0.75rem;
+}
+
+/* Personalización adicional - puedes cambiar estos colores */
+.rbc-event-custom {
+    background-color: #10b981; /* Verde para eventos confirmados */
+}
+
+.rbc-event-pending {
+    background-color: #f59e0b; /* Naranja para eventos pendientes */
+}
+
+.rbc-event-cancelled {
+    background-color: #ef4444; /* Rojo para eventos cancelados */
+}

@@ -1,23 +1,32 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoopCarga from '../components/LoopCarga.jsx';
+import LoopCarga from '../components/layout/LoopCarga.jsx';
+import AlumnoLayout from '../layouts/AlumnoLayout.jsx';
+import { AlumnoProvider } from '../api/Context/AlumnoContext.jsx';
+import { EventosProvider } from '../api/Context/EventosContext.jsx';
 
-const Panel = lazy(() => import('../pages/usuarios/alumno/PanelAlumno'));
-const Perfil = lazy(() => import('../pages/usuarios/alumno/PerfilAlumno'));
-const Eventos = lazy(() => import('../pages/usuarios/alumno/EventosAlumno'));
+const Inicio = lazy(() => import('../pages/usuarios/alumno/InicioAlumno.jsx'));
+const Calendario = lazy(() => import('../pages/usuarios/alumno/CalendarioAlumno.jsx'));
 
 const AlumnoRoutes = () => {
   return (
-    <Suspense fallback={<LoopCarga />}>
-      <Routes>
-
-        <Route path="/" element={<Panel />} />
-        <Route path="perfil" element={<Perfil />} />
-        <Route path="eventos" element={<Eventos />} />
-
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
+    <AlumnoProvider>
+      <EventosProvider>
+          <Suspense fallback={<LoopCarga />}>
+            <Routes>
+              <Route element={<AlumnoLayout />}>
+                <Route path="/inicio" element={<Inicio />} />
+                <Route path="/perfil" element={<Inicio />} />
+                <Route path="/mis-actividades" element={<Inicio />} />
+                <Route path="/mis-eventos" element={<Inicio />} />
+                <Route path="/calendario" element={<Calendario />} />
+                <Route path="/ajustes" element={<Inicio />} />
+                <Route path="*" element={<Navigate to="/alumno/inicio" />} />
+              </Route>
+            </Routes>
+          </Suspense>
+      </EventosProvider>
+    </AlumnoProvider>
   );
 };
 

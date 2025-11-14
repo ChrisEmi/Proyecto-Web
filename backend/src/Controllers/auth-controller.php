@@ -45,6 +45,7 @@ class AuthController {
                 unset($usuario['contrasena']);
                 $jwt = $this->jwt($usuario['id_usuario'], $correo);
 
+
                 setcookie("token", $jwt, [
                     'expires' => time() + (60 * 60 * 24), 
                     'path' => '/',
@@ -58,7 +59,10 @@ class AuthController {
                     "status" => "success",
                     "usuario" => [
                         "id_usuario" => $usuario['id_usuario'],
-                        "rol" => $usuario['rol'],
+                        "nombre_tipo" => $usuario['rol'],
+                        "nombre" => $usuario['nombre'] ?? '',
+                        "apellido_paterno" => $usuario['apellido_paterno'] ?? '',
+                        "apellido_materno" => $usuario['apellido_materno'] ?? '',
                     ]
                 ]);
 

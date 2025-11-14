@@ -1,0 +1,82 @@
+import { useEffect, createContext, useContext, useState } from "react";
+import EventosAPI from "../Routes/Eventos.js";
+
+export const OrganizadorContext = createContext();
+
+export const useOrganizador = () => {
+    const context = useContext(OrganizadorContext);
+    if (!context) {
+        throw new Error("useOrganizador debe ser usado dentro de un OrganizadorProvider");
+    }
+    return context;
+}
+
+export const OrganizadorProvider = ({ children }) => {
+    const [eventosOrganizados, setEventosOrganizados] = useState([]);
+    const [inscripciones, setInscripciones] = useState([]);
+    const [errors, setErrors] = useState()
+
+    const crearEvento = async (formData) => {
+        try {
+            const res = await EventosAPI.crearEvento(formData);
+            return res.data.message;
+        } catch (error) {
+            console.error("Error al crear el evento:", error);
+            setErrors(error.response?.data?.message);
+        }
+    };
+
+    const actualizarEvento = async (id_evento, formData) => {
+        try {
+            const res = await EventosAPI.actualizarEvento(id_evento, formData);
+            return res.data.message;
+        } catch (error) {
+            console.error("Error al actualizar el evento:", error);
+            setErrors(error.response?.data?.message);
+        }
+    };
+
+    const obtenerEventosPorOrganizador = async (ordenar_por = 'nombre', direccion = 'ASC') => {
+        try {
+            const res = await EventosAPI.obtenerEventosPorOrganizador(ordenar_por, direccion);
+            setEventosOrganizados(res.data.eventos);
+        } catch (error) {
+            console.error("Error al obtener los eventos del organizador:", error);
+            setErrors(error.response?.data?.message);
+        }
+    };
+
+    const obtenerInscripcionesPorEvento = async (id_evento) => {
+        try {
+            const res = await EventosAPI.inscripcionesPorEvento(id_evento);
+            setInscripciones(res.data.inscripciones);
+        } catch (error) {
+            console.error("Error al obtener las inscripciones del evento:", error);
+            setErrors(error.response?.data?.message);
+            return [];
+        }
+    };
+
+    useEffect(() => {
+        if (errors && Object.keys(errors).length > 0) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+            }, 5150);
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
+
+    return (
+        <OrganizadorContext.Provider value={{
+            crearEvento,
+            actualizarEvento,
+            obtenerEventosPorOrganizador,
+            obtenerInscripcionesPorEvento,
+            eventosOrganizados,
+            inscripciones,
+            errors,
+        }}>
+            {children}
+        </OrganizadorContext.Provider>
+    );
+}

@@ -19,18 +19,15 @@ class AdminController {
     }
 
 
-    public function obtenerUsuarios($pool) {
+    public function obtenerUsuarios($pool, $rol, $ordenar_por = 'nombre', $direccion = 'ASC') {
         try {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $rol = $data['rol'] ?? null;
-
             $query = new QuerysAdmin($pool);
-            $usuarios = $query->obtenerUsuariosPorRol($rol);
+            $usuarios = $query->obtenerUsuariosPorRol($rol, $ordenar_por, $direccion);
 
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $usuarios
+                "usuarios" => $usuarios
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -132,7 +129,7 @@ class AdminController {
         }
     }
 
-    public function verificarEvento($pool) {
+    public function verificarEvento($pool, $id_evento) {
         $id_admin = AuthContext::obtenerIdUsuario();
 
         try {

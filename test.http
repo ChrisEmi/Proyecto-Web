@@ -104,6 +104,13 @@ Content-Type: application/json
     "contrasena": "admin_contraseña"
 }
 
+###
+
+### Test Obtener TODOS los usuarios
+GET http://proyecto-web.local/administrador/obtener-usuarios
+Content-Type: application/json
+
+
 ### Test Crear Evento (Organizador)
 POST http://proyecto-web.local/evento/crear
 Content-Type: application/json

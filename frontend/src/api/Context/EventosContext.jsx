@@ -1,0 +1,58 @@
+import { useEffect, createContext, useContext, useState } from "react";
+import EventosAPI from "../Routes/Eventos.js";
+
+export const EventosContext = createContext();
+
+export const useEventos = () => {
+    const context = useContext(EventosContext);
+    if (!context) {
+        throw new Error("useEventos debe ser usado dentro de un EventosProvider");
+    }
+    return context;
+}
+
+export const EventosProvider = ({ children }) => {
+    const [eventos, setEventos] = useState([]);
+    const [errors, setErrors] = useState();
+
+    const obtenerEventos = async (ordenar_por = 'nombre', direccion = 'ASC') => {
+        try {
+            const res = await EventosAPI.obtenerEventos(ordenar_por, direccion);
+            setEventos(res.data.eventos);
+        } catch (error) {
+            console.error("Error al obtener eventos:", error);
+            setErrors(error.response?.data?.message);
+        }
+    };
+
+    const obtenerEventoPorId = async (id) => {
+        try {
+            const res = await EventosAPI.obtenerEventoPorId(id);
+            return res.data.evento;
+        } catch (error) {
+            console.error("Error al obtener el evento:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        if (errors && Object.keys(errors).length > 0) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+            }, 5150);
+            return () => clearTimeout(timer);
+        }
+    }, [errors]);
+
+    return (
+        <EventosContext.Provider value={{
+            obtenerEventos,
+            obtenerEventoPorId,
+            eventos,
+            errors,
+        }}>
+            {children}
+        </EventosContext.Provider>
+    );
+}

@@ -32,7 +32,7 @@ const Login = () => {
   useEffect(() => {
     if (authSesion) {
       startTransition(() => {
-        switch (usuario.rol) {
+        switch (usuario.nombre_tipo) {
           case 'Administrador':
             navigate('/control/admin');
             break;

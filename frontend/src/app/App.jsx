@@ -1,6 +1,6 @@
-import Router from "./routes/RouterApp.jsx";
-import NavMenu from "./components/NavMenu.jsx";
-import Footer from "./components/Footer.jsx";
+import Router from "../routes/RouterApp.jsx";
+import NavMenu from "../components/layout/NavMenu.jsx";
+import Footer from "../components/layout/Footer.jsx";
 
 const App = () => {
   return (

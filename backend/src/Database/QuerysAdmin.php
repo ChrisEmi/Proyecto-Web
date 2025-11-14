@@ -13,14 +13,31 @@ class QuerysAdmin
         $this->pool = $pool;
     }
 
-    public function obtenerUsuariosPorRol(string $rol){
-        $stmt = $this->pool->prepare(
-            "SELECT u.id_usuario, u.nombre, u.correo, tu.nombre_tipo, u.estado, u.apellido_paterno
+    public function obtenerUsuariosPorRol($rol = '', $ordenar_por = 'nombre', $direccion = 'ASC'){
+        $columnas_validas = [
+            'nombre' => 'u.nombre',
+            'apellido_paterno' => 'u.apellido_paterno',
+        ];
+        $roles_validos = ['Estudiante', 'Organizador', 'Administrador'];
+        $direcciones_validas = (strtoupper($direccion) === 'ASC') ? 'ASC' : 'DESC';
+
+        $sql = "SELECT u.id_usuario, u.nombre, u.correo, tu.nombre_tipo, u.estado, u.apellido_paterno, u.apellido_materno
              FROM Usuario u
-             INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
-             WHERE tu.nombre_tipo IN (:rol)"
-        );
-        $stmt->bindParam(':rol', $rol);
+             INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario";
+        
+        $usarFiltroRol = $rol && in_array($rol, $roles_validos);
+        
+        if ($usarFiltroRol) {
+            $sql .= " WHERE tu.nombre_tipo = :rol";
+        }
+        
+        $sql .= " ORDER BY " . $columnas_validas[$ordenar_por] . " " . $direcciones_validas;
+        
+        $stmt = $this->pool->prepare($sql);
+        if ($usarFiltroRol) {
+            $stmt->bindParam(':rol', $rol);
+        }
+        
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

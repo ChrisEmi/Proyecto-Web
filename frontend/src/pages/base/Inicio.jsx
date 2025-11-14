@@ -1,14 +1,14 @@
-import { useAuth } from "../api/Context/AuthContext";
+import { useAuth } from "../../api/Context/AuthContext";
 import { useRef } from "react";
 
 
 import { useEffect } from "react";
-import eventos from "../api/Assets/EventosInicio";
+import eventos from "../../api/Assets/EventosInicio";
 
-import HeroInicio from "../components/inicio-sections/HeroInicio";
-import EventosHorizontal from "../components/inicio-sections/EventosHorizontal";
-import Actividades from "../components/inicio-sections/Actividades";
-import Contacto from "../components/inicio-sections/Contacto";
+import HeroInicio from "../../components/inicio-sections/HeroInicio";
+import EventosHorizontal from "../../components/inicio-sections/EventosHorizontal";
+import Actividades from "../../components/inicio-sections/Actividades";
+import Contacto from "../../components/inicio-sections/Contacto";
 
 
 const Inicio = () => {
