@@ -65,7 +65,7 @@ class QuerysEventos
         
         try {
             $sql = "INSERT INTO Evento(id_evento, titulo_evento, descripcion, fecha, ubicacion, id_categoria, cupo, id_organizador) 
-                    VALUES (:id_evento, :titulo_evento, :descripcion, :fecha, :ubicacion, :id_categoria, :cupo, :id_organizador)";
+                    VALUES (:id_evento, :titulo_evento, :descripcion, CONVERT(DATETIME, :fecha, 120), :ubicacion, :id_categoria, :cupo, :id_organizador)";
 
             $stmt = $this->pool->prepare($sql);
             $stmt->bindParam(':id_evento', $data['id_evento']);
@@ -73,8 +73,8 @@ class QuerysEventos
             $stmt->bindParam(':descripcion', $data['descripcion']);
             $stmt->bindParam(':fecha', $data['fecha']);
             $stmt->bindParam(':ubicacion', $data['ubicacion']);
-            $stmt->bindParam(':id_categoria', $data['id_categoria']);
-            $stmt->bindParam(':cupo', $data['cupo']);
+            $stmt->bindParam(':id_categoria', $data['id_categoria'], \PDO::PARAM_INT);
+            $stmt->bindParam(':cupo', $data['cupo'], \PDO::PARAM_INT);
             $stmt->bindParam(':id_organizador', $data['id_organizador']);
             $stmt->execute();
 
@@ -208,9 +208,9 @@ class QuerysEventos
         $stmt->execute();
         $evento = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->imagenesTagsPorEvento([$evento]);
+        $res = $this->imagenesTagsPorEvento([$evento]);
 
-        return $evento;
+        return $res;
     }
 
     public function obtenerEventosPorUsuarioQuery($id_usuario, $ordenar_por = 'fecha', $direccion = 'DESC'){
@@ -244,6 +244,7 @@ class QuerysEventos
         $columnas_validas = [
             'titulo' => 'e.titulo_evento', 
             'fecha' => 'e.fecha',
+            'fecha_creacion' => 'e.fecha_creacion',
             'organizador' => 'o.empresa',
             'categoria' => 'c.nombre_categoria',
             'ubicacion' => 'e.ubicacion'
@@ -261,9 +262,9 @@ class QuerysEventos
         $stmt->execute();
         $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $this->imagenesTagsPorEvento($eventos);
+        $res = $this->imagenesTagsPorEvento($eventos);
 
-        return $eventos;
+        return $res;
     }
 
     public function actualizarEstadoEventoQuery($id_evento, $id_admin){

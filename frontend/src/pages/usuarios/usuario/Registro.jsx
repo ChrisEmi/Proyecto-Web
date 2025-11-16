@@ -13,8 +13,8 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 library.add(fas);
 
 
-import { useAuth } from "../../api/Context/AuthContext";
-import {IconoEscom} from "../../components/assets/ElementosSvg";
+import { useAuth } from "../../../api/Context/AuthContext";
+import {IconoEscom} from "../../../components/assets/ElementosSvg";
 
 
 const Registro = () => {

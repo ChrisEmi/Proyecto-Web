@@ -18,8 +18,8 @@ const InicioOrganizador = () => {
 		<div className="container-inicio p-6 md:p-10 space-y-8">
 			<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 				<div>
-					<h1 className="text-3xl md:text-4xl font-bold text-escom-sombra-400">
-						<FontAwesomeIcon icon={['fas', 'user']} className="mr-2" /> Bienvenido {usuario.nombre?.split(' ')[0]}
+					<h1 className="text-3xl md:text-4xl font-bold text-escom-900">
+						<FontAwesomeIcon icon={['fas', 'user']} className="mr-2" /> Bienvenid@ {usuario.nombre?.split(' ')[0]}
 					</h1>
 				</div>
 				<div className="text-sm text-gray-500 uppercase">
@@ -27,20 +27,20 @@ const InicioOrganizador = () => {
 					{new Date().toLocaleDateString('es-MX', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
 				</div>
 			</div>
-			<div className="bg-gradient-to-br h-60 flex flex-col justify-center from-escom-400/40 to-escom-600/40 rounded-2xl shadow-md p-8 text-escom-sombra-400">
+			<div className="bg-gradient-to-br h-60 flex flex-col justify-center from-escom-700/90 to-escom-900/90 rounded-2xl shadow-md p-8 text-white">
 				<div className="flex flex-col md:flex-row items-center justify-between">
 					<div className="flex-1">
 						<h2 className="text-2xl md:text-3xl font-bold mb-3">
 							Sistema de Gestion de Actividades y Eventos de la ESCOMunidad
 						</h2>
-						<p className="text-escom-50 mb-4">
-							Administra eventos culturales, usuarios y actividades de manera eficiente
+						<p className="text-escom-100 mb-4">
+							Administra tus eventos culturales, usuarios y actividades de manera eficiente
 						</p>
 						<NavLink 
-							to="/control/admin/usuarios"
-							className="inline-flex items-center gap-2 bg-white text-escom-sombra-600 px-6 py-3 rounded-xl font-semibold hover:shadow-xl transition-all"
+							to="/organizador/eventos"
+							className="inline-flex items-center gap-2 bg-white text-escom-800 px-6 py-3 rounded-xl font-semibold hover:shadow-xl transition-all"
 						>
-							Ver mi calendario
+							Ver mis eventos
 							<FontAwesomeIcon icon={['fas', 'arrow-right']} />
 						</NavLink>
 					</div>
@@ -55,7 +55,7 @@ const InicioOrganizador = () => {
 				<div className="lg:col-span-2">
 					<div className="bg-white rounded-2xl shadow-md p-6 min-h-90 flex flex-col">
 						<h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-							<FontAwesomeIcon icon={['fas', 'bolt']} className="mr-3 text-escom-400" />
+							<FontAwesomeIcon icon={['fas', 'bolt']} className="mr-3 text-escom-700" />
 							Accesos Rápidos
 						</h2>
 						{/*<div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-full items-center justify-center">
@@ -89,7 +89,7 @@ const InicioOrganizador = () => {
 				<div className="lg:col-span-1">
 					<div className="bg-white rounded-2xl shadow-md p-6 h-full flex flex-col">
 						<h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-							<FontAwesomeIcon icon={['fas', 'clock']} className="mr-3 text-escom-400" />
+							<FontAwesomeIcon icon={['fas', 'clock']} className="mr-3 text-escom-700" />
 							Actividad Reciente
 						</h2>
 						{/*<div className="space-y-4 overflow-y-auto">
@@ -105,7 +105,7 @@ const InicioOrganizador = () => {
 								</div>
 							))}
 						</div>*/}
-						<button className="w-full mt-4 py-2 text-sm text-escom-500 hover:bg-escom-50 rounded-lg transition-colors font-medium">
+						<button className="w-full mt-4 py-2 text-sm text-escom-700 hover:bg-escom-100 rounded-lg transition-colors font-medium">
 							Ver todo
 						</button>
 					</div>

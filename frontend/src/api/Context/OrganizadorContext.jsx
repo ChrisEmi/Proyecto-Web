@@ -19,7 +19,8 @@ export const OrganizadorProvider = ({ children }) => {
     const crearEvento = async (formData) => {
         try {
             const res = await EventosAPI.crearEvento(formData);
-            return res.data.message;
+            console.log('Evento creado:', res.data);
+            return res.data.eventoCreado;
         } catch (error) {
             console.error("Error al crear el evento:", error);
             setErrors(error.response?.data?.message);
@@ -40,6 +41,7 @@ export const OrganizadorProvider = ({ children }) => {
         try {
             const res = await EventosAPI.obtenerEventosPorOrganizador(ordenar_por, direccion);
             setEventosOrganizados(res.data.eventos);
+            console.log("Eventos obtenidos:", res.data);
         } catch (error) {
             console.error("Error al obtener los eventos del organizador:", error);
             setErrors(error.response?.data?.message);

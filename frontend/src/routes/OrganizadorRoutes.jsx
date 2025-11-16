@@ -7,6 +7,10 @@ import { EventosProvider } from '../api/Context/EventosContext.jsx';
 
 const Inicio = lazy(() => import('../pages/usuarios/organizador/InicioOrganizador.jsx'));
 const Calendario = lazy(() => import('../pages/usuarios/organizador/CalendarioOrganizador.jsx'));
+const CrearEvento = lazy(() => import('../pages/usuarios/organizador/CrearEvento.jsx'));
+const Eventos = lazy(() => import('../pages/usuarios/organizador/Eventos.jsx'));
+
+
 const OrganizadorRoutes = () => {
   return (
     <OrganizadorProvider>
@@ -16,8 +20,9 @@ const OrganizadorRoutes = () => {
               <Route element={<OrganizadorLayout />}>
                 <Route path="/inicio" element={<Inicio />} />
                 <Route path="/perfil" element={<Inicio />} />
-                <Route path="/mis-actividades" element={<Inicio />} />
-                <Route path="/mis-eventos" element={<Inicio />} />
+                <Route path="/crear-evento" element={<CrearEvento />} />
+                <Route path="/eventos" element={<Eventos />} />
+                <Route path="/inscripciones" element={<Inicio />} />
                 <Route path="/calendario" element={<Calendario />} />
                 <Route path="/ajustes" element={<Inicio />} />
                 <Route path="*" element={<Navigate to="/organizador/inicio" />} />

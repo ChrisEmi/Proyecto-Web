@@ -20,13 +20,15 @@ class EventoController {
             http_response_code(201);
             echo json_encode([
                 "status" => "success",
-                "message" => "Evento creado exitosamente"
+                "message" => "Evento creado exitosamente",
+                "eventoCreado" => $datos
             ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 "status" => "error",
-                "message" => $e->getMessage()
+                "message" => $e->getMessage(),
+                "trace" => $e->getTraceAsString()
             ]);
         }
     }
@@ -156,12 +158,10 @@ class EventoController {
         }
     }
 
-    public function obtenerEventosPorOrganizador($pool){
+    public function obtenerEventosPorOrganizador($pool, $ordenar_por, $direccion){
         $id_organizador = AuthContext::obtenerIdUsuario();
 
         try {
-            $ordenar_por = $_GET['ordenar_por'] ?? 'fecha';
-            $direccion = $_GET['direccion'] ?? 'DESC';
 
             $eventoModel = new QuerysEventos($pool);
             $eventos = $eventoModel->obtenerEventosPorOrganizadorQuery($id_organizador, $ordenar_por, $direccion);
@@ -169,7 +169,7 @@ class EventoController {
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $eventos
+                "eventos" => $eventos
             ]);
         } catch (Exception $e) {
             http_response_code(500);

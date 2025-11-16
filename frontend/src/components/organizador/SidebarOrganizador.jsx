@@ -9,17 +9,17 @@ import { useAuth } from "../../api/Context/AuthContext";
 import gsap from "gsap";
 
 const linksArreglo = [
-        { to: "/control/admin/inicio", icon: "home", label: "Inicio" },
-        { to: "/control/admin/usuarios", icon: "users", label: "Usuarios" },
-        { to: "/control/admin/eventos", icon: "calendar", label: "Eventos" },
-        { to: "/control/admin/crear-usuario", icon: "user-plus", label: "Crear Usuario" },
-        { to: "/control/admin/perfil", icon: "user", label: "Perfil" },
-        { to: "/control/admin/ajustes", icon: "cog", label: "Ajustes" },
+        { to: "/organizador/inicio", icon: "home", label: "Inicio" },
+        { to: "/organizador/perfil", icon: "user", label: "Perfil" },
+        { to: "/organizador/eventos", icon: "calendar", label: "Mis Eventos" },
+        { to: "/organizador/crear-evento", icon: "calendar-plus", label: "Crear Evento" },
+        { to: "/organizador/inscripciones", icon: "list", label: "Inscripciones" },
+        { to: "/organizador/ajustes", icon: "cog", label: "Ajustes" },
 ];
     
 const SidebarOrganizador = () => {
     library.add(fas)
-    const [esAbierto, setEsAbierto] = useState(true);
+    const [esAbierto, setEsAbierto] = useState(false);
     const sidebarRef = useRef(null);
     const logoRef = useRef(null);
     const overlayRef = useRef(null);
@@ -102,7 +102,7 @@ const SidebarOrganizador = () => {
                     h-[80vh] md:h-auto 
                     flex flex-col
                     
-                    bg-white/40 text-white 
+                    bg-white/20 text-white 
                     gap-10 
                     rounded-l-3xl md:rounded-l-3xl
                     shadow-xl
@@ -112,13 +112,13 @@ const SidebarOrganizador = () => {
                     ${!esAbierto && '-translate-x-[200vw] md:translate-x-0'}
                 `}
             >
-                <button className="hidden md:block absolute top-1/2 -right-4 bg-escom-sombra-400 rounded-full py-2 px-2 cursor-pointer" onClick={sidebarOpens}>
+                <button className="hidden md:block absolute top-1/2 -right-4 bg-escom-700 rounded-full py-2 px-2 cursor-pointer" onClick={sidebarOpens}>
                     <FontAwesomeIcon icon={['fas', esAbierto ? 'angle-left' : 'angle-right']} className="text-white"/>
                 </button>
             <div className={`flex flex-col items-center border-b border-escom-100 px-10 ${esAbierto ? '' : 'p-3'}`}>
                 <IconoEscom 
                     ref={logoRef}
-                    className={`rounded-full ${esAbierto ? 'w-28 h-28 md:w-30 md:h-30' : 'bg-white text-escom-sombra-400 w-14 h-14 p-1.5 md:w-15 md:h-15'}`} 
+                    className={`rounded-full ${esAbierto ? 'w-28 h-28 md:w-30 md:h-30' : 'bg-white text-escom-800 w-14 h-14 p-1.5 md:w-15 md:h-15'}`} 
                 />
                 {esAbierto && (
                     <h1 className="text-2xl md:text-2xl font-bold text-center text-white pb-5 titulo-sidebar">
@@ -133,7 +133,7 @@ const SidebarOrganizador = () => {
                         to={to}
                         onClick={handleLinkClick}
                         className={({ isActive }) => 
-                            `flex rounded-full ${esAbierto ? 'px-6' : 'px-3'} py-3 hover:text-escom-300 ${isActive ? 'bg-white text-escom-sombra-300' : ''} ${esAbierto ? '' : 'justify-center'}`
+                            `flex rounded-full ${esAbierto ? 'px-6' : 'px-3'} py-3 hover:text-escom-200 ${isActive ? 'bg-white text-escom-700' : ''} ${esAbierto ? '' : 'justify-center'}`
                         }
                         title={!esAbierto ? label : ''}
                     >
@@ -146,7 +146,7 @@ const SidebarOrganizador = () => {
                     </NavLink>
                 ))}
             </div>
-            <button onClick={cerrarSesion} className={`cursor-pointer absolute bottom-4 text-left py-3 hover:text-escom-300 font-bold rounded-full ${esAbierto ? 'right-0 px-6' : 'left-1/2 -translate-x-1/2 px-3 md:block hidden'}`}>
+            <button onClick={cerrarSesion} className={`cursor-pointer absolute bottom-4 text-left py-3 hover:text-escom-200 font-bold rounded-full ${esAbierto ? 'right-0 px-6' : 'left-1/2 -translate-x-1/2 px-3 md:block hidden'}`}>
                 <FontAwesomeIcon icon={['fas', 'sign-out-alt']} className={esAbierto ? "mr-2" : ""} />
                 {esAbierto && <span id="texto-cerrar-boton">Cerrar Sesión</span>}
             </button>

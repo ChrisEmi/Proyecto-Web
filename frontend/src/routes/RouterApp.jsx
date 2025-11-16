@@ -2,8 +2,8 @@ import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 
 import Inicio from "../pages/base/Inicio.jsx";
-import Login from "../pages/usuarios/Login.jsx";
-import Registro from "../pages/usuarios/Registro.jsx";
+import Login from "../pages/usuarios/usuario/Login.jsx";
+import Registro from "../pages/usuarios/usuario/Registro.jsx";
 import SinPermiso from "../pages/base/SinPermiso.jsx";
 
 import { AuthGuard } from "../guards/AuthGuard.jsx";

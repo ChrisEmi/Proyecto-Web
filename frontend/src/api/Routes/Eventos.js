@@ -14,10 +14,10 @@ const EventosAPI = {
   },
   obtenerEventosPorOrganizador: (ordenar_por, direccion) => {
     return axios.get(
-      `/eventos/obtener-por-organizador/${ordenar_por}/${direccion}`
+      `/evento/obtener-por-organizador/${ordenar_por}/${direccion}`
     );
   },
-  crearEvento: (formData) => axios.post("/eventos/crear", formData),
+  crearEvento: (formData) => axios.post("/evento/crear", formData),
   actualizarEvento: (id_evento, formData) =>
     axios.put(`/eventos/actualizar/${id_evento}`, formData),
   inscribirseEvento: (id_evento) =>

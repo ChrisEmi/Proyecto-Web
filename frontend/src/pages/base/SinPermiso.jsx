@@ -14,7 +14,6 @@ const SinPermiso = () => {
 
       <div className="max-w-4xl w-full relative z-10">
         <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl p-8 md:p-12 lg:p-16 border border-escom-200/50">
-          {/* Icono principal */}
           <div className="flex justify-center mb-8">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-900 rounded-full blur-2xl opacity-30 animate-pulse"></div>
