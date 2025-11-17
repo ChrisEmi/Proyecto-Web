@@ -292,12 +292,12 @@ const CrearEvento = () => {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         {imagenes.length === 0 ? (
                             <p className="text-gray-400 italic col-span-full">No hay imágenes agregadas</p>
                         ) : (
                             imagenes.map((imagen, index) => (
-                                <div key={index} className="relative w-1/2 group border-2 border-gray-200 rounded-xl overflow-hidden hover:border-escom-500 transition-all">
+                                <div key={index} className="relative w-full group border-2 border-gray-200 rounded-xl overflow-hidden hover:border-escom-500 transition-all">
                                     <img
                                         src={imagen.src}
                                         alt={imagen.descripcion}

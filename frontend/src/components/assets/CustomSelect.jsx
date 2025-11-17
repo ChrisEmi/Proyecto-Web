@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar...", color = "escom-400" }) => {
+const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar...", color = "escom-400", disabled = false, defaultValue }) => {
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef(null);
+    const [selectedValue, setSelectedValue] = useState(defaultValue || value);
 
     const colorClasses = {
         'escom-300': {
@@ -41,23 +42,33 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
             }
         };
 
-        document.addEventListener("mousedown", handleClickOutside);
+        if (isOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        
         return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    }, [isOpen]);
 
     const handleSelect = (optionValue) => {
+        setSelectedValue(optionValue);
         onChange(optionValue);
         setIsOpen(false);
     };
 
-    const selectedOption = options.find(opt => opt.value === value);
+    const currentValue = value !== undefined ? value : selectedValue;
+    const selectedOption = options.find(opt => opt.value === currentValue);
 
     return (
         <div ref={selectRef} className="relative">
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
-                className={`relative appearance-none bg-white text-sm text-escom-sombra-600 pl-4 pr-20 py-2 rounded-xl font-semibold hover:shadow-xl transition-all cursor-pointer border-2 border-transparent ${currentColor.hoverBorder} w-full text-left flex items-center justify-between`}
+                onClick={() => !disabled && setIsOpen(!isOpen)}
+                disabled={disabled}
+                className={`relative appearance-none bg-white text-sm pl-4 pr-20 py-2 rounded-xl font-semibold transition-all w-full text-left flex items-center justify-between ${
+                    disabled 
+                        ? 'border-escom-200 bg-escom-50 text-escom-sombra-400 cursor-not-allowed' 
+                        : `text-escom-sombra-600 hover:shadow-xl cursor-pointer border-transparent ${currentColor.hoverBorder}`
+                }`}
             >
                 <span className="flex items-center gap-2">
                     {selectedOption?.label || placeholder}
@@ -79,7 +90,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
                                 type="button"
                                 onClick={() => handleSelect(option.value)}
                                 className={`w-full text-left px-4 py-3 transition-all duration-200 font-semibold text-sm
-                                    ${value === option.value 
+                                    ${currentValue === option.value 
                                         ? `${currentColor.bg} text-white` 
                                         : 'text-escom-sombra-600 hover:bg-escom-50 hover:text-escom-700'
                                     }
@@ -93,7 +104,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
                                             <FontAwesomeIcon icon={['fas', option.icon]} className="text-sm" />
                                         )}
                                     </span>
-                                    {value === option.value && (
+                                    {currentValue === option.value && (
                                         <FontAwesomeIcon 
                                             icon={['fas', 'check']} 
                                             className="text-sm"

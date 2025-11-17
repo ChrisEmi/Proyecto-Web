@@ -139,6 +139,9 @@ Content-Type: application/json
 GET http://proyecto-web.local/evento/obtener
 Content-Type: application/json
 
+### Test Obtener Evento por ID
+GET http://proyecto-web.local/evento/obtener/c24300b5c9b3255b
+
 ### Test Inscribirse a Evento (Usuario)
 POST http://proyecto-web.local/evento/inscripcion-usuario
 Content-Type: application/json

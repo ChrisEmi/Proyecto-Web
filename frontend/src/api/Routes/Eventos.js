@@ -5,7 +5,7 @@ const EventosAPI = {
     return axios.get(`/eventos/obtener-eventos/${ordenar_por}/${direccion}`);
   },
   obtenerEventoPorId: (id) => {
-    return axios.get(`/eventos/obtener-evento/${id}`);
+    return axios.get(`/evento/obtener/${id}`);
   },
   obtenerEventosPorUsuario: (ordenar_por, direccion) => {
     return axios.get(
