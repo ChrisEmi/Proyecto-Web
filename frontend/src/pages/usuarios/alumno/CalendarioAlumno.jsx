@@ -1,12 +1,12 @@
 import { Calendar, dayjsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './CalendarioAlumno.css'; 
 import dayjs from 'dayjs'
 import 'dayjs/locale/es';
 import { useMemo, useState } from 'react';
 import { useAlumno } from '../../../api/Context/AlumnoContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDay, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import '../../../styles/Calendario.css';
 
 
 const CalendarioAlumno = () => {

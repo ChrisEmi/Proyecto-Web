@@ -180,7 +180,8 @@ class QuerysEventos
             'fecha' => 'e.fecha',
             'organizador' => 'o.empresa',
             'categoria' => 'c.nombre_categoria',
-            'ubicacion' => 'e.ubicacion'
+            'ubicacion' => 'e.ubicacion',
+            'fecha_creacion' => 'e.fecha_creacion'
         ];
         $direcciones_validas = (strtoupper($direccion) === 'ASC') ? 'ASC' : 'DESC';
 

@@ -133,9 +133,6 @@ class AdminController {
         $id_admin = AuthContext::obtenerIdUsuario();
 
         try {
-            $data = json_decode(file_get_contents("php://input"), true);
-            $id_evento = $data['id_evento'] ?? null;
-
             if (!$id_evento) {
                 http_response_code(400);
                 echo json_encode([
@@ -168,6 +165,34 @@ class AdminController {
             echo json_encode([
                 "status" => "error",
                 "message" => "Error al verificar el evento: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function eliminarEvento($pool, $id_evento) {
+        try {
+            if (!$id_evento) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "ID de evento no proporcionado"
+                ]);
+                return;
+            }
+
+            $eventoModel = new QuerysAdmin($pool);
+            $eventoModel->eliminarEventoQuery($id_evento);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Evento eliminado exitosamente"
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al eliminar el evento: " . $e->getMessage()
             ]);
         }
     }

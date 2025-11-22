@@ -92,4 +92,47 @@ class QuerysAdmin
             throw new \Exception("Error al crear usuario: " . $e->getMessage());
         }
     }
+
+    public function eliminarEventoQuery($id_evento){
+        $this->pool->beginTransaction();
+        
+        try {
+            // Log del ID que llega
+            error_log("Intentando eliminar evento con ID: " . $id_evento);
+            
+            $sql1 = "DELETE FROM InscripcionEvento WHERE id_evento = :id_evento";
+            $stmt1 = $this->pool->prepare($sql1);
+            $stmt1->bindParam(':id_evento', $id_evento, PDO::PARAM_STR);
+            $stmt1->execute();
+            error_log("InscripcionEvento eliminadas: " . $stmt1->rowCount());
+
+            $sql3 = "DELETE FROM TagsEvento WHERE id_evento = :id_evento";
+            $stmt3 = $this->pool->prepare($sql3);
+            $stmt3->bindParam(':id_evento', $id_evento, PDO::PARAM_STR);
+            $stmt3->execute();
+            error_log("TagsEvento eliminados: " . $stmt3->rowCount());
+
+            $sql4 = "DELETE FROM EventoImagen WHERE id_evento = :id_evento";
+            $stmt4 = $this->pool->prepare($sql4);
+            $stmt4->bindParam(':id_evento', $id_evento, PDO::PARAM_STR);
+            $stmt4->execute();
+            error_log("EventoImagen eliminadas: " . $stmt4->rowCount());
+
+            $sql5 = "DELETE FROM Evento WHERE id_evento = :id_evento";
+            $stmt5 = $this->pool->prepare($sql5);
+            $stmt5->bindParam(':id_evento', $id_evento, PDO::PARAM_STR);
+            $stmt5->execute();
+            $rowsDeleted = $stmt5->rowCount();
+            error_log("Evento eliminado: " . $rowsDeleted);
+
+            if ($rowsDeleted === 0) {
+                throw new \Exception("No se encontró el evento con ID: " . $id_evento);
+            }
+
+            $this->pool->commit();
+        } catch (\Exception $e) {
+            $this->pool->rollBack();
+            throw new \Exception("Error al eliminar evento: " . $e->getMessage());
+        }
+    }
 }

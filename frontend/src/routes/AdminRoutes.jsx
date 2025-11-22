@@ -7,6 +7,7 @@ import { EventosProvider } from '../api/Context/EventosContext.jsx';
 
 const Inicio = lazy(() => import('../pages/usuarios/admin/InicioAdmin.jsx'));
 const Usuarios = lazy(() => import('../pages/usuarios/admin/UsuarioAdmin.jsx'));
+const Eventos = lazy(() => import('../pages/usuarios/admin/Eventos.jsx'));
 const Perfil = lazy(() => import('../pages/usuarios/admin/PerfilAdmin'));
 
 const AdminRoutes = () => {
@@ -19,7 +20,7 @@ const AdminRoutes = () => {
                 <Route path="/inicio" element={<Inicio />} />
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/usuarios" element={<Usuarios />} />
-                <Route path="/eventos" element={<Perfil />} />
+                <Route path="/eventos" element={<Eventos />} />
                 <Route path="/crear-usuario" element={<Perfil />} />
                 <Route path="/ajustes" element={<Perfil />} />
                 <Route path="*" element={<Navigate to="/control/admin/inicio" />} />

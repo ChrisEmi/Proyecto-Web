@@ -2,7 +2,7 @@ import axios from "./axios.js";
 
 const EventosAPI = {
   obtenerEventos: (ordenar_por, direccion) => {
-    return axios.get(`/eventos/obtener-eventos/${ordenar_por}/${direccion}`);
+    return axios.get(`/evento/obtener/${ordenar_por}/${direccion}`);
   },
   obtenerEventoPorId: (id) => {
     return axios.get(`/evento/obtener/${id}`);
@@ -26,6 +26,8 @@ const EventosAPI = {
     axios.post(`/eventos/desinscribirse/${id_evento}`),
   inscripcionesPorEvento: (id_evento) =>
     axios.get(`/eventos/inscripciones-por-evento/${id_evento}`),
+  eliminarEvento: (id_evento) =>
+    axios.post(`/evento/eliminar-evento/${id_evento}`),
 };
 
 export default EventosAPI;

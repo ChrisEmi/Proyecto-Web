@@ -49,11 +49,19 @@ function admin_routes($router) {
         });
     });
 
-    $router->post('/administrador/verificar-evento', function() use ($db) {
+    $router->post('/administrador/verificar-evento/{id_evento}', function($id_evento) use ($db) {
         $middleware = new AdminMiddleware();
-        $middleware->handle(function() use ($db) {
+        $middleware->handle(function() use ($db, $id_evento) {
             $controller = new AdminController();
-            $controller->verificarEvento($db);
+            $controller->verificarEvento($db, $id_evento);
+        });
+    });
+
+    $router->post('/administrador/eliminar-evento/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new AdminController();
+            $controller->eliminarEvento($db, $id_evento);
         });
     });
 

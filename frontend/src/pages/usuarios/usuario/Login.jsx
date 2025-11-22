@@ -15,12 +15,13 @@ library.add(fas);
 
 import { useAuth } from "../../../api/Context/AuthContext";
 import {IconoEscom} from "../../../components/assets/ElementosSvg";
+import { CampoTexto } from "../../../components/assets/CampoTexto";
+import { CampoContrasena } from "../../../components/assets/CampoContrasena";
 
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const { iniciarSesion, usuario, authSesion, errors: authErrors } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
   const [showError, setShowError] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState(false);
 
@@ -174,57 +175,21 @@ const Login = () => {
 
           
           <div className="container-login w-full max-w-md flex flex-col gap-4 md:gap-5 lg:absolute lg:bottom-16 xl:bottom-20">
-            <div>
-              <label className="block mb-1 md:mb-2 text-xs md:text-sm font-semibold text-escom-900" htmlFor="correo">
-                Correo Electrónico
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-escom-700 text-sm md:text-base">
-                  <FontAwesomeIcon icon="fa-solid fa-envelope" />
-                </span>
-                <input
-                  className="w-full pl-9 md:pl-10 pr-4 py-2 md:py-3 text-sm md:text-base border-2 border-escom-200 rounded-lg md:rounded-xl focus:border-escom-700 focus:outline-none focus:ring-2 focus:ring-escom-300 transition-all text-escom-900 placeholder:text-escom-sombra-300"
-                  type="email"
-                  id="correo"
-                  placeholder="Correo Institucional"
-                  {...register("correo")}
-                  required
-                />
-              </div>
-            </div>
+            <CampoTexto 
+              label="Correo Electrónico"
+              id="correo"
+              type="email"
+              placeholder="Correo Institucional"
+              register={register}
+              icon="fa-solid fa-envelope"
+            />
             
-            <div className="relative">
-              <label className="block mb-1 md:mb-2 text-xs md:text-sm font-semibold text-escom-900" htmlFor="contrasena">
-                Contraseña
-              </label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-escom-700 text-sm md:text-base">
-                  <FontAwesomeIcon icon="fa-solid fa-lock" />
-                </span>
-                <input
-                  className="w-full pl-9 md:pl-10 pr-11 md:pr-12 py-2 md:py-3 text-sm md:text-base border-2 border-escom-200 rounded-lg md:rounded-xl focus:border-escom-700 focus:outline-none focus:ring-2 focus:ring-escom-300 transition-all text-escom-900 placeholder:text-escom-sombra-300"
-                  type={showPassword ? "text" : "password"}
-                  id="contrasena"
-                  placeholder="••••••••"
-                  {...register("contrasena")}
-                  required
-                />
-                <button 
-                  type="button" 
-                  className="absolute right-2 md:right-3 top-1/2 -translate-y-1/2 cursor-pointer hover:bg-escom-100 rounded-full p-1.5 md:p-2 transition-all text-escom-700 hover:text-escom-900 text-sm md:text-base"
-                  onMouseDown={() => setShowPassword(true)}
-                  onMouseUp={() => setShowPassword(false)}
-                  onTouchStart={() => setShowPassword(true)}
-                  onTouchEnd={() => setShowPassword(false)}
-                  onMouseLeave={() => setShowPassword(false)}
-                >
-                  {showPassword ? 
-                    <FontAwesomeIcon icon="fa-solid fa-eye" /> : 
-                    <FontAwesomeIcon icon="fa-solid fa-eye-slash" />
-                  }
-                </button>
-              </div>
-            </div>
+            <CampoContrasena 
+              label="Contraseña"
+              id="contrasena"
+              placeholder="••••••••"
+              register={register}
+            />
             
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <span className="text-xs md:text-sm text-escom-900 font-semibold">¿Olvidaste tu contraseña?</span>
@@ -254,3 +219,4 @@ const Login = () => {
 };
 
 export default Login;
+

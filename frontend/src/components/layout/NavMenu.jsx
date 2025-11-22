@@ -30,6 +30,13 @@ export default function NavMenu() {
         
         if (menuOpen) {
             tl.current.reverse();
+            gsap.to(".boton-menu-mobile", {
+                autoAlpha: 1, 
+                x: 0,
+                duration: 0.3,
+                ease: 'power1.inOut',
+                overwrite: true
+            });
         }else {
             tl.current.play();
             tl2.current.reverse();
@@ -42,14 +49,31 @@ export default function NavMenu() {
   
     const cerrarMenu = () => {
         if (menuOpen) { 
-        tl.current.reverse();
-        setMenuOpen(false);
-        
-        // Emitir evento de menú cerrado
-        window.dispatchEvent(new CustomEvent('menuToggle', { 
-            detail: { isOpen: false } 
-        }));
+            tl.current.reverse();
+            setMenuOpen(false);
+            
+            window.dispatchEvent(new CustomEvent('menuToggle', { 
+                detail: { isOpen: false } 
+            }));
         }
+
+        gsap.to(".boton-menu-mobile", {
+            autoAlpha: 1, 
+            x: 0,
+            duration: 0.3,
+            ease: 'power1.inOut',
+            overwrite: true
+        });
+    }
+
+    const botonMenuMobile = () => {
+        gsap.to(".boton-menu-mobile", {
+            autoAlpha: 0,
+            x: -20,
+            duration: 0.3,
+            ease: 'power1.inOut'
+        });
+        botonMenu();
     }
 
     const botonesNavAnimacion = () => {
@@ -141,8 +165,11 @@ export default function NavMenu() {
 
     return (
         <>
-            <div className={`nav-container group relative md:fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ${menuOpen ? '-translate-y-full md:translate-y-0 md:pointer-events-none' : ''}`}>
-                <div className="absolute inset-x-0 top-0 h-20 lg:h-24 bg-gradient-to-br from-escom-sombra-700/40 via-escom-sombra-500/60 to-escom-sombra-400/70 border-b border-white/5 shadow-xl shadow-black/20 -translate-y-0 group-hover:translate-y-0 md:translate-y-0 lg:-translate-y-full transition-all duration-500 ease-out">
+            <button onClick={botonMenuMobile} className={`boton-menu-mobile fixed top-4 right-4 z-50 md:hidden block`}>
+                <FontAwesomeIcon icon="fa-solid fa-arrow-left" className="bg-escom-900 text-white p-4 rounded-full"/>
+            </button>
+            <div className={`nav-container group relative md:fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ${menuOpen ? '-translate-y-full md:pointer-events-none' : ''}`}>
+                <div className="absolute inset-x-0 top-0 h-20 lg:h-24 bg-gradient-to-br from-escom-sombra-700/40 via-escom-sombra-500/60 to-escom-sombra-400/70 border-b hidden lg:block border-white/5 shadow-xl shadow-black/20 -translate-y-0 group-hover:translate-y-0 md:translate-y-0 lg:-translate-y-full transition-all duration-500 ease-out">
                     <div className="w-full px-4 sm:px-8 lg:px-16 xl:px-24 h-full flex justify-between items-center">
                         <Link 
                             to={
@@ -216,15 +243,14 @@ export default function NavMenu() {
                         </div>
                     </div>
                 </div>
-                <div className="h-20 lg:h-24 w-full"></div>
+                <div className="h-0 lg:h-24 w-full"></div>
             </div>
             <>
-
                 <div 
                     onClick={cerrarMenu}
                     className={`
                     fixed inset-0 bg-gradient-to-b from-escom-sombra-300/95 to-escom-sombra-800/95 z-40
-                    opacity-0 w-0 lg:w-full ${menuOpen ? '' : 'pointer-events-none'}
+                    opacity-0 w-0 lg:w-full ${menuOpen ? 'hidden lg:block' : 'pointer-events-none'}
                     `}
                     id="bg-logo"
                     >
@@ -233,9 +259,8 @@ export default function NavMenu() {
                 </div>
                 <div 
                     id="nav-menu"
-                    style={{ backdropFilter: 'blur(0px)' }}
                     className={`
-                    fixed top-0 right-0 w-full md:w-3/4 lg:w-1/2 h-full bg-gradient-to-br from-escom-sombra-600/50 to-escom-sombra-800
+                    fixed top-0 right-0 w-full md:w-3/4 lg:w-1/2 h-full bg-gradient-to-br from-escom-sombra-600/90 to-escom-sombra-800/90
                     transform opacity-100 z-40
                     translate-x-full ${menuOpen ? '' : 'pointer-events-none'}
                     `}
@@ -359,7 +384,6 @@ export default function NavMenu() {
                                         <Link to="/alumno/calendario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</Link>
                                         <Link to="/alumno/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos</Link>
                                         <Link to="/alumno/actividades" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</Link>
-                                        <Link to="/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Explorar Eventos</Link>
                                     </>
                                 )}
                             </>

@@ -15,11 +15,12 @@ export const OrganizadorProvider = ({ children }) => {
     const [eventosOrganizados, setEventosOrganizados] = useState([]);
     const [inscripciones, setInscripciones] = useState([]);
     const [errors, setErrors] = useState()
+    const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
 
     const crearEvento = async (formData) => {
         try {
             const res = await EventosAPI.crearEvento(formData);
-            console.log('Evento creado:', res.data);
+            setMensajeConfirmacion(res.data.message);
             return res.data.eventoCreado;
         } catch (error) {
             console.error("Error al crear el evento:", error);
@@ -30,6 +31,7 @@ export const OrganizadorProvider = ({ children }) => {
     const actualizarEvento = async (id_evento, formData) => {
         try {
             const res = await EventosAPI.actualizarEvento(id_evento, formData);
+            setMensajeConfirmacion(res.data.message);
             return res.data.message;
         } catch (error) {
             console.error("Error al actualizar el evento:", error);
@@ -60,14 +62,15 @@ export const OrganizadorProvider = ({ children }) => {
     };
 
     useEffect(() => {
-        if (errors && Object.keys(errors).length > 0) {
+        if ((errors && Object.keys(errors).length > 0) || mensajeConfirmacion) {
             const timer = setTimeout(() => {
                 setErrors(null);
+                setMensajeConfirmacion(null);
             }, 5150);
             return () => clearTimeout(timer);
         }
-    }, [errors]);
-
+    }, [errors, mensajeConfirmacion]);
+    
     return (
         <OrganizadorContext.Provider value={{
             crearEvento,
@@ -77,6 +80,8 @@ export const OrganizadorProvider = ({ children }) => {
             eventosOrganizados,
             inscripciones,
             errors,
+            mensajeConfirmacion,
+            setMensajeConfirmacion,
         }}>
             {children}
         </OrganizadorContext.Provider>

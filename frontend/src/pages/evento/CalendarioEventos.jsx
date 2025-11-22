@@ -1,17 +1,14 @@
 import { Calendar, dayjsLocalizer } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import './CalendarioOrganizador.css'; 
+import '../../styles/Calendario.css'; 
 import dayjs from 'dayjs'
 import 'dayjs/locale/es';
 import { useMemo, useState } from 'react';
-import { useOrganizador } from '../../../api/Context/OrganizadorContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendarDay, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 
 
-const CalendarioOrganizador = () => {
-    const { eventosInscritos } = useOrganizador();
-
+const CalendarioEventos = () => {
     const localizer = useMemo(() => {
         dayjs.locale('es');
         return dayjsLocalizer(dayjs);
@@ -36,8 +33,8 @@ const CalendarioOrganizador = () => {
 
     return (
         <>
-            <div className="flex flex-col gap-8 text-escom-sombra-400">
-                <h1 className="text-3xl font-bold">Calendario del Organizador</h1>
+            <div className="flex flex-col gap-8 text-escom-sombra-400 z-50">
+                <h1 className="text-3xl font-bold">Calendario del Alumno</h1>
                 <div className="h-[75vh] w-full shadow-md">
                     <Calendar
                         localizer={localizer}
@@ -47,7 +44,6 @@ const CalendarioOrganizador = () => {
                         date={date}
                         onNavigate={setDate}
                         views={['month', 'week']}
-                        style={{ height: '100%' }}
                     />
                 </div>
             </div>
@@ -55,4 +51,4 @@ const CalendarioOrganizador = () => {
     )
 
 }
-export default CalendarioOrganizador;
+export default CalendarioEventos;

@@ -9,6 +9,9 @@ use App\Middlewares\EstudianteMiddleware;
 require_once __DIR__ . '/../Middlewares/organizador-middleware.php';
 use App\Middlewares\OrganizadorMiddleware;
 
+require_once __DIR__ . '/../Controllers/admin-controller.php';
+use App\Controllers\AdminController;
+
 
 function evento_routes($router) {
     $db = \App\Core\Database::getInstance();
@@ -97,6 +100,13 @@ function evento_routes($router) {
         $middleware->handle(function() use ($db, $id_evento) {
             $controller = new EventoController();
             $controller->obtenerInscripcionesPorEvento($db, $id_evento);
+        });
+    });
+    $router->post('/evento/eliminar-evento/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new AdminController();
+            $controller->eliminarEvento($db, $id_evento);
         });
     });
 

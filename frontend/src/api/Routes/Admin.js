@@ -18,8 +18,10 @@ const AdminAPI = {
     axios.post("/administrador/crear-organizador", formData),
   crearAdministrador: (formData) =>
     axios.post("/administrador/crear-administrador", formData),
-  verificarEvento: (formData) =>
-    axios.post("/administrador/verificar-evento", formData),
+  verificarEvento: (id_evento) =>
+    axios.post(`/administrador/verificar-evento/${id_evento}`),
+  eliminarEvento: (id_evento) =>
+    axios.post(`/administrador/eliminar-evento/${id_evento}`),
 };
 
 export default AdminAPI;
