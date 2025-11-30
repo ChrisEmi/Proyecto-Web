@@ -2,34 +2,14 @@
 GET http://proyecto-web.local/
 Content-Type: application/json
 
-###
-
-### Test POST básico (debug)
-POST http://proyecto-web.local/test
-Content-Type: application/json
-
-###
-
-### Test Login 1
+### TEST LOGIN USUARIO
 POST http://proyecto-web.local/auth/login
 Content-Type: application/json
 
 {
-    "correo": "admin@example.com",
+    "correo": "chris@example.com",
     "contrasena": "mi_contraseña"
 }
-
-
-### Test Login 2
-POST http://proyecto-web.local/auth/login
-Content-Type: application/json
-
-{
-    "correo": "miguel@example.com",
-    "contrasena": "mi_contraseña"
-}
-
-###
 
 ### Test Registro  
 POST http://proyecto-web.local/auth/registro
@@ -37,8 +17,9 @@ Content-Type: application/json
 
 {
     "nombre": "Christian",
-    "apellidos": "Aguilar Torres",
-    "correo": "chris3@example.com",
+    "apellido_paterno": "Aguilar",
+    "apellido_materno": "Torres",
+    "correo": "chris@example.com",
     "contrasena": "mi_contraseña",
     "boleta": "20240005"
 }
@@ -49,24 +30,135 @@ Content-Type: application/json
 POST http://proyecto-web.local/auth/logout
 Content-Type: application/json
 
-
-###
-### Test Obtener todos los usuarios (Admin)
-GET http://proyecto-web.local/admin/obtener-usuarios
-Content-Type: application/json
-
-### Test Crear usuario (Admin)
-POST http://proyecto-web.local/admin/crear-usuario
+### Test Obtener usuarios por rol (Admin)
+GET http://proyecto-web.local/administrador/obtener-usuarios
 Content-Type: application/json
 
 {
-    "nombre": "Miguel",
-    "apellido": "Pérez López",
-    "correo": "miguelperez2@example.com",
-    "contrasena": "mi_contraseña",
-    "id_tipo_usuario": 1
+    "rol": "organizador"
+}
+
+### Test Crear Organizador (Admin)
+POST http://proyecto-web.local/administrador/crear-organizador
+Content-Type: application/json
+
+{
+    "nombre": "Mariana",
+    "apellido_paterno": "Martínez",
+    "apellido_materno": "Perez",
+    "correo": "mariana@example.com",
+    "empresa": "Good Events LLC"
+}
+
+### TEST LOGIN ORGANIZADOR
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "carlos@example.com",
+    "contrasena": "x3SaptRO"
+}
+
+### TEST LOGIN ORGANIZADOR
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "mariana@example.com",
+    "contrasena": "pcTNSjCj"
+}
+
+### Test Obtener Eventos (Organizador)
+GET http://proyecto-web.local/evento/obtener-por-organizador
+Content-Type: application/json
+
+### Test Crear Administrador (Admin)
+POST http://proyecto-web.local/administrador/crear-administrador
+Content-Type: application/json
+
+{
+    "nombre": "Carlos",
+    "apellido_paterno": "García",
+    "apellido_materno": "Martínez",
+    "correo": "carlos.admin@example.com"
+}
+
+### Test Verificar Evento (Admin)
+POST http://proyecto-web.local/administrador/verificar-evento
+Content-Type: application/json
+
+{
+    "id_evento": "b97357461c8740bf"
 }
 
 ### Test Verificar Token
 GET http://proyecto-web.local/auth/verificar-token
 Content-Type: application/json
+
+### LOGIN ADMIN
+POST http://proyecto-web.local/auth/login
+Content-Type: application/json
+
+{
+    "correo": "sa@admin.com",
+    "contrasena": "admin_contraseña"
+}
+
+###
+
+### Test Obtener TODOS los usuarios
+GET http://proyecto-web.local/administrador/obtener-usuarios
+Content-Type: application/json
+
+
+### Test Crear Evento (Organizador)
+POST http://proyecto-web.local/evento/crear
+Content-Type: application/json
+
+{
+    "titulo_evento": "Conferencia de Tecnología",
+    "descripcion": "Google presenta su última conferencia sobre avances en tecnología e innovación. Únete a nosotros para descubrir las tendencias que están dando forma al futuro.",
+    "fecha": "2025-30-11 10:00",
+    "cupo": 200,
+    "ubicacion": "Auditorio ESCOM",
+    "id_categoria": 2,
+    "tags": ["tecnología", "innovación", "conferencia", "futuro"],
+    "imagenes": [
+        {
+            "src": "https://fotografias.lasexta.com/clipping/cmsimages01/2018/05/21/65B2F8F8-C8C8-4447-8123-365E0935650D/98.jpg?crop=867,488,x66,y0&width=1900&height=1069&optimize=high&format=webply", 
+            "descripcion": "Imagen Conferencia Google"
+        },
+        {
+            "src": "https://cdn.forbes.com.mx/2023/05/GettyImages-1488908065.webp", 
+            "descripcion": "Imagen de Conferencia de Tecnología"
+        }
+    ]
+}
+
+### Test Obtener Eventos
+GET http://proyecto-web.local/evento/obtener-todos/fecha/ASC/todos
+Content-Type: application/json
+
+### Test Obtener Evento por ID
+GET http://proyecto-web.local/evento/obtener/c24300b5c9b3255b
+
+### Test Inscribirse a Evento (Usuario)
+POST http://proyecto-web.local/evento/inscripcion-usuario
+Content-Type: application/json
+
+{
+    "id_evento": "b97357461c8740bf"
+}
+
+### Test Obtener Inscripciones por Usuario
+GET http://proyecto-web.local/evento/obtener-por-usuario
+Content-Type: application/json
+
+### Test Cancelar Inscripción a Evento (Usuario)
+POST http://proyecto-web.local/evento/cancelar-inscripcion
+Content-Type: application/json
+
+{
+    "id_evento": "577502b40f2ebca9"
+}
+

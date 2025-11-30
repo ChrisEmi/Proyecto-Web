@@ -4,19 +4,11 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="251.000000pt" height="139.000000pt" viewBox="0 0 251.000000 139.000000"
  preserveAspectRatio="xMidYMid meet">
- <style>
-    .escom-icon-path {
-        fill: currentColor; /* Esto permite que el color sea controlado por CSS */
-    }
-    .escom-icon-text {
-        fill: currentColor; /* Esto permite que el color sea controlado por CSS */
-    }
-</style>
 <metadata>
 Created by potrace 1.16, written by Peter Selinger 2001-2019
 </metadata>
 <g transform="translate(0.000000,139.000000) scale(0.100000,-0.100000)"
-fill="currentColor" stroke="none">
+fill="#ffffff" stroke="none">
 <path d="M330 1345 l0 -25 941 0 940 0 -3 23 -3 22 -937 3 -938 2 0 -25z"/>
 <path d="M740 1183 c-56 -32 -380 -200 -515 -266 -150 -74 -205 -128 -205
 -203 0 -70 54 -116 245 -212 366 -182 513 -252 561 -267 43 -14 105 -16 465

@@ -16,8 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [authSesion, setAuthSesion] = useState(false)
     const [loading, setLoading] = useState(true)
     const [errors, setErrors] = useState()
-    // const [perfil, setPerfil] = useState(null)
-
+    
     const registrarUsuario = async (user) => {
         try {
             const res = await AuthAPI.registro(user);
@@ -34,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     const iniciarSesion = async (user) => { 
         try { 
             const res = await AuthAPI.login(user);
-            console.log("Usuario en setUsuario:", res.data.usuario);
+            console.log(res);
             setUsuario(res.data.usuario);
             setAuthSesion(true);
         }
@@ -58,14 +57,11 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         let isMounted = true;
-
         async function checkLogin() {
             try {
                 const res = await AuthAPI.verificarTokenCookie();
                 if (isMounted) {
                     if (res.data && res.data.usuario) {
-
-                        
                         setAuthSesion(true);
                         setUsuario(res.data.usuario);
                     } else {
@@ -80,9 +76,9 @@ export const AuthProvider = ({ children }) => {
                     setUsuario(null);
                 }
             } finally {
-            if (isMounted) {
-                setLoading(false);
-            }
+                if (isMounted) {
+                    setLoading(false);
+                }
             }
         }
         checkLogin();
@@ -96,66 +92,10 @@ export const AuthProvider = ({ children }) => {
     if (errors && Object.keys(errors).length > 0) {
         const timer = setTimeout(() => {
             setErrors(null);
-        }, 4000);
+        }, 5150);
         return () => clearTimeout(timer)
         }
     }, [errors]);
-
-   /* const paginaPerfil = async () => {
-
-        try {
-            const res = await obtenerPerfil();
-            console.log("Perfil obtenido:", res.data.usuario);
-            setPerfil(res.data.usuario);
-            setLoading(false);
-        } catch (error) {
-            if (error.response?.data?.errores) {
-                setErrors(errorPorCampo(error.response.data.errores));
-                console.log("Errores al obtener perfil:", error.response.data.errores);
-            } else {
-                setErrors({
-                    general: ["Ocurrió un error inesperado. Por favor, inténtalo de nuevo."]
-                });
-            }
-            setPerfil(null);
-        }
-    }
-
-    const actualizarPerfilPagina = async (user) => {
-        try {
-            // Limpia campos vacíos o convierte a null para evitar problemas en el backend
-            const datos = { ...user };
-            Object.keys(datos).forEach(key => {
-                if (datos[key] === "" || datos[key] === undefined) {
-                    datos[key] = null;
-                }
-            });
-            // Convierte a número los campos que deben serlo
-            if (datos.edad) datos.edad = Number(datos.edad);
-            if (datos.peso) datos.peso = Number(datos.peso);
-            if (datos.estatura) datos.estatura = Number(datos.estatura);
-
-            const res = await actualizarPerfil(datos);
-            // Si el backend retorna el usuario actualizado, actualiza el estado
-            if (res.data && res.data.usuario) {
-                setPerfil(res.data.usuario);
-            }
-            setErrors([]);
-            // Refresca el perfil desde el backend para asegurar datos actualizados
-            await paginaPerfil();
-            return null;
-        } catch (error) {
-            if (error.response?.data?.errores) {
-                setErrors(errorPorCampo(error.response.data.errores));
-                return error.response.data;
-            } else {
-                setErrors({
-                    general: ["Ocurrió un error inesperado. Por favor, inténtalo de nuevo."]
-                });
-            }
-        }
-    }
-     */
 
     return (
         <AuthContext.Provider value={{

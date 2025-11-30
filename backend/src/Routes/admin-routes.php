@@ -13,15 +13,71 @@ function admin_routes($router) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
-            $controller->obtenerUsuarios($db);
+            $controller->obtenerUsuarios($db, null, 'nombre', 'ASC');
         });
     });
 
-    $router->post('/administrador/crear-usuario', function() use ($db) {
+    $router->get('/administrador/obtener-usuarios/todos/{ordenar_por}/{direccion}', function($ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerUsuarios($db, null, $ordenar_por, $direccion);
+        });
+    });
+
+    $router->get('/administrador/obtener-usuarios/{rol}/{ordenar_por}/{direccion}', function($rol, $ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $rol, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerUsuarios($db, $rol, $ordenar_por, $direccion);
+        });
+    });
+
+    $router->post('/administrador/crear-organizador', function() use ($db) {
         $middleware = new AdminMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new AdminController();
-            $controller->crearUsuario($db);
+            $controller->crearOrganizador($db);
+        });
+    });
+
+    $router->post('/administrador/crear-administrador', function() use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db) {
+            $controller = new AdminController();
+            $controller->crearAdministrador($db);
+        });
+    });
+
+    $router->post('/administrador/verificar-evento/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new AdminController();
+            $controller->verificarEvento($db, $id_evento);
+        });
+    });
+
+    $router->post('/administrador/eliminar-evento/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new AdminController();
+            $controller->eliminarEvento($db, $id_evento);
+        });
+    });
+
+    $router->get('/administrador/obtener-eventos/{ordenar_por}/{direccion}/{estado}', function($ordenar_por, $direccion, $estado) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion, $estado) {
+            $controller = new AdminController();
+            $controller->obtenerEventosAdmin($db, $ordenar_por, $direccion, $estado);
+        });
+    });
+
+    $router->get('/administrador/obtener-eventos/{ordenar_por}/{direccion}/todos', function($ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerEventosAdmin($db, $ordenar_por, $direccion, '');
         });
     });
 

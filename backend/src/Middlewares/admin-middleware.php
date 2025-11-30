@@ -6,6 +6,7 @@ use Firebase\JWT\Key;
 
 require_once __DIR__ . '/../../vendor/autoload.php';
 use App\Core\Database;
+use App\Core\AuthContext;
 
 
 class AdminMiddleware {
@@ -22,7 +23,6 @@ class AdminMiddleware {
     public function handle(callable $next): void {
         try {
             if (!isset($_COOKIE['token']) || empty($_COOKIE['token'])) {
-                self::abort(401, 'Token no encontrado en cookies');
                 return;
             }
 
@@ -36,6 +36,8 @@ class AdminMiddleware {
             }
             $data = (array)($decoded->data ?? []);
             $idUsuario = $data['id_usuario'] ?? null;
+
+            AuthContext::setUsuario($data);
             $db = Database::getInstance();
 
             if (!$this->esAdmin($idUsuario, $db)) {

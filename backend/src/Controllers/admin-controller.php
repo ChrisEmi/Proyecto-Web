@@ -3,8 +3,10 @@ namespace App\Controllers;
 
 use PDO;
 use Exception;
-require_once __DIR__ . '/../../vendor/autoload.php';
-
+use App\Database\QuerysAdmin;
+use App\Database\QuerysAuth;
+use App\Database\QuerysEventos;
+use App\Core\AuthContext;
 
 class AdminController {
     private function contrasenaAleatoria($longitud = 8) {
@@ -17,20 +19,15 @@ class AdminController {
     }
 
 
-    public function obtenerUsuarios($pool) {
+    public function obtenerUsuarios($pool, $rol, $ordenar_por = 'nombre', $direccion = 'ASC') {
         try {
-            $stmt = $pool->prepare(
-                "SELECT u.id_usuario, u.nombre, u.correo, tu.nombre_tipo
-                 FROM Usuario u
-                 INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario"
-            );
-            $stmt->execute();
-            $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            
+            $query = new QuerysAdmin($pool);
+            $usuarios = $query->obtenerUsuariosPorRol($rol, $ordenar_por, $direccion);
+
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "data" => $usuarios
+                "usuarios" => $usuarios
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -41,17 +38,15 @@ class AdminController {
         }
     }
 
-    public function crearUsuario($pool) {
+    public function crearOrganizador($pool) {
         try {
-            $datos = json_decode(file_get_contents("php://input"), true);
+            $input = json_decode(file_get_contents("php://input"), true);
             $contrasena = $this->contrasenaAleatoria();
             $id_usuario = bin2hex(random_bytes(8));
 
-            $stmt = $pool->prepare("SELECT id_usuario FROM Usuario WHERE correo = :correo");
-            $stmt->bindParam(':correo', $datos['correo']);
-            $stmt->execute();
-            
-            if ($stmt->fetch()) {
+            $usuarioModel = new QuerysAuth($pool);
+
+            if ($usuarioModel->buscarPorCorreo($input['correo'])) {
                 http_response_code(400);
                 echo json_encode([
                     "status" => "error",
@@ -60,31 +55,163 @@ class AdminController {
                 return;
             }
 
-            $stmt = $pool->prepare(
-                "INSERT INTO Usuario (id_usuario, nombre, apellido, correo, contraseña, id_tipo_usuario)
-                 VALUES (:id_usuario, :nombre, :apellido, :correo, :contrasena, :id_tipo_usuario)"
-            );
-            $stmt->bindParam(':id_usuario', $id_usuario);
-            $stmt->bindParam(':nombre', $datos['nombre']);
-            $stmt->bindParam(':apellido', $datos['apellido']);
-            $stmt->bindParam(':correo', $datos['correo']);
-            $hashedPassword = password_hash($contrasena, PASSWORD_BCRYPT);
-            $stmt->bindParam(':contrasena', $hashedPassword);
-            $stmt->bindParam(':id_tipo_usuario', $datos['id_tipo_usuario']);
-            $stmt->execute();
+            $datos = [
+                'id_usuario' => $id_usuario,
+                'nombre' => $input['nombre'],
+                'apellido_paterno' => $input['apellido_paterno'],
+                'apellido_materno' => $input['apellido_materno'] ?? null,
+                'correo' => $input['correo'],
+                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
+                'empresa' => $input['empresa'] ?? null,
+            ];
+
+            $usuarioModel = new QuerysAdmin($pool);
+            $usuarioModel->crearOrganizadorQuery($datos);
             
             http_response_code(201);
             echo json_encode([
                 "status" => "success",
-                "message" => "Usuario creado exitosamente",
+                "message" => "Organizador creado exitosamente",
                 "id_usuario" => $id_usuario,
-                "contrasena temporal" => $contrasena
+                "contrasena_temporal" => $contrasena
             ]);
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
                 "status" => "error",
                 "message" => "Error al crear el usuario: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function crearAdministrador($pool) {
+        try {
+            $input = json_decode(file_get_contents("php://input"), true);
+            $contrasena = $this->contrasenaAleatoria();
+            $id_usuario = bin2hex(random_bytes(8));
+
+            $usuarioModel = new QuerysAuth($pool);
+
+            if ($usuarioModel->buscarPorCorreo($input['correo'])) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "El correo ya esta registrado"
+                ]);
+                return;
+            }
+
+            $datos = [
+                'id_usuario' => $id_usuario,
+                'nombre' => $input['nombre'],
+                'apellido_paterno' => $input['apellido_paterno'],
+                'apellido_materno' => $input['apellido_materno'] ?? null,
+                'correo' => $input['correo'],
+                'contrasena_hashed' => password_hash($contrasena, PASSWORD_BCRYPT),
+            ];
+
+            $usuarioModel = new QuerysAdmin($pool);
+            $usuarioModel->crearAdministradorQuery($datos);
+
+            http_response_code(201);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Administrador creado exitosamente",
+                "id_usuario" => $id_usuario,
+                "contrasena_temporal" => $contrasena
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al crear el usuario: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function verificarEvento($pool, $id_evento) {
+        $id_admin = AuthContext::obtenerIdUsuario();
+
+        try {
+            if (!$id_evento) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "ID de evento no proporcionado"
+                ]);
+                return;
+            }
+
+            $eventoModel = new QuerysEventos($pool);
+            $evento = $eventoModel->obtenerEventoPorIdQuery($id_evento);
+
+            if (!$evento) {
+                http_response_code(404);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Evento no encontrado"
+                ]);
+                return;
+            }
+
+            $eventoModel->actualizarEstadoEventoQuery($id_evento, $id_admin);
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Estado del evento actualizado"
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al verificar el evento: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function eliminarEvento($pool, $id_evento) {
+        try {
+            if (!$id_evento) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "ID de evento no proporcionado"
+                ]);
+                return;
+            }
+
+            $eventoModel = new QuerysAdmin($pool);
+            $eventoModel->eliminarEventoQuery($id_evento);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Evento eliminado exitosamente"
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al eliminar el evento: " . $e->getMessage()
+            ]);
+        }
+    }
+    
+    public function obtenerEventosAdmin($pool, $ordenar_por = 'fecha', $direccion = 'DESC', $estado = '') {
+
+        try {
+            $query = new QuerysAdmin($pool);
+            $eventos = $query->obtenerEventosAdminQuery($ordenar_por, $direccion, $estado);
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "eventos" => $eventos
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener los eventos: " . $e->getMessage()
             ]);
         }
     }

@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-lexend: "Lexend", sans-serif;
+  --font-urbanist: "Urbanist", sans-serif;
+
+
+  --color-escom-100: #E6F7FF;
+  --color-escom-200: #B8E7FF;
+  --color-escom-300: #8AD8FF;
+  --color-escom-400: #5CC9FF;
+  --color-escom-500: #2EB9FF;
+  --color-escom-600: #00AAFF;
+  --color-escom-700: #008BD1;
+  --color-escom-800: #005E8D;
+  --color-escom-900: #004E75;
+  --color-escom-950: #00111A;
+
+  --color-escom-sombra-50: #005E8D;
+  --color-escom-sombra-100: #09557F;
+  --color-escom-sombra-200: #0F4D72;
+  --color-escom-sombra-300: #124465;
+  --color-escom-sombra-400: #143C58;
+  --color-escom-sombra-500: #14344B;
+  --color-escom-sombra-600: #142C3F;
+  --color-escom-sombra-700: #132533;
+  --color-escom-sombra-800: #111D28;
+  --color-escom-sombra-900: #0E161D;
+  --color-escom-sombra-950: #070D12;
+}
+
+.main-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #143C58 transparent;
+}

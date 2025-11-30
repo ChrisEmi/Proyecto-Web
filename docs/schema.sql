@@ -1,71 +1,343 @@
-CREATE TABLE TipoUsuario (
-    id_tipo_usuario INT PRIMARY KEY IDENTITY(1,1),
-    nombre_tipo VARCHAR(50) NOT NULL UNIQUE 
-);
-
-CREATE TABLE Usuario (
-    id_usuario NVARCHAR(50) PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    apellido VARCHAR(100) NOT NULL,
-    correo VARCHAR(255) NOT NULL UNIQUE,
-    contraseña VARCHAR(255) NOT NULL,
-    id_tipo_usuario INT NOT NULL,
-    fecha_creacion DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Usuarios_Tipos_Usuario FOREIGN KEY (id_tipo_usuario) REFERENCES TipoUsuario(id_tipo_usuario)
-);
-
-
-
-CREATE TABLE Estudiante (
-    id_usuario NVARCHAR(50) PRIMARY KEY, 
-    matricula VARCHAR(50) UNIQUE,
-    carrera VARCHAR(100),
-    semestre INT,
-    CONSTRAINT FK_Perfil_Estudiante_Usuarios FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
-);
-
-
-CREATE TABLE Organizador (
-    id_usuario NVARCHAR(50) PRIMARY KEY, 
-    departamento VARCHAR(100), 
-    CONSTRAINT FK_Organizador_Usuarios FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario) ON DELETE CASCADE
-);
-
-
-
-CREATE TABLE CategoriaEvento (
-    id_categoria INT PRIMARY KEY IDENTITY(1,1),
-    nombre_categoria VARCHAR(100) NOT NULL UNIQUE
-);
-
-
-CREATE TABLE Evento (
-    id_evento INT PRIMARY KEY,
-    nombre_evento VARCHAR(255) NOT NULL,
-    descripcion TEXT,
-    fecha_inicio DATETIME NOT NULL,
-    fecha_fin DATETIME NOT NULL,
-    ubicacion VARCHAR(255),
-    id_organizador NVARCHAR(50) NOT NULL, 
-    id_categoria INT,
-    estado VARCHAR(50) DEFAULT 'Borrador',
-    fecha_creacion DATETIME DEFAULT GETDATE(),
-    CONSTRAINT FK_Eventos_Organizador FOREIGN KEY (id_organizador) REFERENCES Usuario(id_usuario),
-    CONSTRAINT FK_Eventos_Categoria FOREIGN KEY (id_categoria) REFERENCES CategoriaEvento(id_categoria)
-);
-
-CREATE TABLE Inscripcion (
-    id_inscripcion INT PRIMARY KEY,
-    id_usuario NVARCHAR(50) NOT NULL, 
-    id_evento INT NOT NULL,
-    fecha_inscripcion DATETIME DEFAULT GETDATE(),
-    CONSTRAINT UQ_Usuario_Evento UNIQUE (id_usuario, id_evento), 
-    CONSTRAINT FK_Inscripciones_Usuario FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
-    CONSTRAINT FK_Inscripciones_Evento FOREIGN KEY (id_evento) REFERENCES Evento(id_evento) ON DELETE CASCADE
-);
-
-
-
-INSERT INTO TipoUsuario (nombre_tipo) VALUES ('Estudiante'), ('Organizador'), ('Administrador');
-
-INSERT INTO CategoriaEvento (nombre_categoria) VALUES ('Academico'), ('Cultural'), ('Deportivo'), ('Social'), ('Taller');
+USE [EventosESCOM]
+GO
+/****** Object:  Table [dbo].[Actividad]    Script Date: 29/11/2025 03:25:20 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Actividad](
+	[id_actividad] [int] IDENTITY(1,1) NOT NULL,
+	[tipo_actividad] [varchar](255) NOT NULL,
+	[actividad] [varchar](255) NOT NULL,
+	[estado] [varchar](50) NULL,
+	[fecha_creacion] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_actividad] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Categoria]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Categoria](
+	[id_categoria] [int] IDENTITY(1,1) NOT NULL,
+	[nombre_categoria] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_categoria] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[nombre_categoria] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Estudiante]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Estudiante](
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[boleta] [varchar](50) NULL,
+	[carrera] [varchar](100) NULL,
+	[semestre] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[boleta] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Evento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Evento](
+	[id_evento] [nvarchar](50) NOT NULL,
+	[titulo_evento] [varchar](255) NOT NULL,
+	[descripcion] [text] NULL,
+	[fecha] [datetime] NOT NULL,
+	[ubicacion] [varchar](255) NULL,
+	[id_categoria] [int] NOT NULL,
+	[cupo] [int] NOT NULL,
+	[id_organizador] [nvarchar](50) NOT NULL,
+	[id_admin] [nvarchar](50) NULL,
+	[estado] [varchar](50) NULL,
+	[fecha_creacion] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_evento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[EventoImagen]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[EventoImagen](
+	[id_imagen] [int] IDENTITY(1,1) NOT NULL,
+	[id_evento] [nvarchar](50) NOT NULL,
+	[src] [nvarchar](500) NULL,
+	[descripcion] [text] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_imagen] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[HorarioActividad]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[HorarioActividad](
+	[id_horario] [int] IDENTITY(1,1) NOT NULL,
+	[id_actividad] [int] NOT NULL,
+	[dia] [varchar](255) NOT NULL,
+	[hora_inicio] [time](7) NOT NULL,
+	[hora_final] [time](7) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_horario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[InscripcionActividad]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[InscripcionActividad](
+	[id_inscripcion_actividad] [int] IDENTITY(1,1) NOT NULL,
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[id_actividad] [int] NOT NULL,
+	[fecha_inscripcion] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_inscripcion_actividad] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Inscripcion_Usuario_Actividad] UNIQUE NONCLUSTERED 
+(
+	[id_usuario] ASC,
+	[id_actividad] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[InscripcionEvento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[InscripcionEvento](
+	[id_inscripcion_evento] [int] IDENTITY(1,1) NOT NULL,
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[id_evento] [nvarchar](50) NOT NULL,
+	[fecha_inscripcion] [datetime] NULL,
+	[estado] [nchar](10) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_inscripcion_evento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+ CONSTRAINT [UQ_Inscripcion_Usuario_Evento] UNIQUE NONCLUSTERED 
+(
+	[id_usuario] ASC,
+	[id_evento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Organizador]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Organizador](
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[empresa] [varchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Tag]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Tag](
+	[id_tag] [int] IDENTITY(1,1) NOT NULL,
+	[nombre_tag] [varchar](100) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_tag] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[nombre_tag] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TagsEvento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TagsEvento](
+	[id_tag] [int] NOT NULL,
+	[id_evento] [nvarchar](50) NOT NULL,
+ CONSTRAINT [PK_TagsEvento] PRIMARY KEY CLUSTERED 
+(
+	[id_tag] ASC,
+	[id_evento] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TipoUsuario]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TipoUsuario](
+	[id_tipo_usuario] [int] IDENTITY(1,1) NOT NULL,
+	[nombre_tipo] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_tipo_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[nombre_tipo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Usuario]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Usuario](
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[nombre] [varchar](100) NOT NULL,
+	[apellido_paterno] [varchar](100) NOT NULL,
+	[apellido_materno] [varchar](100) NULL,
+	[correo] [varchar](255) NOT NULL,
+	[contraseña] [varchar](255) NOT NULL,
+	[id_tipo_usuario] [int] NOT NULL,
+	[fecha_creacion] [datetime] NULL,
+	[estado] [varchar](100) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[correo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[Actividad] ADD  DEFAULT ('Activo') FOR [estado]
+GO
+ALTER TABLE [dbo].[Actividad] ADD  DEFAULT (getdate()) FOR [fecha_creacion]
+GO
+ALTER TABLE [dbo].[Evento] ADD  DEFAULT ('Pendiente de revision') FOR [estado]
+GO
+ALTER TABLE [dbo].[Evento] ADD  DEFAULT (getdate()) FOR [fecha_creacion]
+GO
+ALTER TABLE [dbo].[EventoImagen] ADD  DEFAULT ('Imagen Generica') FOR [descripcion]
+GO
+ALTER TABLE [dbo].[InscripcionActividad] ADD  DEFAULT (getdate()) FOR [fecha_inscripcion]
+GO
+ALTER TABLE [dbo].[InscripcionEvento] ADD  DEFAULT (getdate()) FOR [fecha_inscripcion]
+GO
+ALTER TABLE [dbo].[InscripcionEvento] ADD  CONSTRAINT [DF_InscripcionEvento_estado]  DEFAULT (N'Inscrito') FOR [estado]
+GO
+ALTER TABLE [dbo].[Usuario] ADD  DEFAULT (getdate()) FOR [fecha_creacion]
+GO
+ALTER TABLE [dbo].[Usuario] ADD  DEFAULT ('Activo') FOR [estado]
+GO
+ALTER TABLE [dbo].[Estudiante]  WITH CHECK ADD  CONSTRAINT [FK_Perfil_Estudiante_Usuarios] FOREIGN KEY([id_usuario])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Estudiante] CHECK CONSTRAINT [FK_Perfil_Estudiante_Usuarios]
+GO
+ALTER TABLE [dbo].[Evento]  WITH CHECK ADD  CONSTRAINT [FK_Evento_Categoria] FOREIGN KEY([id_categoria])
+REFERENCES [dbo].[Categoria] ([id_categoria])
+GO
+ALTER TABLE [dbo].[Evento] CHECK CONSTRAINT [FK_Evento_Categoria]
+GO
+ALTER TABLE [dbo].[Evento]  WITH CHECK ADD  CONSTRAINT [FK_Eventos_Admin] FOREIGN KEY([id_admin])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+GO
+ALTER TABLE [dbo].[Evento] CHECK CONSTRAINT [FK_Eventos_Admin]
+GO
+ALTER TABLE [dbo].[Evento]  WITH CHECK ADD  CONSTRAINT [FK_Eventos_Organizador] FOREIGN KEY([id_organizador])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+GO
+ALTER TABLE [dbo].[Evento] CHECK CONSTRAINT [FK_Eventos_Organizador]
+GO
+ALTER TABLE [dbo].[EventoImagen]  WITH CHECK ADD  CONSTRAINT [FK_EventoImagen_Evento] FOREIGN KEY([id_evento])
+REFERENCES [dbo].[Evento] ([id_evento])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[EventoImagen] CHECK CONSTRAINT [FK_EventoImagen_Evento]
+GO
+ALTER TABLE [dbo].[HorarioActividad]  WITH CHECK ADD  CONSTRAINT [FK_Actividad_HorarioActividad] FOREIGN KEY([id_actividad])
+REFERENCES [dbo].[Actividad] ([id_actividad])
+GO
+ALTER TABLE [dbo].[HorarioActividad] CHECK CONSTRAINT [FK_Actividad_HorarioActividad]
+GO
+ALTER TABLE [dbo].[InscripcionActividad]  WITH CHECK ADD  CONSTRAINT [FK_Inscripcion_Actividad] FOREIGN KEY([id_actividad])
+REFERENCES [dbo].[Actividad] ([id_actividad])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[InscripcionActividad] CHECK CONSTRAINT [FK_Inscripcion_Actividad]
+GO
+ALTER TABLE [dbo].[InscripcionActividad]  WITH CHECK ADD  CONSTRAINT [FK_InscripcionActividad_Usuario] FOREIGN KEY([id_usuario])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[InscripcionActividad] CHECK CONSTRAINT [FK_InscripcionActividad_Usuario]
+GO
+ALTER TABLE [dbo].[InscripcionEvento]  WITH CHECK ADD  CONSTRAINT [FK_Inscripcion_Evento] FOREIGN KEY([id_evento])
+REFERENCES [dbo].[Evento] ([id_evento])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[InscripcionEvento] CHECK CONSTRAINT [FK_Inscripcion_Evento]
+GO
+ALTER TABLE [dbo].[InscripcionEvento]  WITH CHECK ADD  CONSTRAINT [FK_InscripcionEvento_Usuario] FOREIGN KEY([id_usuario])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[InscripcionEvento] CHECK CONSTRAINT [FK_InscripcionEvento_Usuario]
+GO
+ALTER TABLE [dbo].[Organizador]  WITH CHECK ADD  CONSTRAINT [FK_Organizador_Usuarios] FOREIGN KEY([id_usuario])
+REFERENCES [dbo].[Usuario] ([id_usuario])
+ON DELETE CASCADE
+GO
+ALTER TABLE [dbo].[Organizador] CHECK CONSTRAINT [FK_Organizador_Usuarios]
+GO
+ALTER TABLE [dbo].[TagsEvento]  WITH CHECK ADD  CONSTRAINT [FK_TagsEvento_Evento] FOREIGN KEY([id_evento])
+REFERENCES [dbo].[Evento] ([id_evento])
+GO
+ALTER TABLE [dbo].[TagsEvento] CHECK CONSTRAINT [FK_TagsEvento_Evento]
+GO
+ALTER TABLE [dbo].[TagsEvento]  WITH CHECK ADD  CONSTRAINT [FK_TagsEvento_Tag] FOREIGN KEY([id_tag])
+REFERENCES [dbo].[Tag] ([id_tag])
+GO
+ALTER TABLE [dbo].[TagsEvento] CHECK CONSTRAINT [FK_TagsEvento_Tag]
+GO
+ALTER TABLE [dbo].[Usuario]  WITH CHECK ADD  CONSTRAINT [FK_Usuarios_Tipos_Usuario] FOREIGN KEY([id_tipo_usuario])
+REFERENCES [dbo].[TipoUsuario] ([id_tipo_usuario])
+GO
+ALTER TABLE [dbo].[Usuario] CHECK CONSTRAINT [FK_Usuarios_Tipos_Usuario]
+GO
