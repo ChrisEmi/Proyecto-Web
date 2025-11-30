@@ -1,6 +1,5 @@
 import { useEffect, createContext, useContext, useState } from "react";
 import EventosAPI from "../Routes/Eventos.js";
-
 export const AlumnoContext = createContext();
 
 export const useAlumno = () => {
@@ -14,21 +13,29 @@ export const useAlumno = () => {
 export const AlumnoProvider = ({ children }) => {
     const [eventosInscritos, setEventosInscritos] = useState([]);
     const [errors, setErrors] = useState();
+    const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const obtenerEventosPorUsuario = async (ordenar_por = 'nombre', direccion = 'ASC') => {
+    const obtenerEventosPorUsuario = async (ordenar_por = 'titulo', direccion = 'ASC') => {
         try {
+            setLoading(true);
             const res = await EventosAPI.obtenerEventosPorUsuario(ordenar_por, direccion);
             setEventosInscritos(res.data.eventos);
         } catch (error) {
             console.error("Error al obtener los eventos del usuario:", error);
             setErrors(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
     const inscribirseEvento = async (id_evento) => {
         try {
+            console.log("Inscribiéndose al evento:", id_evento);
             const res = await EventosAPI.inscribirseEvento(id_evento);
-            return res.data.message;
+            setMensajeConfirmacion(res.data.message);
+            console.log(res.data);
+
         } catch (error) {
             console.error("Error al inscribirse al evento:", error);
             setErrors(error.response?.data?.message);
@@ -38,10 +45,26 @@ export const AlumnoProvider = ({ children }) => {
     const desinscribirseEvento = async (id_evento) => {
         try {
             const res = await EventosAPI.desinscribirseEvento(id_evento);
-            return res.data.message;
+            setMensajeConfirmacion(res.data.message);
         } catch (error) {
             console.error("Error al desinscribirse del evento:", error);
             setErrors(error.response?.data?.message);
+        }
+    };
+
+    const verificarInscripcion = async (id_evento) => {
+        try {
+            const resEventos = await obtenerEventosPorUsuario();
+            console.log(resEventos);
+            const res = await EventosAPI.verificarInscripcion(id_evento);
+
+            console.log(res.data);
+            return res.data.inscrito;
+
+        } catch (error) {
+            console.error("Error al verificar la inscripción:", error);
+            setErrors(error.response?.data?.message);
+            return false;
         }
     };
 
@@ -54,13 +77,26 @@ export const AlumnoProvider = ({ children }) => {
         }
     }, [errors]);
 
+    useEffect(() => {
+        if (mensajeConfirmacion) {
+            const timer = setTimeout(() => {
+                setMensajeConfirmacion(null);
+            }, 5150);
+            return () => clearTimeout(timer);
+        }
+    }, [mensajeConfirmacion]);
+
     return (
         <AlumnoContext.Provider value={{
             obtenerEventosPorUsuario,
             inscribirseEvento,
+            mensajeConfirmacion,
+            setMensajeConfirmacion,
+            verificarInscripcion,
             desinscribirseEvento,
             eventosInscritos,
             errors,
+            loading,
         }}>
             {children}
         </AlumnoContext.Provider>

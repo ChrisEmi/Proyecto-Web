@@ -65,5 +65,21 @@ function admin_routes($router) {
         });
     });
 
+    $router->get('/administrador/obtener-eventos/{ordenar_por}/{direccion}/{estado}', function($ordenar_por, $direccion, $estado) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion, $estado) {
+            $controller = new AdminController();
+            $controller->obtenerEventosAdmin($db, $ordenar_por, $direccion, $estado);
+        });
+    });
+
+    $router->get('/administrador/obtener-eventos/{ordenar_por}/{direccion}/todos', function($ordenar_por, $direccion) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $ordenar_por, $direccion) {
+            $controller = new AdminController();
+            $controller->obtenerEventosAdmin($db, $ordenar_por, $direccion, '');
+        });
+    });
+
 
 }

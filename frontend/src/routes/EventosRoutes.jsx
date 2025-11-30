@@ -1,26 +1,30 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoopCarga from '../components/layout/LoopCarga.jsx';
+import { VistaCarga } from '../components/layout/LoopCarga.jsx';
 import { EventosProvider } from '../api/Context/EventosContext.jsx';
 import EventosLayout from '../layouts/EventosLayout.jsx';
+import { AlumnoProvider } from '../api/Context/AlumnoContext.jsx';
 
-const Inicio = lazy(() => import('../pages/evento/Inicio.jsx'));
-const Calendario = lazy(() => import('../pages/evento/CalendarioEventos.jsx'));
+const Inicio = lazy(() => import('../pages/agenda/Inicio.jsx'));
+const Calendario = lazy(() => import('../pages/agenda/CalendarioEventos.jsx'));
+const Eventos = lazy(() => import('../pages/agenda/Eventos.jsx'));
 
 const EventosRoutes = () => {
   return (
     <EventosProvider>
-        <Suspense fallback={<LoopCarga />}>
+      <AlumnoProvider>
+        <Suspense fallback={<VistaCarga />}>
           <Routes>
             <Route element={<EventosLayout />}>
-              <Route path="/inicio" element={<Inicio />} />
+              <Route path="/explorar" element={<Inicio />} />
+              <Route path="/eventos" element={<Eventos />} />
+              <Route path="/actividades" element={<Calendario />} />
               <Route path="/calendario" element={<Calendario />} />
-              <Route path="/proximos-eventos" element={<Calendario />} />
-              <Route path="/historial" element={<Calendario />} />
-              <Route path="*" element={<Navigate to="/actividades-eventos/inicio" />} />
+              <Route path="*" element={<Navigate to="/actividades-eventos/explorar" />} />
             </Route>
           </Routes>
         </Suspense>
+      </AlumnoProvider>
     </EventosProvider>
   );
 };

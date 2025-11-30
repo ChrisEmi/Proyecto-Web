@@ -3,60 +3,69 @@ import { Flip } from 'gsap/Flip';
 import { Draggable } from 'gsap/Draggable';
 import { useGSAP } from '@gsap/react';
 import { useRef, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 gsap.registerPlugin(Flip, Draggable);
 export default function CarruselGsap({ evento }) {
-    let wheelRef = useRef(null),
-        wheelCardsRefs = useRef([]),
-        headerRef = useRef(null),
-        currentCard; 
+    let ruedaRef = useRef(null),
+        tarjetasRuedaRefs = useRef([]),
+        encabezadoRef = useRef(null),
+        tarjetaActual; 
     
     function setup() {
-        if (!wheelRef.current || !wheelCardsRefs.current.length) return; 
+        if (!ruedaRef.current || !tarjetasRuedaRefs.current.length || !evento || evento.length === 0) return; 
 
-        let radio = wheelRef.current.offsetWidth / 2 ,
+        let radio = ruedaRef.current.offsetWidth / 2 ,
             centro = radio,
-            slice = 360 / wheelCardsRefs.current.length, 
+            angulo = 360 / evento.length, 
             DEG2RAD = Math.PI / 180;
         
-        gsap.set(wheelCardsRefs.current, { 
-            x: i => centro + radio * Math.sin(i * slice * DEG2RAD),
-            y: i => centro - radio * Math.cos(i * slice * DEG2RAD),
-            rotation: i => i * slice,
+        // Filtrar refs que no son null
+        const refsValidos = tarjetasRuedaRefs.current.filter(ref => ref !== null);
+        
+        gsap.set(refsValidos, { 
+            x: i => centro + radio * Math.sin(i * angulo * DEG2RAD),
+            y: i => centro - radio * Math.cos(i * angulo * DEG2RAD),
+            rotation: i => i * angulo,
             xPercent: -50,
             yPercent: -50
         })
     }
     
     useGSAP(() => {
-        setup();
+        if (!evento || evento.length === 0) return;
+        
+        // Asegurarse de que todos los refs estén poblados
+        setTimeout(() => {
+            setup();
+        }, 100);
 
-        const rotationTween = gsap.to(wheelRef.current, {
+        const animacionRotacion = gsap.to(ruedaRef.current, {
             rotation: -360,
             ease: "none",
-            duration: wheelCardsRefs.current.length * 6,
+            duration: evento.length * 6,
             repeat: -1
         });
 
         
     
         
-        function closeCurrentCard() {
-            if (currentCard) {
+        function cerrarTarjetaActual() {
+            if (tarjetaActual) {
 
-                let contentDiv = headerRef.current.querySelector('.card-content');
-                if (!contentDiv) return;
+                let divContenido = encabezadoRef.current.querySelector('.card-content');
+                if (!divContenido) return;
                 
                 // Ocultar botón X
-                const closeBtn = contentDiv.querySelector('.card-close-btn');
-                if (closeBtn) {
-                    gsap.to(closeBtn, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
+                const botonCerrar = divContenido.querySelector('.card-close-btn');
+                if (botonCerrar) {
+                    gsap.to(botonCerrar, { opacity: 0, pointerEvents: 'none', duration: 0.2 });
                 }
                 
-                let state = Flip.getState(contentDiv);
-                currentCard.appendChild(contentDiv); // Devuelve el div
-                Flip.from(state, {
+                let estado = Flip.getState(divContenido);
+                tarjetaActual.appendChild(divContenido); // Devuelve el div
+                Flip.from(estado, {
                     duration: 1.0,
                     ease: "power3.inOut",
                     scale: true,
@@ -64,30 +73,30 @@ export default function CarruselGsap({ evento }) {
                     simple: true,
                     prune: false,
                     onComplete: () => {
-                        rotationTween.resume();
+                        animacionRotacion.resume();
                     }
                 });
-                currentCard = null;
+                tarjetaActual = null;
             }
         }
 
-        function onCardClick(e) {
-            let card = e.currentTarget,
-                contentDiv = card.querySelector('.card-content'); 
+        function alClickearTarjeta(e) {
+            let tarjeta = e.currentTarget,
+                divContenido = tarjeta.querySelector('.card-content'); 
             
-            if (card !== currentCard) {
-                closeCurrentCard(); 
-                currentCard = card; 
+            if (tarjeta !== tarjetaActual) {
+                cerrarTarjetaActual(); 
+                tarjetaActual = tarjeta; 
                 
-                rotationTween.pause();
+                animacionRotacion.pause();
                 
-                let state = Flip.getState(contentDiv);
-                headerRef.current.appendChild(contentDiv); // Mueve el div
+                let estado = Flip.getState(divContenido);
+                encabezadoRef.current.appendChild(divContenido); // Mueve el div
                 
                 // Mostrar botón X cuando está abierta
-                const closeBtn = contentDiv.querySelector('.card-close-btn');
+                const botonCerrar = divContenido.querySelector('.card-close-btn');
                 
-                Flip.from(state, {
+                Flip.from(estado, {
                     duration: 1.0,
                     ease: "power3.inOut",
                     scale: true,
@@ -95,53 +104,53 @@ export default function CarruselGsap({ evento }) {
                     simple: true,
                     prune: false,
                     onComplete: () => {
-                        if (closeBtn) {
-                            gsap.to(closeBtn, { opacity: 0.60, pointerEvents: 'auto', duration: 0.3 });
+                        if (botonCerrar) {
+                            gsap.to(botonCerrar, { opacity: 0.60, pointerEvents: 'auto', duration: 0.3 });
                         }
                     }
                 });
                 
             } else {
-                closeCurrentCard();
+                cerrarTarjetaActual();
             }
         }
 
-        wheelCardsRefs.current.forEach(card => {
-            card.addEventListener("click", onCardClick);
+        tarjetasRuedaRefs.current.forEach(tarjeta => {
+            tarjeta.addEventListener("click", alClickearTarjeta);
         });
 
         // Click en el header cierra la card
-        const handleHeaderClick = (e) => {
+        const manejarClickEncabezado = (e) => {
             // Solo cerrar si se hace click en el fondo o en el botón X
-            if (e.target === headerRef.current || e.target.closest('.card-close-btn')) {
-                closeCurrentCard();
+            if (e.target === encabezadoRef.current || e.target.closest('.card-close-btn')) {
+                cerrarTarjetaActual();
             }
         };
         
-        headerRef.current.addEventListener("click", handleHeaderClick);
+        encabezadoRef.current.addEventListener("click", manejarClickEncabezado);
 
-        const handleMenuToggle = (event) => {
-            if (event.detail.isOpen) {
-                rotationTween.pause();
+        const manejarCambioMenu = (evento) => {
+            if (evento.detail.isOpen) {
+                animacionRotacion.pause();
             } else {
-                if (!currentCard) {
-                    rotationTween.resume();
+                if (!tarjetaActual) {
+                    animacionRotacion.resume();
                 }
             }
         };
 
-        window.addEventListener('menuToggle', handleMenuToggle);
+        window.addEventListener('menuToggle', manejarCambioMenu);
 
         return () => {
-            wheelCardsRefs.current.forEach(card => {
-                if (card) {
-                    card.removeEventListener("click", onCardClick);
+            tarjetasRuedaRefs.current.forEach(tarjeta => {
+                if (tarjeta) {
+                    tarjeta.removeEventListener("click", alClickearTarjeta);
                 }
             });
-            if (headerRef.current) {
-                headerRef.current.removeEventListener("click", handleHeaderClick);
+            if (encabezadoRef.current) {
+                encabezadoRef.current.removeEventListener("click", manejarClickEncabezado);
             }
-            window.removeEventListener('menuToggle', handleMenuToggle);
+            window.removeEventListener('menuToggle', manejarCambioMenu);
         };
         
     }, { dependencies: [evento] });
@@ -159,32 +168,29 @@ export default function CarruselGsap({ evento }) {
         <div className="w-[3200px] h-full flex justify-center items-center absolute">
             <div 
                 className="header fixed w-[480px] h-[640px] sm:w-[520px] sm:h-[680px] lg:w-[560px] lg:h-[720px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex z-50 pointer-events-none cursor-pointer" 
-                ref={headerRef}
+                ref={encabezadoRef}
             >
             </div>
 
             <section className="slider-section h-[22vh] w-full">
                 <div
                     className="wheel absolute left-1/2 -translate-x-1/2 -translate-y-1/8 w-[300vw] h-[300vw] max-w-[2000px] max-h-[2000px] top-full"
-                    ref={wheelRef} 
+                    ref={ruedaRef} 
                 >
                     {evento.map((item, index) => (
                         <div 
                                 className="wheel-card absolute top-0 left-0 w-80 h-[450px] sm:w-[360px] sm:h-[480px] lg:w-[400px] lg:h-[450px] cursor-pointer" 
                                 key={index}
-                                ref={(el) => (wheelCardsRefs.current[index] = el)}
+                                ref={(el) => (tarjetasRuedaRefs.current[index] = el)}
                             >
                             
-                            <div className="card-content font-lexend group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer shadow-2xl">
-                                
-                                {/* Imagen de fondo */}
+                            <div className="card-content group relative w-full h-full rounded-2xl overflow-hidden cursor-pointer shadow-2xl">
                                 <img 
-                                    src={item.imagen.src} 
-                                    alt={item.imagen.alt} 
+                                    src={item.imagenes && item.imagenes.length > 0 ? item.imagenes[0].src : '/placeholder.jpg'} 
+                                    alt={item.titulo_evento || 'Evento'} 
                                     className="absolute inset-0 w-full h-full object-cover"
                                 />
                                 
-                                {/* Gradiente simple */}
                                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black/95"></div>
                                 <button 
                                     className="card-close-btn absolute top-4 left-4 bg-escom-sombra-400 hover:bg-escom-sombra-500 text-white w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-colors duration-200 z-20 opacity-0 pointer-events-none"
@@ -193,66 +199,46 @@ export default function CarruselGsap({ evento }) {
                                         
                                     }}
                                 >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="3">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
+                                    <FontAwesomeIcon icon={['fas', 'times']} className="text-lg" />
                                 </button>
 
                                 {item.fecha && (
                                     <div className="absolute top-4 right-4 rounded-xl shadow-lg px-3 bg-escom-300/30 py-2 text-center backdrop-blur-md">
                                         <div className="text-4xl bg-clip-text bg-gradient-to-b font-black text-transparent from-escom-100 to-escom-200 leading-none">
-                                            {item.fecha.dia}
+                                            {new Date(item.fecha).toLocaleDateString('es-MX', { day: '2-digit' })}
                                         </div>
                                         <div className="text-xl font-bold text-escom-100 uppercase">
-                                            {item.fecha.mes}
+                                            {new Date(item.fecha).toLocaleDateString('es-MX', { month: 'short' })}
                                         </div>
                                     </div>
                                 )}
-                                
-                                {/* Contenido inferior */}
                                 <div className="absolute bottom-0 left-0 right-0 p-5 space-y-3">
-                                    
-                                    {/* Tipo de evento */}
-                                    {item.tipo && (
-                                        <span className="inline-block px-3 py-1 bg-escom-400/90 text-escom-sombra-900 text-xs font-bold uppercase tracking-wide rounded-lg">
-                                            {item.tipo}
+                                    {item.nombre_categoria && (
+                                        <span className="inline-block px-3 py-1 bg-escom-900/90 text-white text-xs font-bold uppercase tracking-wide rounded-full">
+                                            {item.nombre_categoria}
                                         </span>
                                     )}
-
-                                    {/* Título */}
-                                    <h1 className='text-xl sm:text-3xl bg-clip-text bg-gradient-to-b font-black text-transparent from-escom-100 to-escom-200'>
-                                        {item.titulo}
+                                    <h1 className='text-xl sm:text-5xl bg-clip-text bg-gradient-to-b font-black text-transparent from-escom-100 to-escom-200 line-clamp-2'>
+                                        {item.titulo_evento}
                                     </h1>
-
-                                    {/* Info del evento: Horario, Ubicación, Cupo - Compacto */}
                                     <div className="flex flex-wrap gap-2">
-                                        {/* Horario */}
-                                        {item.horario && (
+                                        {item.fecha && (
                                             <span className="flex items-center gap-1 bg-escom-400/60 px-2 py-1 rounded-xl">
-                                                <svg className="w-3 h-3 text-escom-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
-                                                <span className="text-white/90 text-xs font-medium">{item.horario}</span>
+                                                <FontAwesomeIcon icon={['fas', 'clock']} className="text-escom-200 text-xs" />
+                                                <span className="text-white/90 text-xs font-medium">
+                                                    {new Date(item.fecha).toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
                                             </span>
                                         )}
-
-                                        {/* Ubicación */}
                                         {item.ubicacion && (
                                             <span className="flex items-center gap-1 bg-escom-200/60 px-2 py-1 rounded-xl">
-                                                <svg className="w-3 h-3 text-escom-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                </svg>
+                                                <FontAwesomeIcon icon={['fas', 'map-marker-alt']} className="text-escom-300 text-xs" />
                                                 <span className="text-white/90 text-xs font-semibold truncate max-w-[120px]">{item.ubicacion}</span>
                                             </span>
                                         )}
-
-                                        {/* Cupo */}
-                                        {item.cupo && (
+                                        {item.cupo > 20 && (
                                             <span className="flex items-center gap-1 bg-escom-300/60 px-2 py-1 rounded-xl">
-                                                <svg className="w-3 h-3 text-escom-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                </svg>
+                                                <FontAwesomeIcon icon={['fas', 'users']} className="text-escom-400 text-xs" />
                                                 <span className="text-white/90 text-xs font-semibold">{item.cupo}</span>
                                             </span>
                                         )}

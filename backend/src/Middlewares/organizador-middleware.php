@@ -23,7 +23,6 @@ class OrganizadorMiddleware {
     public function handle(callable $next): void {
         try {
             if (!isset($_COOKIE['token']) || empty($_COOKIE['token'])) {
-                self::abort(401, 'Token no encontrado en cookies');
                 return;
             }
 

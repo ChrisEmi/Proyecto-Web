@@ -1,13 +1,13 @@
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import LoopCarga from '../components/layout/LoopCarga.jsx';
-import AdminLayout from '../layouts/AdminLayout.jsx';
 import { AdminProvider } from '../api/Context/AdminContext.jsx';
 import { EventosProvider } from '../api/Context/EventosContext.jsx';
+import AdminLayout from '../layouts/AdminLayout.jsx';
+import { LoopCarga } from '../components/layout/LoopCarga.jsx';
 
-const Inicio = lazy(() => import('../pages/usuarios/admin/InicioAdmin.jsx'));
-const Usuarios = lazy(() => import('../pages/usuarios/admin/UsuarioAdmin.jsx'));
-const Eventos = lazy(() => import('../pages/usuarios/admin/Eventos.jsx'));
+const Inicio = lazy(() => import('../pages/usuarios/admin/InicioAdmin'));
+const Usuarios = lazy(() => import('../pages/usuarios/admin/UsuarioAdmin'));
+const Eventos = lazy(() => import('../pages/usuarios/admin/Eventos'));
 const Perfil = lazy(() => import('../pages/usuarios/admin/PerfilAdmin'));
 
 const AdminRoutes = () => {

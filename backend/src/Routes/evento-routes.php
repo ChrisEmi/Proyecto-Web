@@ -16,14 +16,14 @@ use App\Controllers\AdminController;
 function evento_routes($router) {
     $db = \App\Core\Database::getInstance();
 
-    $router->get('/evento/obtener', function() use ($db) {
+    $router->get('/evento/obtener-todos/{ordenar_por}/{direccion}/todos', function($ordenar_por, $direccion) use ($db) {
         $controller = new EventoController();
-        $controller->obtenerEventos($db, 'fecha', 'DESC');
+        $controller->obtenerEventos($db, $ordenar_por, $direccion, null);
     });
 
-    $router->get('/evento/obtener/{ordenar_por}/{direccion}', function($ordenar_por, $direccion) use ($db) {
+    $router->get('/evento/obtener-todos/{ordenar_por}/{direccion}/{categoria}', function($ordenar_por, $direccion, $categoria) use ($db) {
         $controller = new EventoController();
-        $controller->obtenerEventos($db, $ordenar_por, $direccion);
+        $controller->obtenerEventos($db, $ordenar_por, $direccion, $categoria);
     });
 
     $router->get('/evento/obtener/{id_evento}', function($id_evento) use ($db) {
@@ -59,7 +59,7 @@ function evento_routes($router) {
         $middleware = new EstudianteMiddleware();
         $middleware->handle(function() use ($db) {
             $controller = new EventoController();
-            $controller->obtenerEventosPorUsuario($db, 'fecha', 'DESC');
+            $controller->obtenerEventosPorUsuario($db, 'fecha_creacion', 'DESC');
         });
     });
 
@@ -107,6 +107,14 @@ function evento_routes($router) {
         $middleware->handle(function() use ($db, $id_evento) {
             $controller = new AdminController();
             $controller->eliminarEvento($db, $id_evento);
+        });
+    });
+    
+    $router->get('/evento/verificar-inscripcion/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new EstudianteMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new EventoController();
+            $controller->verificarInscripcion($db, $id_evento);
         });
     });
 

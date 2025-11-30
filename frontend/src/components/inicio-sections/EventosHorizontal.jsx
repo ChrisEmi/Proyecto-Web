@@ -5,6 +5,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import EscomDecorativeBackground from '../assets/EscomDecorativeBackground';
 import CarruselGsap from './Components/CarruselGsap';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,14 +17,9 @@ const EventosHorizontal = ({ eventos }) => {
   const createScrollTriggers = (selector) => {
     if (scrollTriggersRef.current) {
       scrollTriggersRef.current.forEach(st => st.kill());
-      scrollTriggersRef.current = []; // Reiniciar el array
+      scrollTriggersRef.current = [];
     }
     const sections = selector(".content"); 
-    if (sections.length === 0) {
-      console.warn("GSAP: No se encontraron secciones '.content' en EventosHorizontal.");
-      return null;
-    }
-
     const horizontalScroll = gsap.to(sections, {
       xPercent: -100 * (sections.length - 1),
       ease: "none",
@@ -44,14 +41,14 @@ const EventosHorizontal = ({ eventos }) => {
     ];
 
     const cardTriggers = cards.map((card) => {
-      const cardElement = selector(card.id)[0]; // [0] porque selector devuelve un array
+      const cardElement = selector(card.id)[0];
       if (!cardElement) {
         console.warn(`GSAP: Card ${card.id} no encontrada.`);
         return null;
       }
 
       return ScrollTrigger.create({
-        trigger: cardElement, // Usar el elemento encontrado
+        trigger: cardElement,
         start: "top top",
         end: "+=" + (window.innerHeight * 10),
         scrub: true,
@@ -73,7 +70,7 @@ const EventosHorizontal = ({ eventos }) => {
   useGSAP((context) => {
     const { selector } = context; 
     const handleMenuToggle = (event) => {
-      const horizontalSection = sectionRef.current; // Usar el ref
+      const horizontalSection = sectionRef.current;
       
       if (event.detail.isOpen) {
         if (horizontalSection) {
@@ -90,16 +87,13 @@ const EventosHorizontal = ({ eventos }) => {
           horizontalSection.style.visibility = 'visible';
           horizontalSection.style.willChange = 'transform';
         }
-        createScrollTriggers(selector); // Pasamos el selector
       }
     };
 
-    // Crear triggers en la carga inicial
     createScrollTriggers(selector); 
 
     window.addEventListener('menuToggle', handleMenuToggle);
 
-    // Función de limpieza correcta
     return () => {
       window.removeEventListener('menuToggle', handleMenuToggle);
       if (scrollTriggersRef.current) {
@@ -118,26 +112,18 @@ const EventosHorizontal = ({ eventos }) => {
         }
         
         #section-horizontal .content {
-          height: 100vh;
           display: flex;
+          height: 100vh;
           flex-direction: column;
           flex-shrink: 0;
         }
     `}</style>
     <section ref={sectionRef} className="relative bg-gradient-to-b from-white via-escom-50 to-escom-200 flex overflow-hidden" id="section-horizontal">
-      <div id="eventos" className="content w-[105vw] h-[110vh] relative flex flex-col items-center justify-start pt-8 sm:pt-12 lg:pt-16 p-4 sm:p-6 lg:p-8 sm:w-[100vw]">
+      <div id="eventos" className="content w-[100vw] h-[110vh] relative flex flex-col items-center justify-start pt-8 sm:pt-12 lg:pt-16 p-4 sm:p-6 lg:p-8 sm:w-[110vw]">
         <div className="text-center mb-8 sm:mb-10 lg:mb-12 max-w-4xl px-4">
-          <div className="inline-flex items-center gap-2 bg-gradient-to-b from-escom-900 to-escom-sombra-700 opacity-90 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full mb-3 sm:mb-4">
-            <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-            <span className="text-white font-semibold text-xs sm:text-sm uppercase tracking-wide">
-              {eventos.length} eventos te esperan
-            </span>
-          </div>
-          
           <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-escom-800 to-escom-sombra-800 mb-3 sm:mb-4 leading-tight px-4">
             Explora Eventos
           </h2>
-          
           <p className="text-base sm:text-lg lg:text-xl xl:text-2xl text-gray-600 font-light max-w-2xl mx-auto px-4">
             Descubre y comparte experiencias únicas con nosotros, sé parte y conecta con la comunidad ESCOM
           </p>
@@ -148,22 +134,20 @@ const EventosHorizontal = ({ eventos }) => {
         </div>
 
         <div className="mt-6 sm:mt-8 mb-4 sm:mb-0">
-          <button 
-            className="group relative bg-gradient-to-b from-escom-100 to-escom-200 text-escom-sombra-300 px-8 py-4 font-bold rounded-xl text-base sm:text-lg 
+          <Link to="/actividades-eventos/eventos" 
+            className="group inline-flex relative bg-gradient-to-b from-escom-100 to-escom-200 text-escom-sombra-300 px-8 py-4 font-bold rounded-xl text-base sm:text-lg 
                     hover:text-escom-sombra-700 transition-all duration-300 transform hover:scale-105 shadow-2xl 
                       hover:shadow-escom-sombra-900/50
                       focus:outline-none focus-visible:ring-2 focus-visible:ring-white 
                       focus-visible:ring-offset-2 focus-visible:ring-offset-escom-sombra-700
-                      overflow-hidden w-full sm:w-auto"
+                      overflow-hidden"
           >
             <span className="relative z-10 flex items-center justify-center gap-2">
               Ver todos los Eventos
-              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
+              <FontAwesomeIcon icon={['fas', 'arrow-right']} className="transition-transform duration-300 group-hover:translate-x-1" />
             </span>
             <div className="absolute inset-0 bg-gradient-to-r from-escom-200 to-escom-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -178,11 +162,9 @@ const EventosHorizontal = ({ eventos }) => {
             </span>
           </div>
           <h2 className="text-6xl font-bold text-escom-sombra-700 drop-shadow-lg">
-            Conecta con la Comunidad de ESCOM
+            Comunidad de ESCOM
           </h2>
-          <p className="text-2xl text-escom-sombra-600 font-medium max-w-3xl text-center mx-auto">
-            Portal gestor de eventos, actividades y recursos para estudiantes de la Escuela Superior de Cómputo.
-          </p>
+          
         </div>
       
         <h1 className="w-full text-escom-sombra-200 text-[42vw] font-lexend font-bold text-center margin-0 z-20 relative drop-shadow-escom-sombra-300 drop-shadow-xl" >ESCOMunidad</h1>

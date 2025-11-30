@@ -136,7 +136,7 @@ Content-Type: application/json
 }
 
 ### Test Obtener Eventos
-GET http://proyecto-web.local/evento/obtener
+GET http://proyecto-web.local/evento/obtener-todos/fecha/ASC/todos
 Content-Type: application/json
 
 ### Test Obtener Evento por ID

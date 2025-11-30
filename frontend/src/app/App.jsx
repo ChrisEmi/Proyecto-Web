@@ -1,16 +1,8 @@
 import Router from "../routes/RouterApp.jsx";
-import NavMenu from "../components/layout/NavMenu.jsx";
-import Footer from "../components/layout/Footer.jsx";
 
 const App = () => {
   return (
-    <div className="flex flex-col min-h-screen">
-      <NavMenu />
-      <main className="flex-grow">
-        <Router />
-      </main>
-      <Footer />
-    </div>
+    <Router />
   );
 }
 export default App;

@@ -196,6 +196,25 @@ class AdminController {
             ]);
         }
     }
+    
+    public function obtenerEventosAdmin($pool, $ordenar_por = 'fecha', $direccion = 'DESC', $estado = '') {
+
+        try {
+            $query = new QuerysAdmin($pool);
+            $eventos = $query->obtenerEventosAdminQuery($ordenar_por, $direccion, $estado);
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "eventos" => $eventos
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener los eventos: " . $e->getMessage()
+            ]);
+        }
+    }
 }
 
 

@@ -16,6 +16,7 @@ export const OrganizadorProvider = ({ children }) => {
     const [inscripciones, setInscripciones] = useState([]);
     const [errors, setErrors] = useState()
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     const crearEvento = async (formData) => {
         try {
@@ -32,21 +33,26 @@ export const OrganizadorProvider = ({ children }) => {
         try {
             const res = await EventosAPI.actualizarEvento(id_evento, formData);
             setMensajeConfirmacion(res.data.message);
+            console.log(res.data);
             return res.data.message;
         } catch (error) {
             console.error("Error al actualizar el evento:", error);
-            setErrors(error.response?.data?.message);
+            console.error("Respuesta del servidor:", error.response?.data);
+            setErrors(error.response?.data?.message || "Error al actualizar el evento");
         }
     };
 
     const obtenerEventosPorOrganizador = async (ordenar_por = 'nombre', direccion = 'ASC') => {
         try {
+            setLoading(true);
             const res = await EventosAPI.obtenerEventosPorOrganizador(ordenar_por, direccion);
             setEventosOrganizados(res.data.eventos);
             console.log("Eventos obtenidos:", res.data);
         } catch (error) {
             console.error("Error al obtener los eventos del organizador:", error);
             setErrors(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -82,6 +88,7 @@ export const OrganizadorProvider = ({ children }) => {
             errors,
             mensajeConfirmacion,
             setMensajeConfirmacion,
+            loading,
         }}>
             {children}
         </OrganizadorContext.Provider>

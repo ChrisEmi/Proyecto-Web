@@ -2,7 +2,7 @@ import { useOrganizador } from "../../../api/Context/OrganizadorContext";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { use, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -24,6 +24,16 @@ const CrearEvento = () => {
     const [imagenes, setImagenes] = useState([]);
     const [imagenSrc, setImagenSrc] = useState('');
     const [imagenDesc, setImagenDesc] = useState('');
+    const [fechaMinima, setFechaMinima] = useState('');
+
+    useEffect(() => {
+        const ahora = new Date();
+        const año = ahora.getFullYear();
+        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+        const dia = String(ahora.getDate()).padStart(2, '0');
+        const hora = String(ahora.getHours()).padStart(2, '0');
+        setFechaMinima(`${año}-${mes}-${dia}T${hora}:00`);
+    }, []);
 
     const onSubmit = async (data) => {
         const eventoData = {
@@ -31,6 +41,7 @@ const CrearEvento = () => {
             id_categoria: parseInt(data.id_categoria) || 0,
             cupo: parseInt(data.cupo) || 0,
             fecha: data.fecha ? data.fecha.replace('T', ' ') + ':00' : null,
+            fecha_final: data.fecha_final ? data.fecha_final.replace('T', ' ') + ':00' : null,
             tags: tags,
             imagenes: imagenes
         };
@@ -71,6 +82,33 @@ const CrearEvento = () => {
         setImagenes(imagenes.filter((_, i) => i !== index));
     };
 
+    const redondearFecha = (fechaString) => {
+        if (!fechaString) return fechaString;
+        
+        const fecha = new Date(fechaString);
+        const minutos = fecha.getMinutes();
+        if (minutos < 15) {
+            fecha.setMinutes(0);
+        } else if (minutos < 45) {
+            fecha.setMinutes(30);
+        } else {
+            fecha.setMinutes(0);
+            fecha.setHours(fecha.getHours() + 1);
+        }
+        
+        fecha.setSeconds(0);
+        fecha.setMilliseconds(0);
+        
+        // Formatear como datetime-local
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const hora = String(fecha.getHours()).padStart(2, '0');
+        const minuto = String(fecha.getMinutes()).padStart(2, '0');
+        
+        return `${año}-${mes}-${dia}T${hora}:${minuto}`;
+    };
+
     const inputs = [
         {
             label: "Nombre del Evento",
@@ -91,11 +129,20 @@ const CrearEvento = () => {
             fullWidth: true
         },
         {
-            label: "Fecha y Hora",
+            label: "Fecha y Hora de Inicio",
             id: "fecha",
             request: "fecha",
             type: "datetime-local",
-            icon: "clock"
+            icon: "clock",
+            step: 3600
+        },
+        {
+            label: "Fecha y Hora de Fin",
+            id: "fecha_final",
+            request: "fecha_final",
+            type: "datetime-local",
+            icon: "clock",
+            step: 3600
         },
         {
             label: "Ubicación",
@@ -112,7 +159,7 @@ const CrearEvento = () => {
             type: "number",
             placeholder: "Ej. 100",
             icon: "users",
-            min: 1
+            min: 0
         },
         {
             label: "Categoría",
@@ -187,8 +234,17 @@ const CrearEvento = () => {
                                         id={id}
                                         type={type}
                                         placeholder={placeholder}
-                                        min={min}
-                                        {...register(request, { required: `${label} es obligatorio` })}
+                                        min={type === 'datetime-local' ? fechaMinima : min}
+                                        step={type === 'datetime-local' ? 1800 : undefined}
+                                        {...register(request, { 
+                                            required: `${label} es obligatorio`,
+                                            ...(type === 'datetime-local' && {
+                                                onChange: (e) => {
+                                                    const redondeado = redondearFecha(e.target.value);
+                                                    e.target.value = redondeado;
+                                                }
+                                            })
+                                        })}
                                         className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-escom-500 focus:border-escom-500 transition-all ${
                                             errors[request] ? 'border-red-500' : 'border-gray-200'
                                         }`}

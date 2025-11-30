@@ -15,14 +15,19 @@ export const EventosProvider = ({ children }) => {
     const [eventos, setEventos] = useState([]);
     const [errors, setErrors] = useState();
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const obtenerEventos = async (ordenar_por = 'nombre', direccion = 'ASC') => {
+    const obtenerEventos = async (ordenar_por = 'fecha', direccion = 'DESC', categoria) => {
         try {
-            const res = await EventosAPI.obtenerEventos(ordenar_por, direccion);
-            setEventos(res.data.eventos);
+            setLoading(true);
+            const res = await EventosAPI.obtenerEventos(ordenar_por, direccion, categoria);
+            setEventos(res.data.eventos)
+            console.log(res.data.eventos)
         } catch (error) {
             console.error("Error al obtener eventos:", error);
             setErrors(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -69,6 +74,7 @@ export const EventosProvider = ({ children }) => {
             eliminarEvento,
             eventos,
             errors,
+            loading,
         }}>
             {children}
         </EventosContext.Provider>

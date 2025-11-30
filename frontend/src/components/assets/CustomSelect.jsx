@@ -33,7 +33,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
         }
     };
 
-    const currentColor = colorClasses[color] || colorClasses['escom-400'];
+    const currentColor = colorClasses[color];
 
     useEffect(() => {
         const handleClickOutside = (event) => {

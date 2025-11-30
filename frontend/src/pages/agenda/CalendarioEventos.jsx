@@ -3,25 +3,24 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import dayjs from 'dayjs'
 import 'dayjs/locale/es';
 import { useMemo, useState } from 'react';
-import { useAlumno } from '../../../api/Context/AlumnoContext.jsx';
+import { useEventos } from '../../api/Context/EventosContext.jsx';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendarDay, faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import '../../../styles/Calendario.css';
+import '../../styles/Calendario.css';
 import { useEffect } from 'react';
-import ModalDetallesEvento from '../../../components/assets/ModalDetallesEvento.jsx';
-import { useEventos } from '../../../api/Context/EventosContext.jsx';
-import { useAnimacionesEventos } from '../../../hooks/useAnimacionesEventos.js';
+import ModalDetallesEvento from '../../components/assets/ModalDetallesEvento.jsx';
+import { useAlumno } from '../../api/Context/AlumnoContext.jsx';
+import { useAnimacionesEventos } from '../../hooks/useAnimacionesEventos.js';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
 
 const CalendarioAlumno = () => {
-    const { eventosInscritos, obtenerEventosPorUsuario, verificarInscripcion, desinscribirseEvento, errors: errores } = useAlumno();
-    const { obtenerEventoPorId } = useEventos();
+    const { verificarInscripcion, errors: errores } = useAlumno();
+    const { obtenerEventoPorId, obtenerEventos, eventos } = useEventos();
     const [abrirDetalles, setAbrirDetalles] = useState(false);
     const [eventoSeleccionado, setEventoSeleccionado] = useState(null);
     const [estaInscrito, setEstaInscrito] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
 
     const { cerrarModalAnimacion } = useAnimacionesEventos(abrirDetalles, eventoSeleccionado);
 
@@ -31,7 +30,7 @@ const CalendarioAlumno = () => {
     }, []);
 
     useEffect(() => {
-        obtenerEventosPorUsuario('fecha', 'ASC');
+        obtenerEventos('fecha', 'ASC');
     }, []);
 
     
@@ -40,7 +39,7 @@ const CalendarioAlumno = () => {
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
-        return eventosInscritos.map(evento => {
+        return eventos.map(evento => {
             const fechaEvento = new Date(evento.fecha);
             const esPasado = fechaEvento < hoy;
             
@@ -53,7 +52,7 @@ const CalendarioAlumno = () => {
                 resource: { ...evento, esPasado }
             };
         });
-    }, [eventosInscritos]);
+    }, [eventos]);
 
     const eventStyleGetter = (event) => {
         const style = {
@@ -114,17 +113,11 @@ const CalendarioAlumno = () => {
             { opacity: 1, x: 0, duration: 1, stagger: 0.1, ease: "power4.inOut"});;
     }, []);
 
-    const desinscribirseYActualizar = async (id_evento) => {
-        await desinscribirseEvento(id_evento);
-        manejarCerrarModal();
-        await obtenerEventosPorUsuario('fecha', 'ASC');
-    };
-
     const messages = {
         allDay: 'Todo el día',
-        previous: <><FontAwesomeIcon icon={faChevronLeft} /></>,
-        next: <><FontAwesomeIcon icon={faChevronRight} /></>,
-        today: <><FontAwesomeIcon icon={faCalendarDay} /></>,
+        previous: <><FontAwesomeIcon icon={`fa-solid fa-chevron-left`} /></>,
+        next: <><FontAwesomeIcon icon={`fa-solid fa-chevron-right`} /></>,
+        today: <><FontAwesomeIcon icon={`fa-solid fa-calendar-day`} /></>,
         month: 'Mes',
         week: 'Semana',
         date: 'Fecha',
@@ -142,20 +135,16 @@ const CalendarioAlumno = () => {
                     eventoSeleccionado={eventoSeleccionado}
                     onCerrar={manejarCerrarModal}
                     errores={errores}
-                    isLoading={isLoading}
                     isInscrito={estaInscrito}
-                    onDesinscribirse={() => {
-                        desinscribirseYActualizar(eventoSeleccionado.id_evento);
-                    }}
                     esAlumno={true}
                 />
             )}
-            <div className="flex flex-col gap-8 text-escom-sombra-400 container-section min-w-full rounded-2xl shadow-2xl bg-white/40 p-4 md:p-8">
+            <div className="flex flex-col gap-8 text-escom-sombra-400 container-section min-w-full rounded-2xl shadow-2xl bg-escom-900/20 p-4 md:p-8">
                 <div className="flex items-center gap-4 text-escom-900">
                     <FontAwesomeIcon icon={`fa-solid fa-calendar`} className="text-2xl md:text-3xl" />
                     <h1 className="text-3xl md:text-4xl font-bold mb-2">Calendario de Eventos</h1>
                 </div>
-                <div className="h-[70vh] rounded-4xl shadow-2xl overflow-hidden">
+                <div className="h-[75vh] rounded-4xl shadow-2xl overflow-hidden">
                     <Calendar
                         events={eventosCalendario}
                         localizer={localizer}

@@ -1,5 +1,6 @@
 import CustomSelect from "../../../components/assets/CustomSelect";
 import ModalDetallesEvento from "../../../components/assets/ModalDetallesEvento.jsx";
+import { VistaCarga } from "../../../components/layout/LoopCarga.jsx";
 import { useEventos } from "../../../api/Context/EventosContext.jsx";
 import { useAdmin } from "../../../api/Context/AdminContext.jsx";
 import { useEffect, useState } from "react";
@@ -9,14 +10,14 @@ import { TarjetaEvento } from "../../../components/assets/TarjetaEvento.jsx";
 
 const Eventos = () => {
     const { obtenerEventoPorId } = useEventos();
-    const { obtenerEventos, eventos, verificarEvento, errors: errores, eliminarEvento } = useAdmin();
+    const { obtenerEventos, eventos, verificarEvento, errors: errores, eliminarEvento, loading } = useAdmin();
     const [ordenarPor, setOrdenarPor] = useState('fecha_creacion');
     const [direccion, setDireccion] = useState('DESC');
     const [isLoading, setIsLoading] = useState(false);
     const [abrirDetalles, setAbrirDetalles] = useState(false);
     const [eventoSeleccionado, setEventoSeleccionado] = useState([]);
     const [estaEditando, setEstaEditando] = useState(false);
-    const [categoria, setCategoria] = useState(null);
+    const [estado, setEstado] = useState('');
 
     const { cerrarModalAnimacion } = useAnimacionesEventos(abrirDetalles, eventoSeleccionado);
 
@@ -27,6 +28,10 @@ const Eventos = () => {
     const manejarDireccion = (value) => {
         setDireccion(value);
     };
+
+    const manejarEstado = (value) => {
+        setEstado(value);
+    }    
 
     const actualizarLista = async () => {
         setIsLoading(true);
@@ -63,8 +68,8 @@ const Eventos = () => {
     }
 
     useEffect(() => {
-        obtenerEventos(ordenarPor, direccion);
-    }, [ordenarPor, direccion]);
+        obtenerEventos(ordenarPor, direccion, estado);
+    }, [ordenarPor, direccion, estado]);
 
     
     const onClickVerificarEvento = async () => { 
@@ -76,7 +81,6 @@ const Eventos = () => {
         setIsLoading(false);
     }
 
-
     return (
         <>
             <ModalDetallesEvento
@@ -86,7 +90,6 @@ const Eventos = () => {
                 errores={errores}
                 estaEditando={estaEditando}
                 setEstaEditando={setEstaEditando}
-                categoria={categoria}
                 isLoading={isLoading}
                 onGuardar={guardarCambios}
                 onEliminar={eliminarEventoSeleccionado}
@@ -96,7 +99,7 @@ const Eventos = () => {
 
             <div className="container min-w-full min-h-screen rounded-2xl shadow-2xl bg-white/40 flex flex-col gap-4 p-2 md:p-4 relative">
                 
-                <div className="sticky top-0 flex flex-col lg:flex-row items-center justify-between p-12 bg-white/40 rounded-xl gap-4 backdrop-blur-2xl z-10">
+                <div className="md:sticky top-0 flex flex-col lg:flex-row items-center justify-between p-12 bg-white/40 rounded-xl gap-4 backdrop-blur-2xl z-10">
                     <h1 className="font-bold text-2xl md:text-3xl lg:text-4xl text-escom-sombra-400"><FontAwesomeIcon icon={['fas', 'calendar-alt']} /> Eventos Organizados</h1>
                     <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
                         <CustomSelect
@@ -124,6 +127,18 @@ const Eventos = () => {
                             onChange={manejarDireccion}
                             color="escom-900"
                         />
+                        <CustomSelect
+                            label="Estado:"
+                            options={[
+                                { value: '', label: 'Todos', icon: 'list' },
+                                { value: 'Verificado', label: 'Verificado', icon: 'check' },
+                                { value: 'Pendiente de revision', label: 'No Verificado', icon: 'times' },
+                                { value: 'Pasado', label: 'Pasado', icon: 'calendar-minus' },
+                            ]}
+                            value={estado}
+                            onChange={manejarEstado}
+                            color="escom-900"
+                        />
                         <button
                             onClick={actualizarLista}
                             disabled={isLoading}
@@ -136,16 +151,21 @@ const Eventos = () => {
                         </button>
                     </div>
                 </div>
-                <div className="bg-white/100 rounded-2xl">
+                <div className="bg-white/100 rounded-2xl flex flex-col md:flex-row flex-wrap justify-center items-center gap-4 p-4 min-h-[80vh] shadow-2xl overflow-y-auto">
                     {errores && errores.length > 0 && (
                         <div className="p-4">
                             <div className="bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg">{errores}</div>
                         </div>
                     )}
-                    {eventos.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center h-full w-full shadow-2xl rounded-2xl p-10">
+                    {loading ? (
+                        <div className="flex flex-1 flex-col items-center justify-center h-[80vh] w-full shadow-2xl rounded-2xl p-10">
+                            <FontAwesomeIcon icon={['fas', 'circle-notch']} className="text-escom-sombra-400 text-9xl mx-auto my-10 animate-spin" />
+                            <p className="p-4 text-3xl font-semibold text-escom-900">Cargando tus eventos...</p>
+                        </div>
+                    ) : !eventos || eventos?.length === 0 ? (
+                        <div className="flex flex-1 flex-col items-center justify-center h-[80vh] w-full shadow-2xl rounded-2xl p-10">
                             <FontAwesomeIcon icon={['fas', 'calendar-times']} className="text-escom-sombra-400 text-9xl mx-auto my-10" />
-                            <p className="p-4">No hay eventos organizados.</p>
+                            <p className="p-4 text-3xl font-semibold text-escom-900">No hay eventos.</p>
                         </div>
                     ) : (
                         eventos.map((evento) => (

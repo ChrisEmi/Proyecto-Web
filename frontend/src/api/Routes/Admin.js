@@ -22,6 +22,17 @@ const AdminAPI = {
     axios.post(`/administrador/verificar-evento/${id_evento}`),
   eliminarEvento: (id_evento) =>
     axios.post(`/administrador/eliminar-evento/${id_evento}`),
+  obtenerEventosAdmin: (ordenar_por, direccion, estado) => {
+    if (!estado) {
+      return axios.get(
+        `/administrador/obtener-eventos/${ordenar_por}/${direccion}/todos`
+      );
+    } else {
+      return axios.get(
+        `/administrador/obtener-eventos/${ordenar_por}/${direccion}/${estado}`
+      );
+    }
+  },
 };
 
 export default AdminAPI;

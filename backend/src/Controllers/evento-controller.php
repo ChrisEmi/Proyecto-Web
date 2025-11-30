@@ -38,6 +38,7 @@ class EventoController {
     public function actualizarEvento($pool, $id_evento){
         try {
             $datos = json_decode(file_get_contents('php://input'), true);
+            error_log("Datos recibidos en actualizarEvento: " . print_r($datos, true));
 
             $eventoModel = new QuerysEventos($pool);
             $eventoModel->actualizarEventoQuery($datos, $id_evento);
@@ -50,15 +51,16 @@ class EventoController {
             http_response_code(500);
             echo json_encode([
                 "status" => "error",
-                "message" => "Error al actualizar el evento"
+                "message" => "Error al actualizar el evento: " . $e->getMessage(),
+                "trace" => $e->getTraceAsString()
             ]);
         }
     }
 
-    public function obtenerEventos($pool, $ordenar_por, $direccion){
+    public function obtenerEventos($pool, $ordenar_por, $direccion, $categoria){
         try {
             $eventoModel = new QuerysEventos($pool);
-            $eventos = $eventoModel->obtenerEventosQuery($ordenar_por, $direccion);
+            $eventos = $eventoModel->obtenerEventosQuery($ordenar_por, $direccion, $categoria);
             
 
             http_response_code(200);
@@ -120,7 +122,7 @@ class EventoController {
             http_response_code(200);
             echo json_encode([
                 "status" => "success",
-                "message" => "Desinscripcion del evento exitosa"
+                "message" => "Inscripción al evento cancelada exitosamente"
             ]);
         } catch (Exception $e) {
             http_response_code(500);
@@ -180,13 +182,10 @@ class EventoController {
         }
     }
 
-    public function obtenerEventosPorUsuario($pool){
+    public function obtenerEventosPorUsuario($pool, $ordenar_por, $direccion){
         $id_usuario = AuthContext::obtenerIdUsuario();
 
         try {
-            $ordenar_por = $_GET['ordenar_por'] ?? 'fecha';
-            $direccion = $_GET['direccion'] ?? 'DESC';
-
             $eventoModel = new QuerysEventos($pool);
             $eventos = $eventoModel->obtenerEventosPorUsuarioQuery($id_usuario, $ordenar_por, $direccion);
 
@@ -251,6 +250,35 @@ class EventoController {
             echo json_encode([
                 "status" => "error",
                 "message" => "Error al obtener las inscripciones del evento"
+            ]);
+        }
+    }
+
+    public function verificarInscripcion($pool, $id_evento){
+        $id_usuario = AuthContext::obtenerIdUsuario();
+        try {
+            if (!$id_evento) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "ID del evento es requerido"
+                ]);
+                return;
+            }
+
+            $eventoModel = new QuerysEventos($pool);
+            $inscripcion = $eventoModel->verificarInscripcionUsuarioEventoQuery($id_usuario, $id_evento);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "inscrito" => $inscripcion ? true : false
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al verificar la inscripcion del usuario al evento"
             ]);
         }
     }

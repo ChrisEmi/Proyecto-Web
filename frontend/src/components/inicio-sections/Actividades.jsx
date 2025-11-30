@@ -23,12 +23,12 @@ export function Actividades() {
   return (
     <>
       <section
-        className="relative overflow-hidden min-h-[120vh] flex justify-center items-center w-full bg-gradient-to-b from-escom-200 via-white to-escom-300 py-12 md:py-16 lg:py-20"
+        className="relative overflow-hidden min-h-[120vh] flex justify-center items-center w-full bg-gradient-to-b from-escom-100 via-white to-escom-200 py-12 md:py-16 lg:py-20"
         id="actividades" ref={containerRef}
       >
         <div className={`w-full h-full px-4 sm:px-8 md:px-12 lg:px-20 flex flex-col gap-8 md:gap-10 font-lexend justify-center items-center`}>
           <div ref={containerTituloRef} className="flex flex-col items-center gap-3 md:gap-4 w-full mb-4 md:mb-6">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-escom-900 via-escom-700 to-escom-sombra-500 text-center">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-escom-800 via-escom-600 to-escom-sombra-400 text-center">
               Actividades ESCOMunidad
             </h1>
           </div>

@@ -16,26 +16,33 @@ export const AdminProvider = ({ children }) => {
     const [eventos, setEventos] = useState([])
     const [errors, setErrors] = useState(null)
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
+    const [loading, setLoading] = useState(true);
     
     const obtnerUsuarios = async (rol, ordenar_por = 'nombre', direccion = 'ASC') => {
         try {
+            setLoading(true);
             const res = await AdminAPI.obtenerUsuariosConFiltros(rol, ordenar_por, direccion);
             console.log(res.data);
             setUsuarios(res.data.usuarios);
         } catch (error) {
             console.error("Error en el registro:", error);
             setErrors(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const obtenerEventos = async (ordenar_por = 'fecha_creacion', direccion = 'DESC') => {
+    const obtenerEventos = async (ordenar_por = 'fecha_creacion', direccion = 'DESC', estado = '') => {
         try {
-            const res = await EventosAPI.obtenerEventos(ordenar_por, direccion);
+            setLoading(true);
+            const res = await AdminAPI.obtenerEventosAdmin(ordenar_por, direccion, estado);
             setEventos(res.data.eventos);
             console.log("Eventos obtenidos:", res);
         } catch (error) {
             console.error("Error al obtener eventos:", error);
             setErrors(error.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -91,6 +98,7 @@ export const AdminProvider = ({ children }) => {
             verificarEvento,
             eliminarEvento,
             errors,
+            loading,
         }}>
             {children}
         </AdminContext.Provider>

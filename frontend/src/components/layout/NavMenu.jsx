@@ -2,7 +2,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { useState, useRef } from "react";
-import { IconoMenu, IconoEscom } from "../assets/ElementosSvg.jsx";
+import { IconoEscom } from "../assets/ElementosSvg.jsx";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -10,11 +10,13 @@ import { fas } from '@fortawesome/free-solid-svg-icons'
 import { far } from '@fortawesome/free-regular-svg-icons'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { useAuth } from "../../api/Context/AuthContext.jsx";
+import { useNavigate } from "react-router-dom";
 
 gsap.registerPlugin(SplitText);
 
 export default function NavMenu() {
     const { usuario, cerrarSesion } = useAuth();
+    const navigate = useNavigate();
     const [menuOpen, setMenuOpen] = useState(false);
     const [botonInicio, setBotonInicio] = useState(true);
     const [botonEventos, setBotonEventos] = useState(false);
@@ -165,8 +167,8 @@ export default function NavMenu() {
 
     return (
         <>
-            <button onClick={botonMenuMobile} className={`boton-menu-mobile fixed top-4 right-4 z-50 md:hidden block`}>
-                <FontAwesomeIcon icon="fa-solid fa-arrow-left" className="bg-escom-900 text-white p-4 rounded-full"/>
+            <button onClick={botonMenuMobile} className={`boton-menu-mobile bg-escom-sombra-500/80 backdrop-blur-sm rounded-full fixed top-4 right-4 z-50 md:hidden block`}>
+                <FontAwesomeIcon icon="fa-solid fa-arrow-left" className="text-white p-3"/>
             </button>
             <div className={`nav-container group relative md:fixed top-0 left-0 right-0 z-50 transition-transform duration-500 ${menuOpen ? '-translate-y-full md:pointer-events-none' : ''}`}>
                 <div className="absolute inset-x-0 top-0 h-20 lg:h-24 bg-gradient-to-br from-escom-sombra-700/40 via-escom-sombra-500/60 to-escom-sombra-400/70 border-b hidden lg:block border-white/5 shadow-xl shadow-black/20 -translate-y-0 group-hover:translate-y-0 md:translate-y-0 lg:-translate-y-full transition-all duration-500 ease-out">
@@ -313,7 +315,7 @@ export default function NavMenu() {
                             <button onClick={manejarBotonEventos}>
                                 <span className={`text-sm md:text-lg font-semibold rounded-full px-4 md:px-10 py-2 md:py-4 transition-all cursor-pointer ${botonEventos ? 'bg-white !text-escom-sombra-500 cursor-default pointer-events-none' : 'text-white hover:text-escom-200'}`}>
                                     <FontAwesomeIcon icon="fa-regular fa-calendar" className="mr-2" />
-                                    Eventos
+                                    Agenda
                                 </span>
                             </button>
                             {usuario && (
@@ -352,10 +354,10 @@ export default function NavMenu() {
                         )}
                         {botonEventos && (
                             <>
-                                <a href="#calendario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</a>
-                                <a href="#eventos-proximos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Próximos</a>
-                                <a href="#eventos-anteriores" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos Anteriores</a>
-                                <a href="#acerca-de" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Acerca de</a>
+                                <Link to="/actividades-eventos/explorar" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Explorar</Link>
+                                <Link to="/actividades-eventos/actividades" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Actividades</Link>
+                                <Link to="/actividades-eventos/eventos" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Eventos</Link>
+                                <Link to="/actividades-eventos/calendario" onClick={cerrarMenu} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white hover:text-escom-200">Calendario</Link>
                             </>
                         )}
                         {botonPanel && usuario && (
@@ -424,6 +426,8 @@ export default function NavMenu() {
                                         <a onClick={() => {
                                                 cerrarMenu();
                                                 cerrarSesion();
+                                                navigate('/');
+
                                         }} className="boton-menu-op text-3xl md:text-6xl uppercase font-lexend font-semibold text-white cursor-pointer hover:text-escom-200">Cerrar Sesión</a>
                                     </>
                                 )}

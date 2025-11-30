@@ -3,6 +3,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import CustomSelect from "./CustomSelect";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
 
 const ModalDetallesEvento = ({ 
     abrirDetalles, 
@@ -16,9 +20,53 @@ const ModalDetallesEvento = ({
     onGuardar,
     onEliminar,
     onVerificar,
+    onInscribirse,
+    isInscrito,
+    onDesinscribirse,
     esAdmin = false,
-    esAlumno = false
+    esAlumno = false,
+    paginaAlumno = false
 }) => {
+    const [modalCancelar, setModalCancelar] = useState(false);
+    const [modalInscribir, setModalInscribir] = useState(false);
+    const [modalGuardar, setModalGuardar] = useState(false);
+    const [modalEliminar, setModalEliminar] = useState(false);
+    const [datosForm, setDatosForm] = useState(null);
+    const navigate = useNavigate();
+    const { register, handleSubmit, formState: { errors: formErrors } } = useForm();
+
+    const manejarSubmitForm = (formData) => {
+        console.log("Datos del formulario:", formData);
+        setDatosForm(formData);
+        setModalGuardar(true);
+    };
+
+    const redondearFecha = (fechaString) => {
+        if (!fechaString) return fechaString;
+        
+        const fecha = new Date(fechaString);
+        const minutos = fecha.getMinutes();
+        if (minutos < 15) {
+            fecha.setMinutes(0);
+        } else if (minutos < 45) {
+            fecha.setMinutes(30);
+        } else {
+            fecha.setMinutes(0);
+            fecha.setHours(fecha.getHours() + 1);
+        }
+        
+        fecha.setSeconds(0);
+        fecha.setMilliseconds(0);
+        
+        const año = fecha.getFullYear();
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const hora = String(fecha.getHours()).padStart(2, '0');
+        const minuto = String(fecha.getMinutes()).padStart(2, '0');
+        
+        return `${año}-${mes}-${dia}T${hora}:${minuto}`;
+    };
+
     useGSAP(() => { 
         if (!abrirDetalles || !eventoSeleccionado) return;
         gsap.set(".modal-evento > div", { opacity: 0 });
@@ -95,6 +143,122 @@ const ModalDetallesEvento = ({
 
     return createPortal(
         <>
+            {modalCancelar && (
+                <div className="modal-cancelar fixed inset-0 z-[600] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl min-h-50 p-6 flex items-center justify-center flex-col">
+                        <div className="flex flex-col items-center text-center gap-5">
+                            <FontAwesomeIcon icon="fa-solid fa-circle-exclamation" className="text-7xl text-escom-sombra-50/60" />
+                            <h2 className="text-2xl font-bold text-escom-900">Confirmar Cancelación</h2>
+                            <p className="text-escom-900 mb-6 px-12">¿Estás seguro de que deseas cancelar tu inscripción en este evento?</p>
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => {
+                                    onDesinscribirse();
+                                    navigate('/alumno/mis-eventos');
+                                }}
+                                className="rounded-full bg-escom-sombra-50 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                onClick={() => setModalCancelar(false)}
+                                className="rounded-full bg-escom-sombra-500 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {modalInscribir && (
+                <div className="modal-cancelar fixed inset-0 z-[600] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl min-h-50 p-6 flex items-center justify-center flex-col">
+                        <div className="flex flex-col items-center text-center gap-5">
+                            <FontAwesomeIcon icon="fa-solid fa-circle-check" className="text-7xl text-escom-sombra-50/60" />
+                            <h2 className="text-2xl font-bold text-escom-900">Confirmar Inscripción</h2>
+                            <p className="text-escom-900 mb-6 px-12">¿Estás seguro de que deseas inscribirte en este evento?</p>
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => {
+                                    onInscribirse();
+                                    navigate('/alumno/mis-eventos');
+                                }}
+                                className="rounded-full bg-escom-sombra-50 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                onClick={() => setModalInscribir(false)}
+                                className="rounded-full bg-escom-sombra-500 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {modalGuardar && (
+                <div className="modal-guardar fixed inset-0 z-[600] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl min-h-50 p-6 flex items-center justify-center flex-col">
+                        <div className="flex flex-col items-center text-center gap-5">
+                            <FontAwesomeIcon icon="fa-solid fa-floppy-disk" className="text-7xl text-escom-sombra-50/60" />
+                            <h2 className="text-2xl font-bold text-escom-900">Confirmar Cambios</h2>
+                            <p className="text-escom-900 mb-6 px-12">¿Estás seguro de que deseas guardar los cambios realizados en este evento?</p>
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    if (datosForm) {
+                                        onGuardar(datosForm);
+                                    }
+                                    setModalGuardar(false);
+                                }}
+                                className="rounded-full bg-escom-sombra-50 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setModalGuardar(false)}
+                                className="rounded-full bg-escom-sombra-500 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {modalEliminar && (
+                <div className="modal-eliminar fixed inset-0 z-[600] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+                    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl min-h-50 p-6 flex items-center justify-center flex-col">
+                        <div className="flex flex-col items-center text-center gap-5">
+                            <FontAwesomeIcon icon="fa-solid fa-ban" className="text-7xl text-escom-sombra-50/60" />
+                            <h2 className="text-2xl font-bold text-escom-900">Confirmar Eliminación</h2>
+                            <p className="text-escom-900 mb-6 px-12">¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.</p>
+                        </div>
+                        <div className="flex justify-center gap-4">
+                            <button
+                                onClick={() => {
+                                    onEliminar();
+                                    setModalEliminar(false);
+                                }}
+                                className="rounded-full bg-escom-sombra-50 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Confirmar
+                            </button>
+                            <button
+                                onClick={() => setModalEliminar(false)}
+                                className="rounded-full bg-escom-sombra-500 px-4 py-2 text-white cursor-pointer"
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
             <style>{`
                 .carrusel-slide-abs {
                     position: absolute;
@@ -114,7 +278,7 @@ const ModalDetallesEvento = ({
                     object-fit: contain;
                 }
             `}</style>
-            <div className="modal-evento fixed inset-0 z-[9999] grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black/50 backdrop-blur-sm p-4 lg:p-20 gap-4 lg:gap-10 overflow-auto">
+            <div className="modal-evento fixed inset-0 z-[300] grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black/50 backdrop-blur-sm p-4 lg:p-20 gap-4 lg:gap-10 overflow-auto">
                 {errores && (
                     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50">{errores}</div>
                 )}
@@ -125,7 +289,7 @@ const ModalDetallesEvento = ({
                     <FontAwesomeIcon icon={['fas', 'times']} className="text-xl" />
                 </button>
                 
-                {eventoSeleccionado.imagenes && eventoSeleccionado.imagenes.length > 0 && (
+                {eventoSeleccionado.imagenes && eventoSeleccionado.imagenes.length > 0 &&  (
                     <div className="carrusel relative flex flex-col h-[40vh] lg:h-[80vh] w-full items-center justify-center">
                         {(eventoSeleccionado.imagenes.length > 1) && (
                             <nav className="carrusel-nav hidden absolute w-full h-full items-center justify-between px-4 pointer-events-none z-20">
@@ -161,16 +325,20 @@ const ModalDetallesEvento = ({
                 )}
                 
                 <div className={`${eventoSeleccionado.imagenes && eventoSeleccionado.imagenes.length > 0 ? "lg:col-span-1" : "lg:col-span-2 items-center w-full"} bg-white rounded-2xl shadow-2xl w-full mx-auto max-w-5xl max-h-[50vh] lg:max-h-[85vh] overflow-y-auto p-4 md:p-6`}>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full">
+                    <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full" onSubmit={handleSubmit(manejarSubmitForm)}>
+                        <div className="col-span-full flex items-center justify-between">
+                            <h2 className="text-2xl md:text-3xl font-bold text-escom-900">{paginaAlumno ? 'Detalles del Evento' : (estaEditando ? 'Editar Evento' : 'Detalles del Evento')}</h2>
+                        </div>
                         <div className="col-span-2">
                             <label className="block text-xs md:text-sm font-semibold text-escom-900 mb-2">
                                 Título del Evento <FontAwesomeIcon icon={['fas', 'heading']} className="text-escom-500"/>
                             </label>
                             <input 
                                 type="text" 
+                                {...register("titulo_evento")}
                                 defaultValue={eventoSeleccionado.titulo_evento}
                                 disabled={!estaEditando}
-                                className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
                                     estaEditando 
                                         ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none text-escom-900 bg-blue-50/30' 
                                         : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -188,10 +356,11 @@ const ModalDetallesEvento = ({
                                 Descripción <FontAwesomeIcon icon={['fas', 'info-circle']} className="text-escom-500"/>
                             </label>
                             <textarea 
+                                {...register("descripcion")}
                                 defaultValue={eventoSeleccionado.descripcion}
                                 rows="4"
                                 disabled={!estaEditando}
-                                className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                className={`w-full px-3 md:px-4 py-2 rounded-3xl text-sm md:text-base transition-all duration-200 ${
                                     estaEditando 
                                         ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
                                         : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -206,9 +375,10 @@ const ModalDetallesEvento = ({
                                 </label>
                                 <input 
                                     type="text" 
+                                    {...register("tags")}
                                     defaultValue={eventoSeleccionado.tags.join(', ')}
                                     disabled={!estaEditando}
-                                    className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                    className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
                                     estaEditando 
                                         ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
                                         : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -226,19 +396,59 @@ const ModalDetallesEvento = ({
                                 type="text" 
                                 defaultValue={new Date(eventoSeleccionado.fecha_creacion).toLocaleDateString('es-MX', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                                 disabled
-                                className="w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent font-lg"
+                                className="w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent font-lg"
                             />
                         </div>
                         
                         <div className="col-span-full md:col-span-1">
                             <label className="block text-xs md:text-sm font-semibold text-escom-900 mb-2">
-                                Fecha del Evento <FontAwesomeIcon icon={['fas', 'calendar-alt']} className="text-escom-500"/>
+                                Fecha de Inicio <FontAwesomeIcon icon={['fas', 'calendar-alt']} className="text-escom-500"/>
                             </label>
                             <input 
                                 type="datetime-local" 
-                                defaultValue={new Date(eventoSeleccionado.fecha).toISOString().slice(0, 16)}
+                                {...register("fecha", {
+                                    onChange: (e) => {
+                                        if (estaEditando) {
+                                            const redondeado = redondearFecha(e.target.value);
+                                            e.target.value = redondeado;
+                                        }
+                                    }
+                                })}
+                                defaultValue={eventoSeleccionado.fecha}
                                 disabled={!estaEditando}
-                                className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                step="1800"
+                                className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
+                                    estaEditando 
+                                        ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
+                                        : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
+                                    } font-lg`}
+                            />
+                            {formErrors.fecha && (
+                                <p className="mt-1 text-xs text-orange-600 bg-orange-50 px-3 py-1 rounded-full flex items-center gap-1">
+                                    <FontAwesomeIcon icon={['fas', 'exclamation-triangle']} />
+                                    Ingresa un valor válido. Los dos valores válidos más aproximados son {new Date().toLocaleDateString('es-MX')} {new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'})} y {new Date(Date.now() + 86400000).toLocaleDateString('es-MX')} {new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'})}
+                                </p>
+                            )}
+                        </div>
+                        
+                        <div className="col-span-full md:col-span-1">
+                            <label className="block text-xs md:text-sm font-semibold text-escom-900 mb-2">
+                                Fecha de Fin <FontAwesomeIcon icon={['fas', 'calendar-check']} className="text-escom-500"/>
+                            </label>
+                            <input 
+                                type="datetime-local" 
+                                {...register("fecha_final", {
+                                    onChange: (e) => {
+                                        if (estaEditando) {
+                                            const redondeado = redondearFecha(e.target.value);
+                                            e.target.value = redondeado;
+                                        }
+                                    }
+                                })}
+                                defaultValue={eventoSeleccionado.fecha_final}
+                                disabled={!estaEditando}
+                                step="1800"
+                                className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
                                     estaEditando 
                                         ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
                                         : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -252,9 +462,10 @@ const ModalDetallesEvento = ({
                             </label>
                             <input 
                                 type="text" 
+                                {...register("ubicacion")}
                                 defaultValue={eventoSeleccionado.ubicacion}
                                 disabled={!estaEditando}
-                                className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
                                     estaEditando 
                                         ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
                                         : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -268,9 +479,10 @@ const ModalDetallesEvento = ({
                             </label>
                             <input 
                                 type="number" 
+                                {...register("cupo", { min: 1 })}
                                 defaultValue={eventoSeleccionado.cupo}
                                 disabled={!estaEditando}
-                                className={`w-full px-3 md:px-4 py-2 rounded-xl text-sm md:text-base transition-all duration-200 ${
+                                className={`w-full px-3 md:px-4 py-2 rounded-full text-sm md:text-base transition-all duration-200 ${
                                 estaEditando 
                                     ? 'border-blue-400 border-2 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none font-medium text-escom-900 bg-blue-50/30' 
                                     : 'border-transparent text-escom-sombra-300 cursor-not-allowed bg-transparent'
@@ -284,6 +496,7 @@ const ModalDetallesEvento = ({
                             </label>
                             <CustomSelect
                                 label="Categoría:"
+                                {...register("categoria")}
                                 options={[
                                     { value: '1', label: 'Cultural', icon: 'palette' },
                                     { value: '2', label: 'Académica', icon: 'graduation-cap' },
@@ -326,7 +539,7 @@ const ModalDetallesEvento = ({
                                 <button 
                                     onClick={onVerificar}
                                     disabled={eventoSeleccionado.estado === 'Verificado'}
-                                    className={`flex items-center justify-center gap-2 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
+                                    className={`flex items-center justify-center gap-2 text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base ${
                                         eventoSeleccionado.estado === 'Verificado' 
                                             ? 'bg-escom-600/80 cursor-not-allowed' 
                                             : 'bg-escom-600 hover:bg-escom-800 hover:shadow-lg'
@@ -353,30 +566,41 @@ const ModalDetallesEvento = ({
                                 </button>
                             )}
                             
-                            {(eventoSeleccionado.estado !== 'Verificado' && !esAlumno) && (
+                            {(!esAlumno) && !estaEditando && (
                                 <button 
-                                    onClick={() => estaEditando ? onGuardar() : setEstaEditando(true)}
-                                    className="flex items-center justify-center gap-2 bg-escom-600 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
+                                    type="button"
+                                    onClick={() => setEstaEditando(true)}
+                                    className="flex items-center justify-center gap-2 bg-escom-600 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base"
                                 >
-                                    {estaEditando ? (
-                                        <>
-                                            <FontAwesomeIcon icon={['fas', 'save']} />
-                                            Guardar Cambios
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FontAwesomeIcon icon={['fas', 'edit']} />
-                                            Editar
-                                        </>
-                                    )}
+                                    <FontAwesomeIcon icon={['fas', 'edit']} />
+                                    Editar
                                 </button>
                             )}
-                            
+                            {(!esAlumno) && estaEditando && (
+                                <>
+                                    <button 
+                                        type="submit"
+                                        className="flex items-center justify-center gap-2 bg-escom-600 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base"
+                                    >
+                                        <FontAwesomeIcon icon={['fas', 'save']} />
+                                        Guardar Cambios
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setEstaEditando(false)}
+                                        className="flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base"
+                                    >
+                                        <FontAwesomeIcon icon={['fas', 'times']} />
+                                        Cancelar
+                                    </button>
+                                </>
+                            )}
                             {(onEliminar && !esAlumno) && (
                                 <button 
-                                    onClick={onEliminar}
+                                    type="button"
+                                    onClick={() => setModalEliminar(true)}
                                     disabled={isLoading}
-                                    className="flex items-center justify-center gap-2 bg-escom-900 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
+                                    className="flex items-center justify-center gap-2 bg-escom-900 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base"
                                 >
                                     {isLoading ? (
                                         <>
@@ -392,27 +616,41 @@ const ModalDetallesEvento = ({
                                 </button>
                             )}
 
-                            {esAlumno && (
+                            {esAlumno && !isInscrito && (
                                 <button 
-                                    onClick={onInscribir}
+                                    onClick={() => setModalInscribir(true)}
                                     disabled={isLoading}
-                                    className="flex items-center justify-center gap-2 bg-escom-100 hover:bg-escom-200 hover:shadow-lg text-escom-sombra-200 px-4 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base"
+                                    className="flex items-center justify-center gap-2 bg-escom-900 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base w-full "
                                 >
-                                    {isLoading ? (
-                                        <>
-                                            <FontAwesomeIcon icon={['fas', 'spinner']} className="animate-spin" />
-                                            Inscribiendo...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <FontAwesomeIcon icon={['fas', 'check-circle']} />
-                                            Inscribir
-                                        </>
-                                    )}
+                                    <FontAwesomeIcon icon={['fas', 'check-circle']} />
+                                    Inscribirse
                                 </button>
                             )}
+                            {esAlumno && isInscrito && !paginaAlumno && (
+                                <>
+                                    <Link 
+                                        to={`/alumno/mis-eventos`}
+                                        className="flex items-center justify-center gap-2 bg-escom-900 hover:bg-escom-700 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base w-full "
+                                    > 
+                                        <FontAwesomeIcon icon={['fas', 'cog']} />
+                                        Administrar Inscripción
+                                    </Link>
+                                </>
+                            )}
+                            {esAlumno && isInscrito && paginaAlumno && (
+                                <>
+                                    <button 
+                                        onClick={() => setModalCancelar(true)}
+                                        disabled={isLoading}
+                                        className="flex items-center justify-center gap-2 bg-escom-600 hover:bg-escom-400 hover:shadow-lg text-white px-4 md:px-6 py-2.5 md:py-3 rounded-full font-semibold transition-all duration-300 text-sm md:text-base w-full "
+                                    >
+                                        <FontAwesomeIcon icon={['fas', 'close']} />
+                                        Desinscribirse
+                                    </button>
+                                </>
+                            )}
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </>,

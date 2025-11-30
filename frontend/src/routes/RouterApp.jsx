@@ -10,47 +10,48 @@ import { AuthGuard } from "../guards/AuthGuard.jsx";
 import { RolGuard } from "../guards/RolGuard.jsx";
 import LoopCarga from "../components/layout/LoopCarga.jsx";
 import { EventosProvider } from "../api/Context/EventosContext.jsx";
-import { AuthProvider } from "../api/Context/AuthContext.jsx";
 
 const AdminRoutes = lazy(() => import('./AdminRoutes'));
 const OrganizadorRoutes = lazy(() => import('./OrganizadorRoutes'));
 const AlumnoRoutes = lazy(() => import('./AlumnoRoutes'));
 const EventosRoutes = lazy(() => import('./EventosRoutes'));
 
+import MainLayout from "../layouts/MainLayout.jsx";
+
 const Router = () => {
   return (
-    <Suspense fallback={<LoopCarga />}>
-      <Routes>
-        <Route path="/" element={
+    <Routes>
+      <Route element={<MainLayout />}>
+          <Route path="/" element={
           <EventosProvider>
-            <Inicio />
+              <Inicio />
           </EventosProvider>
-        } />
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Registro />} />
+          } />
+          <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<Registro />} />
 
-        <Route path="/actividades-eventos/*" element={<EventosRoutes />} />
+          <Route path="/actividades-eventos/*" element={<EventosRoutes />} />
 
-        <Route element={<AuthGuard />}>
+          <Route element={<AuthGuard />}>
 
           <Route element={<RolGuard allowedRoles={['Administrador']} />}>
-            <Route path="/control/admin/*" element={<AdminRoutes />} />
+              <Route path="/control/admin/*" element={<AdminRoutes />} />
           </Route>
 
           <Route element={<RolGuard allowedRoles={['Organizador']} />}>
-            <Route path="/organizador/*" element={<OrganizadorRoutes />} />
+              <Route path="/organizador/*" element={<OrganizadorRoutes />} />
           </Route>
 
           <Route element={<RolGuard allowedRoles={['Estudiante']} />}>
-            <Route path="/alumno/*" element={<AlumnoRoutes />} />
+              <Route path="/alumno/*" element={<AlumnoRoutes />} />
           </Route>
           
-        </Route>
+          </Route>
 
-        <Route path="/sin-permiso" element={<SinPermiso />} />
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </Suspense>
+          <Route path="/sin-permiso" element={<SinPermiso />} />
+          <Route path="*" element={<Navigate to="/" />} />
+      </Route>
+    </Routes>
   );
 };
 

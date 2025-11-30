@@ -64,8 +64,8 @@ class QuerysEventos
         $this->pool->beginTransaction();
         
         try {
-            $sql = "INSERT INTO Evento(id_evento, titulo_evento, descripcion, fecha, ubicacion, id_categoria, cupo, id_organizador) 
-                    VALUES (:id_evento, :titulo_evento, :descripcion, CONVERT(DATETIME, :fecha, 120), :ubicacion, :id_categoria, :cupo, :id_organizador)";
+            $sql = "INSERT INTO Evento(id_evento, titulo_evento, descripcion, fecha, ubicacion, id_categoria, cupo, id_organizador, fecha_final) 
+                    VALUES (:id_evento, :titulo_evento, :descripcion, CONVERT(DATETIME, :fecha, 120), :ubicacion, :id_categoria, :cupo, :id_organizador, CONVERT(DATETIME, :fecha_final, 120))";
 
             $stmt = $this->pool->prepare($sql);
             $stmt->bindParam(':id_evento', $data['id_evento']);
@@ -75,6 +75,7 @@ class QuerysEventos
             $stmt->bindParam(':ubicacion', $data['ubicacion']);
             $stmt->bindParam(':id_categoria', $data['id_categoria'], \PDO::PARAM_INT);
             $stmt->bindParam(':cupo', $data['cupo'], \PDO::PARAM_INT);
+            $stmt->bindParam(':fecha_final', $data['fecha_final']);
             $stmt->bindParam(':id_organizador', $data['id_organizador']);
             $stmt->execute();
 
@@ -118,49 +119,55 @@ class QuerysEventos
 
         try {
             $sql = "UPDATE Evento 
-                    SET titulo_evento = :titulo_evento, descripcion = :descripcion, fecha = :fecha, 
-                        estado = :estado, ubicacion = :ubicacion, cupo = :cupo, id_categoria = :id_categoria
+                    SET titulo_evento = :titulo_evento, 
+                        descripcion = :descripcion, 
+                        fecha = CONVERT(datetime, :fecha, 120), 
+                        fecha_final = CONVERT(datetime, :fecha_final, 120),
+                        ubicacion = :ubicacion, 
+                        cupo = :cupo, 
+                        estado = 'Pendiente de revision'
                     WHERE id_evento = :id_evento";
 
             $stmt = $this->pool->prepare($sql);
-            $stmt->bindParam(':id_evento', $id_evento);
-            $stmt->bindParam(':titulo_evento', $data['titulo_evento']);
-            $stmt->bindParam(':descripcion', $data['descripcion']);
-            $stmt->bindParam(':fecha', $data['fecha']);
-            $stmt->bindParam(':estado', $data['estado']);
-            $stmt->bindParam(':ubicacion', $data['ubicacion']);
-            $stmt->bindParam(':cupo', $data['cupo']);
-            $stmt->bindParam(':id_categoria', $data['id_categoria']);
+            $stmt->bindParam(':id_evento', $id_evento, \PDO::PARAM_STR);
+            $stmt->bindParam(':titulo_evento', $data['titulo_evento'], \PDO::PARAM_STR);
+            $stmt->bindParam(':descripcion', $data['descripcion'], \PDO::PARAM_STR);
+            $stmt->bindParam(':fecha', $data['fecha'], \PDO::PARAM_STR);
+            $stmt->bindParam(':fecha_final', $data['fecha_final'], \PDO::PARAM_STR);
+            $stmt->bindParam(':ubicacion', $data['ubicacion'], \PDO::PARAM_STR);
+            $stmt->bindParam(':cupo', $data['cupo'], \PDO::PARAM_INT);
             $stmt->execute();
 
 
-            $stmt_del_tags = $this->pool->prepare("DELETE FROM TagsEvento WHERE id_evento = :id_evento");
-            $stmt_del_tags->bindParam(':id_evento', $data['id_evento']);
-            $stmt_del_tags->execute();
-
+            
             if (!empty($data['tags']) && is_array($data['tags'])) {
+                $stmt_del_tags = $this->pool->prepare("DELETE FROM TagsEvento WHERE id_evento = :id_evento");
+                $stmt_del_tags->bindParam(':id_evento', $id_evento);
+                $stmt_del_tags->execute();
+
                 $sql_tags = "INSERT INTO TagsEvento (id_evento, id_tag) VALUES (:id_evento, :id_tag)";
                 $stmt_tags = $this->pool->prepare($sql_tags);
 
                 foreach ($data['tags'] as $nombre_tag) {
                     $id_tag = $this->crearTagSiNoExiste($nombre_tag);
-                    $stmt_tags->bindParam(':id_evento', $data['id_evento']);
+                    $stmt_tags->bindParam(':id_evento', $id_evento);
                     $stmt_tags->bindParam(':id_tag', $id_tag);
                     $stmt_tags->execute();
                 }
             }
             
             
-            $stmt_del_imgs = $this->pool->prepare("DELETE FROM EventoImagen WHERE id_evento = :id_evento");
-            $stmt_del_imgs->bindParam(':id_evento', $data['id_evento']);
-            $stmt_del_imgs->execute();
-
+            
             if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+                $stmt_del_imgs = $this->pool->prepare("DELETE FROM EventoImagen WHERE id_evento = :id_evento");
+                $stmt_del_imgs->bindParam(':id_evento', $id_evento);
+                $stmt_del_imgs->execute();
+
                 $sql_imgs = "INSERT INTO EventoImagen (id_evento, src, descripcion) VALUES (:id_evento, :src, :descripcion)";
                 $stmt_imgs = $this->pool->prepare($sql_imgs);
                 
                 foreach ($data['imagenes'] as $imagen) {
-                    $stmt_imgs->bindParam(':id_evento', $data['id_evento']);
+                    $stmt_imgs->bindParam(':id_evento', $id_evento);
                     $stmt_imgs->bindParam(':src', $imagen['src']);
                     $stmt_imgs->bindParam(':descripcion', $imagen['descripcion']);
                     $stmt_imgs->execute();
@@ -174,7 +181,7 @@ class QuerysEventos
         }
     }
 
-    public function obtenerEventosQuery($ordenar_por = 'fecha', $direccion = 'DESC'){
+    public function obtenerEventosQuery($ordenar_por = 'fecha', $direccion = 'DESC', $categoria = ''){
         $columnas_validas = [
             'titulo' => 'e.titulo_evento', 
             'fecha' => 'e.fecha',
@@ -185,12 +192,21 @@ class QuerysEventos
         ];
         $direcciones_validas = (strtoupper($direccion) === 'ASC') ? 'ASC' : 'DESC';
 
+        $categoria = $categoria ?? '';
+
         $sql = "SELECT e.*, o.empresa, c.nombre_categoria FROM Evento e
                 INNER JOIN Organizador o ON e.id_organizador = o.id_usuario
-                INNER JOIN Categoria c ON e.id_categoria = c.id_categoria";
+                INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
+                where e.estado = 'Verificado' ";
+        if ($categoria != '') {
+            $sql .= " AND c.nombre_categoria = :categoria";
+        }
         $sql .= " ORDER BY " . $columnas_validas[$ordenar_por] . " " . $direcciones_validas;
 
         $stmt = $this->pool->prepare($sql);
+        if ($categoria != '') {
+            $stmt->bindParam(':categoria', $categoria);
+        }
         $stmt->execute();
         $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -218,13 +234,14 @@ class QuerysEventos
         $columnas_validas = [
             'titulo' => 'e.titulo_evento', 
             'fecha' => 'e.fecha',
+            'fecha_creacion' => 'e.fecha_creacion',
             'organizador' => 'o.empresa',
             'categoria' => 'c.nombre_categoria',
             'ubicacion' => 'e.ubicacion'
         ];
         $direcciones_validas = (strtoupper($direccion) === 'ASC') ? 'ASC' : 'DESC';
 
-        $sql = "SELECT e.id_evento, e.titulo_evento, e.fecha, e.ubicacion, ie.fecha_inscripcion AS fecha_inscripcion, o.empresa, c.nombre_categoria, ie.estado FROM Evento e
+        $sql = "SELECT e.id_evento, e.titulo_evento, e.descripcion, e.fecha, e.fecha_final, e.ubicacion, e.cupo, e.fecha_creacion, ie.fecha_inscripcion AS fecha_inscripcion, o.empresa, c.nombre_categoria, ie.estado FROM Evento e
                 INNER JOIN InscripcionEvento ie ON e.id_evento = ie.id_evento
                 INNER JOIN Organizador o ON e.id_organizador = o.id_usuario
                 INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
@@ -296,12 +313,35 @@ class QuerysEventos
     }
 
     public function inscribirUsuarioEventoQuery($id_usuario, $id_evento){
-        $sql = "INSERT INTO InscripcionEvento (id_usuario, id_evento) 
-                VALUES (:id_usuario, :id_evento)";
-        $stmt = $this->pool->prepare($sql);
-        $stmt->bindParam(':id_usuario', $id_usuario);
-        $stmt->bindParam(':id_evento', $id_evento);
-        $stmt->execute();
+        // Verificar si ya existe una inscripción
+        $sql_check = "SELECT id_inscripcion_evento, estado FROM InscripcionEvento 
+                      WHERE id_usuario = :id_usuario AND id_evento = :id_evento";
+        $stmt_check = $this->pool->prepare($sql_check);
+        $stmt_check->bindParam(':id_usuario', $id_usuario);
+        $stmt_check->bindParam(':id_evento', $id_evento);
+        $stmt_check->execute();
+        $inscripcion_existente = $stmt_check->fetch(PDO::FETCH_ASSOC);
+
+        if ($inscripcion_existente) {
+            $sql = "UPDATE InscripcionEvento SET estado = :estado, fecha_inscripcion = GETDATE() 
+                    WHERE id_usuario = :id_usuario AND id_evento = :id_evento";
+            $stmt = $this->pool->prepare($sql);
+            $estado = 'Inscrito';
+            $stmt->bindParam(':estado', $estado);
+            $stmt->bindParam(':id_usuario', $id_usuario);
+            $stmt->bindParam(':id_evento', $id_evento);
+            $stmt->execute();
+        } else {
+            // Si no existe, crear nueva inscripción
+            $sql = "INSERT INTO InscripcionEvento (id_usuario, id_evento, estado) 
+                    VALUES (:id_usuario, :id_evento, :estado)";
+            $stmt = $this->pool->prepare($sql);
+            $estado = 'Inscrito';
+            $stmt->bindParam(':id_usuario', $id_usuario);
+            $stmt->bindParam(':id_evento', $id_evento);
+            $stmt->bindParam(':estado', $estado);
+            $stmt->execute();
+        }
     }
 
     public function desinscribirUsuarioEventoQuery($id_usuario, $id_evento){
@@ -334,4 +374,16 @@ class QuerysEventos
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function verificarInscripcionUsuarioEventoQuery($id_usuario, $id_evento){
+        $sql = "SELECT * FROM InscripcionEvento 
+                WHERE id_usuario = :id_usuario AND id_evento = :id_evento AND estado = 'Inscrito'";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->bindParam(':id_evento', $id_evento);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 }
+    
+    

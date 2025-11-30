@@ -28,12 +28,17 @@ const ModalConfirmacion = ({ mensaje, onCerrar }) => {
         }
     }, [mensaje, mostrar]);
     if (!mensajeModal) return null;
+    const onCerrarModal = () => { 
+        setMensajeModal(null); 
+        setMostrar(false); 
+        onCerrar();
+    }
 
     return createPortal(
-        mostrar && (<div className="container-modal fixed inset-0 z-[9999] top-3/4 lg:top-1/16 mx-auto w-auto h-1/14 lg:w-1/5 flex items-center justify-center transform bg-green-500/50 backdrop-blur-sm p-4 rounded-2xl shadow-lg">
+        mostrar && (<div className="container-modal fixed inset-0 z-[9999] top-3/4 lg:top-1/16 mx-auto w-auto h-1/14 lg:w-1/3 flex items-center justify-center transform bg-green-500/50 backdrop-blur-sm p-6 rounded-2xl shadow-lg">
             <button 
-                onClick={() => { setMostrar(false);  setMensajeModal(null); onCerrar();}} 
-                className="absolute top-0 right-0 bg-transparent hover:bg-green-200/30 rounded-full w-8 h-8 flex items-center justify-center transition-all"
+                onClick={onCerrarModal} 
+                className="absolute top-2 right-2 bg-transparent hover:bg-green-200/30 rounded-full w-6 h-6 flex items-center justify-center transition-all"
             >
                 <FontAwesomeIcon 
                     icon={['fas', 'times']} 
