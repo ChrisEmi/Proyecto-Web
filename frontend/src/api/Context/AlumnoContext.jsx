@@ -1,5 +1,6 @@
 import { useEffect, createContext, useContext, useState } from "react";
 import EventosAPI from "../Routes/Eventos.js";
+import PerfilAPI from "../Routes/Perfil.js";
 export const AlumnoContext = createContext();
 
 export const useAlumno = () => {
@@ -15,6 +16,7 @@ export const AlumnoProvider = ({ children }) => {
     const [errors, setErrors] = useState();
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [perfil, setPerfil] = useState(null);
 
     const obtenerEventosPorUsuario = async (ordenar_por = 'titulo', direccion = 'ASC') => {
         try {
@@ -68,6 +70,36 @@ export const AlumnoProvider = ({ children }) => {
         }
     };
 
+    const obtenerDatosPerfil = async () => {
+        try {
+            setLoading(true);
+            const res = await PerfilAPI.obtenerPerfilAlumno();
+            console.log("Datos del perfil obtenidos:", res);
+            setPerfil(res.data.perfil);
+        } catch (error) {
+            console.error("Error al obtener los datos del perfil:", error);
+            setPerfil(null);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+        finally {
+            setLoading(false);
+        }
+    };
+
+    const actualizarDatosPerfil = async (formData) => {
+        try {
+            const res = await PerfilAPI.actualizarPerfilAlumno(formData);
+            setMensajeConfirmacion(res.data.message);
+            console.log("Perfil actualizado:", res.data);
+            return res.data.perfilActualizado;
+        } catch (error) {
+            console.error("Error al actualizar los datos del perfil:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
     useEffect(() => {
         if (errors && Object.keys(errors).length > 0) {
             const timer = setTimeout(() => {
@@ -95,7 +127,10 @@ export const AlumnoProvider = ({ children }) => {
             verificarInscripcion,
             desinscribirseEvento,
             eventosInscritos,
+            perfil,
+            obtenerDatosPerfil,
             errors,
+            actualizarDatosPerfil,
             loading,
         }}>
             {children}

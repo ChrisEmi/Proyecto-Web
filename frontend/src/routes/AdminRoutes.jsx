@@ -8,7 +8,7 @@ import { LoopCarga } from '../components/layout/LoopCarga.jsx';
 const Inicio = lazy(() => import('../pages/usuarios/admin/InicioAdmin'));
 const Usuarios = lazy(() => import('../pages/usuarios/admin/UsuarioAdmin'));
 const Eventos = lazy(() => import('../pages/usuarios/admin/Eventos'));
-const Perfil = lazy(() => import('../pages/usuarios/admin/PerfilAdmin'));
+const Perfil = lazy(() => import('../pages/usuarios/admin/Perfil'));
 
 const AdminRoutes = () => {
   return (

@@ -64,7 +64,7 @@ class QuerysAuth
 
     public function buscarRolporId(string $id_usuario)
     {
-        $sql = "SELECT tu.nombre_tipo, u.nombre, u.apellido_paterno
+        $sql = "SELECT tu.nombre_tipo, u.nombre, u.apellido_paterno, u.foto_src
                 FROM Usuario u
                 INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario 
                 WHERE u.id_usuario = :id_usuario";

@@ -1,41 +1,51 @@
 USE [EventosESCOM]
 GO
-/****** Object:  Table [dbo].[Actividad]    Script Date: 29/11/2025 03:25:20 p. m. ******/
+/****** Object:  Table [dbo].[TipoUsuario]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE TABLE [dbo].[Actividad](
-	[id_actividad] [int] IDENTITY(1,1) NOT NULL,
-	[tipo_actividad] [varchar](255) NOT NULL,
-	[actividad] [varchar](255) NOT NULL,
-	[estado] [varchar](50) NULL,
-	[fecha_creacion] [datetime] NULL,
+CREATE TABLE [dbo].[TipoUsuario](
+	[id_tipo_usuario] [int] IDENTITY(1,1) NOT NULL,
+	[nombre_tipo] [varchar](50) NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
-	[id_actividad] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Categoria]    Script Date: 29/11/2025 03:25:21 p. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Categoria](
-	[id_categoria] [int] IDENTITY(1,1) NOT NULL,
-	[nombre_categoria] [varchar](50) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id_categoria] ASC
+	[id_tipo_usuario] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
 UNIQUE NONCLUSTERED 
 (
-	[nombre_categoria] ASC
+	[nombre_tipo] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Estudiante]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[Usuario]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Usuario](
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[nombre] [varchar](100) NOT NULL,
+	[apellido_paterno] [varchar](100) NOT NULL,
+	[apellido_materno] [varchar](100) NULL,
+	[correo] [varchar](255) NOT NULL,
+	[contraseña] [varchar](255) NOT NULL,
+	[id_tipo_usuario] [int] NOT NULL,
+	[fecha_creacion] [datetime] NULL,
+	[estado] [varchar](100) NULL,
+	[foto_src] [nvarchar](255) NULL,
+	[telefono] [nvarchar](50) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[correo] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Estudiante]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -55,7 +65,94 @@ UNIQUE NONCLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Evento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  View [dbo].[VW_AlumnoPerfil]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_AlumnoPerfil] AS
+SELECT u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, e.boleta, 
+e.carrera, e.semestre, u.foto_src, u.telefono, tu.nombre_tipo
+FROM Usuario u
+INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
+INNER JOIN Estudiante e ON u.id_usuario = e.id_usuario
+WHERE u.id_tipo_usuario = '1'
+GO
+/****** Object:  Table [dbo].[Organizador]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Organizador](
+	[id_usuario] [nvarchar](50) NOT NULL,
+	[empresa] [varchar](100) NULL,
+	[cargo] [nvarchar](250) NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_usuario] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[VW_OrganizadorPerfil]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_OrganizadorPerfil] AS
+SELECT u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, u.foto_src, u.telefono,
+o.empresa, o.cargo, tu.nombre_tipo
+FROM Usuario u
+INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
+INNER JOIN Organizador o ON u.id_usuario = o.id_usuario
+WHERE u.id_tipo_usuario = '2'
+GO
+/****** Object:  View [dbo].[VW_AdminPerfil]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[VW_AdminPerfil] AS
+SELECT u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, u.foto_src,tu.nombre_tipo,u.telefono
+FROM Usuario u
+INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
+WHERE u.id_tipo_usuario = '3'
+GO
+/****** Object:  Table [dbo].[Actividad]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Actividad](
+	[id_actividad] [int] IDENTITY(1,1) NOT NULL,
+	[tipo_actividad] [varchar](255) NOT NULL,
+	[actividad] [varchar](255) NOT NULL,
+	[estado] [varchar](50) NULL,
+	[fecha_creacion] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_actividad] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Categoria]    Script Date: 01/12/2025 02:45:57 p. m. ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Categoria](
+	[id_categoria] [int] IDENTITY(1,1) NOT NULL,
+	[nombre_categoria] [varchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[id_categoria] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
+UNIQUE NONCLUSTERED 
+(
+	[nombre_categoria] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Evento]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,13 +169,14 @@ CREATE TABLE [dbo].[Evento](
 	[id_admin] [nvarchar](50) NULL,
 	[estado] [varchar](50) NULL,
 	[fecha_creacion] [datetime] NULL,
+	[fecha_final] [datetime] NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id_evento] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[EventoImagen]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[EventoImagen]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -94,7 +192,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[HorarioActividad]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[HorarioActividad]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -111,7 +209,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[InscripcionActividad]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[InscripcionActividad]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -132,7 +230,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[InscripcionEvento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[InscripcionEvento]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -154,21 +252,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Organizador]    Script Date: 29/11/2025 03:25:21 p. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Organizador](
-	[id_usuario] [nvarchar](50) NOT NULL,
-	[empresa] [varchar](100) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id_usuario] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Tag]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[Tag]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -186,7 +270,7 @@ UNIQUE NONCLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TagsEvento]    Script Date: 29/11/2025 03:25:21 p. m. ******/
+/****** Object:  Table [dbo].[TagsEvento]    Script Date: 01/12/2025 02:45:57 p. m. ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -201,49 +285,7 @@ CREATE TABLE [dbo].[TagsEvento](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[TipoUsuario]    Script Date: 29/11/2025 03:25:21 p. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[TipoUsuario](
-	[id_tipo_usuario] [int] IDENTITY(1,1) NOT NULL,
-	[nombre_tipo] [varchar](50) NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id_tipo_usuario] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[nombre_tipo] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-/****** Object:  Table [dbo].[Usuario]    Script Date: 29/11/2025 03:25:21 p. m. ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE TABLE [dbo].[Usuario](
-	[id_usuario] [nvarchar](50) NOT NULL,
-	[nombre] [varchar](100) NOT NULL,
-	[apellido_paterno] [varchar](100) NOT NULL,
-	[apellido_materno] [varchar](100) NULL,
-	[correo] [varchar](255) NOT NULL,
-	[contraseña] [varchar](255) NOT NULL,
-	[id_tipo_usuario] [int] NOT NULL,
-	[fecha_creacion] [datetime] NULL,
-	[estado] [varchar](100) NULL,
-PRIMARY KEY CLUSTERED 
-(
-	[id_usuario] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY],
-UNIQUE NONCLUSTERED 
-(
-	[correo] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
-) ON [PRIMARY]
-GO
+
 ALTER TABLE [dbo].[Actividad] ADD  DEFAULT ('Activo') FOR [estado]
 GO
 ALTER TABLE [dbo].[Actividad] ADD  DEFAULT (getdate()) FOR [fecha_creacion]

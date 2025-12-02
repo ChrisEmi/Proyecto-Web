@@ -9,6 +9,7 @@ const Inicio = lazy(() => import('../pages/usuarios/organizador/InicioOrganizado
 const Calendario = lazy(() => import('../pages/usuarios/organizador/CalendarioOrganizador.jsx'));
 const CrearEvento = lazy(() => import('../pages/usuarios/organizador/CrearEvento.jsx'));
 const Eventos = lazy(() => import('../pages/usuarios/organizador/Eventos.jsx'));
+const Perfil = lazy(() => import('../pages/usuarios/organizador/Perfil.jsx'));
 
 
 const OrganizadorRoutes = () => {
@@ -19,7 +20,7 @@ const OrganizadorRoutes = () => {
             <Routes>
               <Route element={<OrganizadorLayout />}>
                 <Route path="/inicio" element={<Inicio />} />
-                <Route path="/perfil" element={<Inicio />} />
+                <Route path="/perfil" element={<Perfil />} />
                 <Route path="/crear-evento" element={<CrearEvento />} />
                 <Route path="/eventos" element={<Eventos />} />
                 <Route path="/inscripciones" element={<Inicio />} />

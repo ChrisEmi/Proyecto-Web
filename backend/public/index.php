@@ -1,7 +1,6 @@
 <?php
 header("Access-Control-Allow-Origin: http://localhost:5173");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
-// Permitir envío de cookies desde el frontend (fetch/axios con credentials)
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
@@ -41,6 +40,9 @@ evento_routes($router);
 
 require_once __DIR__ . '/../src/Routes/admin-routes.php';
 admin_routes($router);
+
+require_once __DIR__ . '/../src/Routes/perfil-routes.php';
+perfil_routes($router);
 
 $router->run();
 

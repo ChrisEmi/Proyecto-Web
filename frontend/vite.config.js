@@ -18,6 +18,10 @@ export default defineConfig({
         target: "http://proyecto-web.local",
         changeOrigin: true,
       },
+      "/perfil": {
+        target: "http://proyecto-web.local",
+        changeOrigin: true,
+      },
     },
   },
 });
