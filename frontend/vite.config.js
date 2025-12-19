@@ -22,6 +22,10 @@ export default defineConfig({
         target: "http://proyecto-web.local",
         changeOrigin: true,
       },
+      "/actividades": {
+        target: "http://proyecto-web.local",
+        changeOrigin: true,
+      },
     },
   },
 });

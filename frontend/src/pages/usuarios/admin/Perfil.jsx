@@ -85,7 +85,7 @@ const Perfil = () => {
                     <form onSubmit={handleSubmit(onSubmit)} className="perfil-form flex flex-col gap-24 items-center w-6xl bg-white p-6 rounded-2xl shadow-xl">
                         <div className="flex items-center gap-4 text-escom-900 w-full ml-12 mt-4">
                             <FontAwesomeIcon icon={`fa-solid fa-user`} className="text-2xl md:text-3xl" />
-                            <h1 className="text-3xl md:text-4xl font-bold mb-2">Datos del Alumno</h1>
+                            <h1 className="text-3xl md:text-4xl font-bold mb-2">Datos del Administrador</h1>
                         </div>
                         <div className="mx-auto">
                             <div className={`w-32 h-32 md:w-48 md:h-48 rounded-full relative group/foto flex items-center justify-center text-white font-bold text-4xl md:text-6xl shadow-lg bg-escom-700 transition-all duration-300 hover:scale-105 overflow-hidden`}>

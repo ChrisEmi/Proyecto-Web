@@ -26,12 +26,6 @@ if (is_readable($envPath)) {
         }
     }
 }
-
-$router->get('/', function() {
-    echo json_encode(["status" => "success", "message" => "API is running"]);
-});
-
-
 require_once __DIR__ . '/../src/Routes/auth-routes.php';
 auth_routes($router);
 
@@ -43,6 +37,9 @@ admin_routes($router);
 
 require_once __DIR__ . '/../src/Routes/perfil-routes.php';
 perfil_routes($router);
+
+require_once __DIR__ . '/../src/Routes/actividades-routes.php';
+\App\Routes\actividades_routes($router);
 
 $router->run();
 

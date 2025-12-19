@@ -1,4 +1,6 @@
 import { useOrganizador } from "../../../api/Context/OrganizadorContext";
+import { inputs } from "./Assets.js";
+
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -109,74 +111,7 @@ const CrearEvento = () => {
         return `${año}-${mes}-${dia}T${hora}:${minuto}`;
     };
 
-    const inputs = [
-        {
-            label: "Nombre del Evento",
-            id: "nombre",
-            request: "titulo_evento",
-            type: "text",
-            placeholder: "Ej. Conferencia de Tecnología",
-            icon: "calendar-check",
-            fullWidth: true
-        },
-        {
-            label: "Descripción",
-            id: "descripcion",
-            request: "descripcion",
-            type: "textarea",
-            placeholder: "Describe tu evento...",
-            icon: "align-left",
-            fullWidth: true
-        },
-        {
-            label: "Fecha y Hora de Inicio",
-            id: "fecha",
-            request: "fecha",
-            type: "datetime-local",
-            icon: "clock",
-            step: 3600
-        },
-        {
-            label: "Fecha y Hora de Fin",
-            id: "fecha_final",
-            request: "fecha_final",
-            type: "datetime-local",
-            icon: "clock",
-            step: 3600
-        },
-        {
-            label: "Ubicación",
-            id: "ubicacion",
-            request: "ubicacion",
-            type: "text",
-            placeholder: "Ej. Auditorio ESCOM",
-            icon: "location-dot"
-        },
-        {
-            label: "Cupo Máximo",
-            id: "cupo_maximo",
-            request: "cupo",
-            type: "number",
-            placeholder: "Ej. 100",
-            icon: "users",
-            min: 0
-        },
-        {
-            label: "Categoría",
-            id: "categoria",
-            request: "id_categoria",
-            type: "select",
-            icon: "tag",
-            options: [
-                { value: "", label: "Selecciona una categoría" },
-                { value: 1, label: "Académico" },
-                { value: 2, label: "Cultural" },
-                { value: 3, label: "Deportivo" },
-                { value: 4, label: "Social" },
-                { value: 5, label: "Taller" }
-            ]
-        }
-    ];
+    
 
     return (
         <div className="container-crear-usuario max-w-7xl mx-auto p-6 bg-escom-100 rounded-2xl shadow-lg">

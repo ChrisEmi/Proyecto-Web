@@ -2,6 +2,7 @@ import { useEffect, createContext, useContext, useState } from "react";
 import AdminAPI from "../Routes/Admin.js";
 import EventosAPI from "../Routes/Eventos.js";
 import PerfilAPI from "../Routes/Perfil.js";
+import { set } from "react-hook-form";
 
 export const AdminContext = createContext();
 
@@ -19,6 +20,7 @@ export const AdminProvider = ({ children }) => {
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
     const [loading, setLoading] = useState(true);
     const [perfil, setPerfil] = useState(null);
+    const [usuarioCreado, setUsuarioCreado] = useState(null);
     
     const obtnerUsuarios = async (rol, ordenar_por = 'nombre', direccion = 'ASC') => {
         try {
@@ -66,6 +68,32 @@ export const AdminProvider = ({ children }) => {
             return res.data;
         } catch (error) {
             console.error("Error al eliminar el evento:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    const crearOrganizador = async (formData) => {
+        try {
+            const res = await AdminAPI.crearOrganizador(formData);
+            setMensajeConfirmacion(res.data.message);
+            setUsuarioCreado(res.data);
+            return res.data.organizadorCreado;
+        } catch (error) {
+            console.error("Error al crear el organizador:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    const crearAdmin = async (formData) => {
+        try {
+            const res = await AdminAPI.crearAdministrador(formData);
+            setMensajeConfirmacion(res.data.message);
+            setUsuarioCreado(res.data);
+            return res.data.adminCreado;
+        } catch (error) {
+            console.error("Error al crear el organizador:", error);
             setErrors(error.response?.data?.message);
             return null;
         }
@@ -123,6 +151,10 @@ export const AdminProvider = ({ children }) => {
     return (
         <AdminContext.Provider value={{
             obtnerUsuarios,
+            crearAdmin,
+            crearOrganizador,
+            setUsuarioCreado,
+            usuarioCreado,
             usuarios,
             obtenerEventos,
             eventos,

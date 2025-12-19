@@ -9,6 +9,7 @@ const Inicio = lazy(() => import('../pages/usuarios/admin/InicioAdmin'));
 const Usuarios = lazy(() => import('../pages/usuarios/admin/UsuarioAdmin'));
 const Eventos = lazy(() => import('../pages/usuarios/admin/Eventos'));
 const Perfil = lazy(() => import('../pages/usuarios/admin/Perfil'));
+const CrearUsuario = lazy(() => import('../pages/usuarios/admin/CrearUsuario'));
 
 const AdminRoutes = () => {
   return (
@@ -21,7 +22,7 @@ const AdminRoutes = () => {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/usuarios" element={<Usuarios />} />
                 <Route path="/eventos" element={<Eventos />} />
-                <Route path="/crear-usuario" element={<Perfil />} />
+                <Route path="/crear-usuario" element={<CrearUsuario />} />
                 <Route path="/ajustes" element={<Perfil />} />
                 <Route path="*" element={<Navigate to="/control/admin/inicio" />} />
               </Route>

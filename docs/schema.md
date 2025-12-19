@@ -149,10 +149,17 @@
 | Nombre de Columna | Tipo de Dato | Restricciones |
 |-------------------|---------------|---------------|
 | `id_actividad`    | `INT`         | PRIMARY KEY, IDENTITY(1,1) |
-| `tipo_actividad`  | `VARCHAR(255)`| NOT NULL |
-| `actividad`       | `VARCHAR(255)`| NOT NULL |
-| `estado`          | `VARCHAR(50)` | DEFAULT 'Activo' |
-| `fecha_creacion`  | `DATETIME`    | DEFAULT GETDATE() |
+| `tipo_actividad`  | `VARCHAR(255)`| |
+| `actividad`       | `VARCHAR(255)`| |
+| `estado`          | `VARCHAR(50)` | |
+| `fecha_creacion`  | `DATETIME`    | |
+| `titulo`          | `NVARCHAR(50)`| |
+| `imagen`          | `NVARCHAR(255)`| |
+| `subtitulo`       | `NVARCHAR(150)`| |
+| `profesor`        | `NVARCHAR(150)`| |
+| `descripcion`     | `NVARCHAR(255)`| |
+| `genero`          | `NVARCHAR(30)`| |
+| `icono`           | `NVARCHAR(80)`| |
 
 ---
 
