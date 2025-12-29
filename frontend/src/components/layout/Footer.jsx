@@ -1,4 +1,4 @@
-import { IconoEscom } from "../assets/ElementosSvg";
+import { IconoEscom } from "../assets/decoraciones/ElementosSvg";
 
 const Footer = () => {
   return (

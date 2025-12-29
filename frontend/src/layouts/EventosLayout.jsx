@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { useEventos } from "../api/Context/EventosContext.jsx";
-import ModalConfirmacion from "../components/assets/ModalConfirmacion";
+import ModalConfirmacion from "../components/assets/modals/ModalConfirmacion";
 
 const EventosLayout = () => {
     const { mensajeConfirmacion, setMensajeConfirmacion } = useEventos();

@@ -5,7 +5,7 @@ import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 import Carrusel from './Components/Carrusel';
-import { IconoEscom } from '../assets/ElementosSvg';
+import { IconoEscom } from '../assets/decoraciones/ElementosSvg';
 
 const HeroInicio = () => {
   useGSAP(() => {

@@ -1,8 +1,8 @@
-import CustomSelect from "../../../components/assets/CustomSelect";
+import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
 import { useAlumno } from "../../../api/Context/AlumnoContext.jsx";
 import { useEventos } from "../../../api/Context/EventosContext.jsx";
 import { useEffect, useState } from "react";
-import ModalDetallesEvento from "../../../components/assets/ModalDetallesEvento.jsx";
+import ModalDetallesEvento from "../../../components/assets/modals/ModalDetallesEvento.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";

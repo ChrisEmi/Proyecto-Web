@@ -157,20 +157,24 @@ class QuerysEventos
             }
             
             
-            
-            if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+            // Actualizar imágenes si el campo existe en los datos (incluso si está vacío)
+            if (array_key_exists('imagenes', $data)) {
+                // Siempre eliminar las imágenes existentes
                 $stmt_del_imgs = $this->pool->prepare("DELETE FROM EventoImagen WHERE id_evento = :id_evento");
                 $stmt_del_imgs->bindParam(':id_evento', $id_evento);
                 $stmt_del_imgs->execute();
 
-                $sql_imgs = "INSERT INTO EventoImagen (id_evento, src, descripcion) VALUES (:id_evento, :src, :descripcion)";
-                $stmt_imgs = $this->pool->prepare($sql_imgs);
-                
-                foreach ($data['imagenes'] as $imagen) {
-                    $stmt_imgs->bindParam(':id_evento', $id_evento);
-                    $stmt_imgs->bindParam(':src', $imagen['src']);
-                    $stmt_imgs->bindParam(':descripcion', $imagen['descripcion']);
-                    $stmt_imgs->execute();
+                // Solo insertar si hay nuevas imágenes
+                if (!empty($data['imagenes']) && is_array($data['imagenes'])) {
+                    $sql_imgs = "INSERT INTO EventoImagen (id_evento, src, descripcion) VALUES (:id_evento, :src, :descripcion)";
+                    $stmt_imgs = $this->pool->prepare($sql_imgs);
+                    
+                    foreach ($data['imagenes'] as $imagen) {
+                        $stmt_imgs->bindParam(':id_evento', $id_evento);
+                        $stmt_imgs->bindParam(':src', $imagen['src']);
+                        $stmt_imgs->bindParam(':descripcion', $imagen['descripcion']);
+                        $stmt_imgs->execute();
+                    }
                 }
             }
             $this->pool->commit();

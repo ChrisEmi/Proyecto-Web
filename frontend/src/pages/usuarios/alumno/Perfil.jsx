@@ -1,7 +1,7 @@
 import { useAlumno } from "../../../api/Context/AlumnoContext";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CampoTexto } from "../../../components/assets/CampoTexto";
+import { CampoTexto } from "../../../components/assets/cutoms-campos/CampoTexto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -66,7 +66,7 @@ const Perfil = () => {
 
             }, (error, result) => {
                 if (!error && result && result.event === "success") {
-                    console.log("Imagen cargada con éxito:", result.info);
+
                     setValue('foto_src', result.info.secure_url, { shouldValidate: true });
                 }
             }

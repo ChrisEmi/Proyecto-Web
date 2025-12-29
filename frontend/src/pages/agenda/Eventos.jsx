@@ -1,9 +1,9 @@
 import { useAuth } from "../../api/Context/AuthContext.jsx";
 import { useEventos } from "../../api/Context/EventosContext.jsx";
 import { useEffect, useState, useMemo } from "react";
-import CustomSelect from "../../components/assets/CustomSelect.jsx";
+import CustomSelect from "../../components/assets/cutoms-campos/CustomSelect.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import ModalDetallesEvento from "../../components/assets/ModalDetallesEvento.jsx";
+import ModalDetallesEvento from "../../components/assets/modals/ModalDetallesEvento.jsx";
 import { useAnimacionesEventos } from "../../hooks/useAnimacionesEventos.js";
 import { useAlumno } from "../../api/Context/AlumnoContext.jsx";
 import { useGSAP } from "@gsap/react";

@@ -1,7 +1,7 @@
 import { useOrganizador } from "../../../api/Context/OrganizadorContext";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { CampoTexto } from "../../../components/assets/CampoTexto";
+import { CampoTexto } from "../../../components/assets/cutoms-campos/CampoTexto";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";

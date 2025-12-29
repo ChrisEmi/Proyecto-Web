@@ -7,11 +7,13 @@ export const CampoContrasena = ({
   placeholder,
   register,
   required = true,
+  error,
+  className = "",
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="relative">
+    <div className={className}>
       <label
         className="block mb-1 md:mb-2 text-xs md:text-sm font-semibold text-escom-900"
         htmlFor={id}
@@ -23,7 +25,7 @@ export const CampoContrasena = ({
           <FontAwesomeIcon icon="fa-solid fa-lock" />
         </span>
         <input
-          className="w-full pl-9 md:pl-10 pr-11 md:pr-12 py-2 md:py-3 text-sm md:text-base border-2 border-escom-200 rounded-lg md:rounded-xl focus:border-escom-700 focus:outline-none focus:ring-2 focus:ring-escom-300 transition-all text-escom-900 placeholder:text-escom-sombra-300"
+          className="w-full pl-9 md:pl-10 pr-11 md:pr-12 py-2 md:py-3 text-sm md:text-base border-2 border-escom-200 bg-white rounded-lg md:rounded-xl focus:border-escom-700 focus:outline-none focus:ring-2 focus:ring-escom-300 transition-all text-escom-900 placeholder:text-escom-sombra-300 hover:border-escom-300"
           type={showPassword ? "text" : "password"}
           id={id}
           placeholder={placeholder}
@@ -45,6 +47,7 @@ export const CampoContrasena = ({
           )}
         </button>
       </div>
+      {error && <span className="text-red-600 text-sm mt-1 block"><FontAwesomeIcon icon="exclamation-circle" />{" "}{error.message}</span>}
     </div>
   );
 };

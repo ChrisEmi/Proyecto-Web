@@ -1,6 +1,6 @@
 import { useAdmin } from "../../../api/Context/AdminContext";
 import { useState, useMemo } from "react";
-import CustomSelect from "../../../components/assets/CustomSelect";
+import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";

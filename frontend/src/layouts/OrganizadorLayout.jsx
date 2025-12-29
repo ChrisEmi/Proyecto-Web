@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 
 import SidebarOrganizador from '../components/organizador/SidebarOrganizador.jsx';
-import ModalConfirmacion from '../components/assets/ModalConfirmacion.jsx';
+import ModalConfirmacion from '../components/assets/modals/ModalConfirmacion.jsx';
 import { useOrganizador } from '../api/Context/OrganizadorContext.jsx';
 import { useEventos } from '../api/Context/EventosContext.jsx';
 

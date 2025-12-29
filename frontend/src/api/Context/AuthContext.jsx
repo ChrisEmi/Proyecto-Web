@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
     const registrarUsuario = async (user) => {
         try {
             const res = await AuthAPI.registro(user);
-            console.log(res.data);
+
             setUsuario(res.data.usuario);
             setAuthSesion(true);
         } catch (error) {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
     const iniciarSesion = async (user) => { 
         try { 
             const res = await AuthAPI.login(user);
-            console.log(res);
+
             setUsuario(res.data.usuario);
             setAuthSesion(true);
         }
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     const cerrarSesion = async () => { 
         try { 
             const res = await AuthAPI.logout();
-            console.log("Sesión cerrada correctamente", res.data);
+
             setUsuario(null);
             setAuthSesion(false);
         } catch (error) {

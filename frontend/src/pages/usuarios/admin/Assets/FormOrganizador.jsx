@@ -1,4 +1,4 @@
-import { CampoTexto } from "../../../../components/assets/CampoTexto"
+import { CampoTexto } from "../../../../components/assets/cutoms-campos/CampoTexto"
 
 export const FormOrganizador = ({ 
     register, errors, onSubmit

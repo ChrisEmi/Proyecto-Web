@@ -1,12 +1,12 @@
-import CustomSelect from "../../../components/assets/CustomSelect";
-import ModalDetallesEvento from "../../../components/assets/ModalDetallesEvento.jsx";
-import { VistaCarga } from "../../../components/layout/LoopCarga.jsx";
+import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
+import ModalDetallesEvento from "../../../components/assets/modals/ModalDetallesEvento.jsx";
 import { useEventos } from "../../../api/Context/EventosContext.jsx";
 import { useAdmin } from "../../../api/Context/AdminContext.jsx";
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAnimacionesEventos } from "../../../hooks/useAnimacionesEventos.js";
-import { TarjetaEvento } from "../../../components/assets/TarjetaEvento.jsx";
+import { TarjetaEvento } from "../../../components/assets/decoraciones/TarjetaEvento.jsx";
+import EventosAPI from "../../../api/Routes/Eventos.js";
 
 const Eventos = () => {
     const { obtenerEventoPorId } = useEventos();
@@ -49,7 +49,30 @@ const Eventos = () => {
         setIsLoading(false);
     };
 
-    const guardarCambios = () => {
+    const guardarCambios = async (formData) => {
+        const formatearFecha = (fechaInput) => {
+            if (!fechaInput) return null;
+            if (fechaInput.includes('.')) {
+                return fechaInput.split('.')[0];
+            }
+            return fechaInput.replace('T', ' ') + ':00';
+        };
+        const datosParaEnviar = {
+            ...formData,
+            tags: formData.tags ? formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag !== '') : [],
+            fecha: formatearFecha(formData.fecha),
+            fecha_final: formatearFecha(formData.fecha_final)
+        };
+        
+        setIsLoading(true);
+        try {
+            await EventosAPI.actualizarEvento(eventoSeleccionado.id_evento, datosParaEnviar);
+            await obtenerEventos(ordenarPor, direccion, estado);
+            cerrarModal();
+        } catch (error) {
+            console.error("Error al actualizar evento:", error);
+        }
+        setIsLoading(false);
         setEstaEditando(false);
     };
 
@@ -94,7 +117,7 @@ const Eventos = () => {
                 onGuardar={guardarCambios}
                 onEliminar={eliminarEventoSeleccionado}
                 onVerificar={onClickVerificarEvento}
-                esAdmin={true}
+                tipoUsuario="admin"
             />
 
             <div className="container min-w-full min-h-screen rounded-2xl shadow-2xl bg-white/40 flex flex-col gap-4 p-2 md:p-4 relative">

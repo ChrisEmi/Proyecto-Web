@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
@@ -14,9 +14,9 @@ library.add(fas);
 
 
 import { useAuth } from "../../../api/Context/AuthContext";
-import {IconoEscom} from "../../../components/assets/ElementosSvg";
-import { CampoTexto } from "../../../components/assets/CampoTexto";
-import { CampoContrasena } from "../../../components/assets/CampoContrasena";
+import {IconoEscom, SvgLogin} from "../../../components/assets/decoraciones/ElementosSvg";
+import { CampoTexto } from "../../../components/assets/cutoms-campos/CampoTexto";
+import { CampoContrasena } from "../../../components/assets/cutoms-campos/CampoContrasena";
 
 
 const Login = () => {
@@ -126,13 +126,7 @@ const Login = () => {
         <div className="imagen-login hidden md:block relative md:w-1/2 lg:w-5/8 h-64 md:h-auto" style={{
           clipPath: window.innerWidth >= 768 ? "url(#wave-clip)" : "none"
         }}>
-          <svg width="0" height="0">
-            <defs>
-              <clipPath id="wave-clip" clipPathUnits="objectBoundingBox" transform="scale(0.00111111, 0.00166667)">
-                <path d="M0,0 L786,0 L794.2,25 C802.3,50 818.7,100 819.2,150 C819.7,200 804.3,250 789.8,300 C775.3,350 761.7,400 762,450 C762.3,500 776.7,550 783.8,575 L791,600 L0,600 Z" />
-              </clipPath>
-            </defs>
-          </svg>
+          <SvgLogin />
           <img src="../../public/assets/escom-login.jpeg" alt="Imagen de inicio de sesión" className="w-full h-[800px] object-cover" />
           <div className="absolute top-0 h-full w-full bg-gradient-to-r from-escom-900/90 via-escom-700/70 to-transparent"></div>
 
@@ -208,7 +202,7 @@ const Login = () => {
             
             <div className="text-center mt-2 md:mt-4">
               <p className="text-xs md:text-sm text-escom-sombra-400">
-                ¿No tienes cuenta? <a href="#" className="text-escom-700 hover:text-escom-900 font-semibold hover:underline">Regístrate aquí</a>
+                ¿No tienes cuenta? <Link to="/registro" className="text-escom-700 hover:text-escom-900 font-semibold hover:underline">Regístrate aquí</Link>
               </p>
             </div>
           </div>

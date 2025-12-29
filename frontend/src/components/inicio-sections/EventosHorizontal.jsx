@@ -3,7 +3,7 @@ import { useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import EscomDecorativeBackground from '../assets/EscomDecorativeBackground';
+import EscomDecorativeBackground from '../assets/decoraciones/EscomDecorativeBackground';
 import CarruselGsap from './Components/CarruselGsap';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

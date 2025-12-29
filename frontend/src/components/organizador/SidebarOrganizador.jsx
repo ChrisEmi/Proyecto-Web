@@ -1,4 +1,4 @@
-import { IconoEscom } from "../assets/ElementosSvg";
+import { IconoEscom } from "../assets/decoraciones/ElementosSvg";
 import { NavLink } from "react-router-dom";
 import { useState, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'

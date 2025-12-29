@@ -81,48 +81,6 @@ class AuthController {
             ]);
         }
     }
-    public function registroAdmin($pool) {
-        try {
-            $datos = json_decode(file_get_contents('php://input'), true);
-            $id_usuario = bin2hex(random_bytes(8));
-            
-            $datos_admin = [
-                'id_usuario' => $id_usuario,
-                'nombre' => $datos['nombre'],
-                'apellido_paterno' => $datos['apellido_paterno'],
-                'apellido_materno' => $datos['apellido_materno'] ?? null,
-                'correo' => $datos['correo'],
-                'contrasena' => $datos['contrasena'],
-                'confirmar_contrasena' => $datos['confirmar_contrasena'],
-                'contrasena_hashed' => password_hash($datos['contrasena'], PASSWORD_BCRYPT),
-            ];
-
-            $sql1 = "INSERT INTO Usuario(id_usuario, nombre, apellido_paterno, apellido_materno, correo, contraseña, id_tipo_usuario) VALUES (:id_usuario, :nombre, :apellido_paterno, :apellido_materno, :correo, :contrasena, 1)";
-            $stmt1 = $pool->prepare($sql1);
-            $stmt1->bindParam(':id_usuario', $datos_admin['id_usuario']);
-            $stmt1->bindParam(':nombre', $datos_admin['nombre']);
-            $stmt1->bindParam(':apellido_paterno', $datos_admin['apellido_paterno']);
-            $stmt1->bindParam(':apellido_materno', $datos_admin['apellido_materno']);
-            $stmt1->bindParam(':correo', $datos_admin['correo']);
-            $stmt1->bindParam(':contrasena', $datos_admin['contrasena_hashed']);
-            $stmt1->execute();
-
-            
-            http_response_code(201);
-            echo json_encode([
-                "status" => "success",
-                "message" => "Administrador registrado exitosamente"
-            ]);
-
-        } catch (Exception $e) {
-            http_response_code(500);
-            echo json_encode([
-                "status" => "error",
-                "message" => "Error interno del servidor: " . $e->getMessage()
-            ]);
-        }
-    }
-
 
     public function registro($pool) {
         try {

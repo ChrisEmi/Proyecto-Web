@@ -1,13 +1,13 @@
-import CustomSelect from "../../../components/assets/CustomSelect";
+import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
 import { useOrganizador } from "../../../api/Context/OrganizadorContext.jsx";
 import { useEventos } from "../../../api/Context/EventosContext.jsx";
 import { useEffect, useState } from "react";
-import ModalDetallesEvento from "../../../components/assets/ModalDetallesEvento.jsx";
+import ModalDetallesEvento from "../../../components/assets/modals/ModalDetallesEvento.jsx";
 import { VistaCarga } from "../../../components/layout/LoopCarga.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { TarjetaEvento } from "../../../components/assets/TarjetaEvento.jsx";
+import { TarjetaEvento } from "../../../components/assets/decoraciones/TarjetaEvento.jsx";
 import { useForm } from "react-hook-form";
 import { useAnimacionesEventos } from "../../../hooks/useAnimacionesEventos.js";
 
@@ -68,6 +68,7 @@ const Eventos = () => {
     }
 
     const guardarCambios = async (formData) => {
+        console.log("formData recibido en guardarCambios:", formData);
         const formatearFecha = (fechaInput) => {
             if (!fechaInput) return null;
             if (fechaInput.includes('.')) {
@@ -81,6 +82,7 @@ const Eventos = () => {
             fecha: formatearFecha(formData.fecha),
             fecha_final: formatearFecha(formData.fecha_final)
         };
+        console.log("datosParaEnviar:", datosParaEnviar);
         
         setIsLoading(true);
         const actualizado = await actualizarEvento(eventoSeleccionado.id_evento, datosParaEnviar);
@@ -108,6 +110,7 @@ const Eventos = () => {
                     isLoading={isLoading}
                     onGuardar={guardarCambios}
                     onEliminar={eliminarEventoSeleccionado}
+                    tipoUsuario="organizador"
                 />
             )}
             

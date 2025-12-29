@@ -8,7 +8,7 @@ import { useEventos } from '../../api/Context/EventosContext.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import '../../styles/Calendario.css';
 import { useEffect } from 'react';
-import ModalDetallesEvento from '../../components/assets/ModalDetallesEvento.jsx';
+import ModalDetallesEvento from '../../components/assets/modals/ModalDetallesEvento.jsx';
 import { useAlumno } from '../../api/Context/AlumnoContext.jsx';
 import { useAnimacionesEventos } from '../../hooks/useAnimacionesEventos.js';
 import gsap from 'gsap';

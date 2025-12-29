@@ -24,8 +24,6 @@ const CrearEvento = () => {
     const [tags, setTags] = useState([]);
     const [tagInput, setTagInput] = useState('');
     const [imagenes, setImagenes] = useState([]);
-    const [imagenSrc, setImagenSrc] = useState('');
-    const [imagenDesc, setImagenDesc] = useState('');
     const [fechaMinima, setFechaMinima] = useState('');
 
     useEffect(() => {
@@ -70,14 +68,26 @@ const CrearEvento = () => {
     };
 
     const agregarImagen = () => {
-        if (imagenSrc.trim()) {
-            setImagenes([...imagenes, {
-                src: imagenSrc.trim(),
-                descripcion: imagenDesc.trim() || 'Imagen del evento'
-            }]);
-            setImagenSrc('');
-            setImagenDesc('');
-        }
+        const widget = window.cloudinary.createUploadWidget(
+            {
+                cloudName: 'dqhsgokht',
+                uploadPreset: 'eventos-escomunidad',
+                sources: ['local', 'url', 'camera'],
+                multiple: true,
+                folder: 'imagenes_eventos',
+                public_id: `evento_img_${Date.now()}`,
+            }, 
+            (error, result) => {
+                if (!error && result && result.event === "success") {
+                    console.log("Imagen cargada con éxito:", result.info);
+                    setImagenes(prev => [...prev, {
+                        src: result.info.secure_url,
+                        descripcion: result.info.original_filename || 'Imagen del evento'
+                    }]);
+                }
+            }
+        );
+        widget.open();
     };
 
     const eliminarImagen = (index) => {
@@ -255,32 +265,15 @@ const CrearEvento = () => {
                     </h3>
                     <p className="text-sm text-gray-600 mb-4">Agrega imágenes para hacer más atractivo tu evento</p>
                     
-                    <div className="space-y-3 mb-4">
-                        <input
-                            type="url"
-                            value={imagenSrc}
-                            onChange={(e) => setImagenSrc(e.target.value)}
-                            placeholder="URL de la imagen"
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-escom-500 focus:border-escom-500"
-                        />
-                        <input
-                            type="text"
-                            value={imagenDesc}
-                            onChange={(e) => setImagenDesc(e.target.value)}
-                            rows="2"
-                            placeholder="Descripción de la imagen (opcional)"
-                            className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-escom-500 focus:border-escom-500"
-                        />
-                        <div className="flex justify-end">
-                            <button
-                                    type="button"
-                                    onClick={agregarImagen}
-                                    className="px-6 py-3 bg-escom-700 text-white flex items-end rounded-xl font-semibold hover:bg-escom-800 transition-all"
-                                >
-                                    <FontAwesomeIcon icon={['fas', 'plus']} className="mr-2" />
-                                    Agregar
-                            </button>
-                        </div>
+                    <div className="flex justify-start mb-6">
+                        <button
+                            type="button"
+                            onClick={agregarImagen}
+                            className="px-6 py-3 bg-escom-700 text-white rounded-xl font-semibold hover:bg-escom-800 transition-all"
+                        >
+                            <FontAwesomeIcon icon={['fas', 'cloud-upload-alt']} className="mr-2" />
+                            Subir Imágenes
+                        </button>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

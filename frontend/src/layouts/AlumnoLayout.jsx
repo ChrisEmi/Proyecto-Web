@@ -1,7 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { useAlumno } from '../api/Context/AlumnoContext.jsx';
 import SidebarAlumno from '../components/alumno/SidebarAlumno.jsx';
-import ModalConfirmacion from '../components/assets/ModalConfirmacion.jsx';
+import ModalConfirmacion from '../components/assets/modals/ModalConfirmacion.jsx';
 
 const AlumnoLayout = () => {
   const { mensajeConfirmacion, setMensajeConfirmacion } = useAlumno();

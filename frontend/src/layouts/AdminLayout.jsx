@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
-import EscomDecorativeBackground from '../components/assets/EscomDecorativeBackground.jsx';
+import EscomDecorativeBackground from '../components/assets/decoraciones/EscomDecorativeBackground.jsx';
 
 import SidebarAdmin from '../components/admin/SidebarAdmin.jsx';
 import { useAdmin } from '../api/Context/AdminContext.jsx';
-import ModalConfirmacion from '../components/assets/ModalConfirmacion.jsx';
+import ModalConfirmacion from '../components/assets/modals/ModalConfirmacion.jsx';
 
 
 const AdminLayout = () => {
