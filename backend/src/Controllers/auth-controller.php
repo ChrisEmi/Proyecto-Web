@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use App\Database\QuerysAuth;
 use App\Core\AuthContext;
+use App\Services\CorreoService;
 
 class AuthController {
     private function jwt($id, $correo) {
@@ -141,6 +142,17 @@ class AuthController {
                         if ($datos_estudiante['boleta']) {
                             $usuarioModel->crearUsuario($datos_estudiante);
                             $this->login($pool);
+
+                            $correoBienvenida = new CorreoService();
+                            $correoBienvenida->enviarBienvenida(
+                                $datos_estudiante['correo'],
+                                [
+                                    'nombre_usuario' => $datos_estudiante['nombre'],
+                                    'correo_usuario' => $datos_estudiante['correo'],
+                                    'url_inicio' => $_ENV['FRONTEND_URL'] . '/alumno/inicio'
+                                ]
+                            );
+
                         } else {
                             http_response_code(400);
                             echo json_encode([

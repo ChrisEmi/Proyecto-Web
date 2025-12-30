@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { useAnimacionesEventos } from "../../../hooks/useAnimacionesEventos.js";
-import { TarjetaEvento } from "../../../components/assets/TarjetaEvento.jsx";
+import { TarjetaEvento } from "../../../components/assets/decoraciones/TarjetaEvento.jsx";
 
 const Eventos = () => {
     const { obtenerEventoPorId } = useEventos();
@@ -79,7 +79,7 @@ const Eventos = () => {
                     onDesinscribirse={() => {
                         desinscribirseYActualizar(eventoSeleccionado.id_evento);
                     }}
-                    esAlumno={true}
+                    tipoUsuario="alumno"
                     paginaAlumno={true}
                 />
             )}

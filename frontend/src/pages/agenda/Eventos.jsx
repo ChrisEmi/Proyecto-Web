@@ -120,6 +120,19 @@ const Eventos = () => {
 
     if (loading) return <VistaCarga />;
 
+    let usuarioTipoModal = 'default';
+    switch (usuario?.nombre_tipo) {
+        case 'Estudiante':
+            usuarioTipoModal = 'alumno';
+            break;
+        case 'Organizador':
+            usuarioTipoModal = 'organizador';
+            break;
+        case 'Administrador':
+            usuarioTipoModal = 'administrador';
+            break;
+    }
+
     return (
         <>
             {abrirDetalles && eventoSeleccionado && (
@@ -133,8 +146,7 @@ const Eventos = () => {
                     onInscribirse={async () => {
                         await inscribirseEvento(eventoSeleccionado.id_evento);
                     }}
-                    esAdmin={usuario?.nombre_tipo === 'Administrador'}
-                    esAlumno={usuario?.nombre_tipo === 'Estudiante'}
+                    tipoUsuario={usuarioTipoModal}
                 />
             )}
             <div className="section-container flex flex-col min-h-screen gap-4">

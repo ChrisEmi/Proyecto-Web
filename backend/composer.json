@@ -8,6 +8,7 @@
     },
     "require": {
         "bramus/router": "~1.6",
-        "firebase/php-jwt": "^6.11"
+        "firebase/php-jwt": "^6.11",
+        "resend/resend-php": "^1.1"
     }
 }

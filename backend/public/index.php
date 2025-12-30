@@ -5,16 +5,9 @@ header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header('Content-Type: application/json');
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    http_response_code(204);
-    exit;
-}
-
 require_once __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../vendor/autoload.php';
 
-$router = new \Bramus\Router\Router();
-
+// Cargar variables de entorno PRIMERO
 $envPath = __DIR__ . '/../.env';
 if (is_readable($envPath)) {
     $envVars = parse_ini_file($envPath);
@@ -26,6 +19,13 @@ if (is_readable($envPath)) {
         }
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
+$router = new \Bramus\Router\Router();
 require_once __DIR__ . '/../src/Routes/auth-routes.php';
 auth_routes($router);
 

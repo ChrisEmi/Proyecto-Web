@@ -74,6 +74,16 @@ class QuerysAuth
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function obtenerCorreoPorId(string $id_usuario)
+    {
+        $sql = "SELECT correo FROM Usuario WHERE id_usuario = :id_usuario";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
 
 }

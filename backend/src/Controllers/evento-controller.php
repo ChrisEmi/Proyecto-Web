@@ -5,7 +5,9 @@ use Exception;
 require_once __DIR__ . '/../../vendor/autoload.php';
 use Firebase\JWT\JWT;
 use App\Database\QuerysEventos;
+use App\Database\QuerysAuth;
 use App\Core\AuthContext;
+use App\Services\CorreoService;
 
 class EventoController {
     public function crearEvento($pool){
@@ -91,11 +93,47 @@ class EventoController {
 
             $eventoModel = new QuerysEventos($pool);
             $eventoModel->inscribirUsuarioEventoQuery($id_usuario, $id_evento);
-            http_response_code(200);
-            echo json_encode([
-                "status" => "success",
-                "message" => "Inscripcion al evento exitosa"
-            ]);
+
+            try {
+                $evento = $eventoModel->obtenerEventoPorIdQuery($id_evento);
+                $usuarioModel = new QuerysAuth($pool);
+                $usuario = $usuarioModel->obtenerCorreoPorId($id_usuario);
+                $res = $evento;
+                
+                if ($evento && $id_usuario && !empty($usuario['correo'])) {
+                    $emailService = new CorreoService();
+                    $resultadoEmail = $emailService->enviarNotificacionEvento(
+                        $usuario['correo'], 
+                        ['nombre_usuario' => $usuario['nombre'] ?? 'Estudiante',
+                        'titulo_evento' => $evento['titulo_evento'] ?? '',
+                        'descripcion_evento' => $evento['descripcion'] ?? '',
+                        'fecha_inicio' => $evento['fecha'] ?? '',
+                        'fecha_final' => $evento['fecha_final'] ?? '',
+                        'hora_evento' => date('H:i', strtotime($evento['fecha'])) ?? '',
+                        'lugar_evento' => $evento['ubicacion'] ?? '',
+                        'imagen_evento' => !empty($evento['imagenes']) ? $evento['imagenes'][0]['src'] : '',
+                        'url_evento' => "http://localhost:5173/eventos/{$id_evento}"
+                    ]);
+                    error_log("Resultado envío email: " . json_encode($resultadoEmail));
+                    http_response_code(200);
+                    echo json_encode([
+                        "status" => "success",
+                        "message" => "Inscripcion al evento exitosa",
+                        "res" => $res
+
+                    ]);
+                    error_log("Destinatario: " . $usuario['correo']);
+                }
+            } catch (Exception $emailError) {
+                error_log("Error al enviar email de confirmación: " . $emailError->getMessage());
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Error al enviar email de confirmación" . $emailError->getMessage()
+                ]);
+            }
+
+            
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([

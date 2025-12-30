@@ -1,31 +1,31 @@
 import { Html, Head, Body, Container, Section, Row, Column, Text, Link, Tailwind, Preview, Hr, Img, Button } from "@react-email/components";
 
 const NotificacionEvento = ({
-  nombreUsuario = "Estudiante",
-  nombreEvento = "Hackathon ESCOM 2025",
-  descripcionEvento = "Participa en el evento de programación más grande de ESCOM. Forma equipos, desarrolla proyectos innovadores y compite por increíbles premios.",
-  fechaEvento = "15 de Enero, 2025",
-  horaEvento = "9:00 AM - 6:00 PM",
-  lugarEvento = "Auditorio Principal ESCOM",
-  organizador = "Departamento de Sistemas",
-  imagenEvento = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop",
-  urlEvento = "https://escom.ipn.mx/eventos/hackathon-2025"
+  nombre_usuario = "{{nombre_usuario}}",
+  titulo_evento = "{{titulo_evento}}",
+  descripcion_evento = "{{descripcion}}",
+  fecha_inicio = "{{fecha_inicio}}",
+  fecha_final = "{{fecha_final}}",
+  hora_evento = "{{hora_evento}}",
+  lugar_evento = "{{lugar_evento}}",
+  imagen_evento = "{{imagen_evento}}",
+  url_evento = "{{url_evento}}"
 }) => {
   return (
     <Html>
       <Tailwind>
         <Head />
-        <Preview>{nombreEvento} - ESCOMunidad</Preview>
+        <Preview>{titulo_evento} - ESCOMunidad</Preview>
         <Body className="bg-gray-100 font-sans">
           <Container className="bg-white mx-auto my-10 rounded-lg overflow-hidden max-w-[600px]">
             
             {/* Header con imagen del evento */}
             <Section>
               <Img
-                src={imagenEvento}
+                src={imagen_evento}
                 width="600"
                 height="200"
-                alt={nombreEvento}
+                alt={titulo_evento}
                 style={{ width: '100%', height: '200px', objectFit: 'cover' }}
               />
             </Section>
@@ -34,17 +34,17 @@ const NotificacionEvento = ({
             <Section className="px-8 py-6">
               <Row>
                 <Text className="m-0 text-[16px] text-gray-600 leading-[24px]">
-                  Hola, <strong>{nombreUsuario}</strong>
+                  Hola, <strong>{nombre_usuario}</strong>
                 </Text>
               </Row>
               <Row>
                 <Text className="m-0 mt-4 font-bold text-[28px] text-[#1e3a5f] leading-[36px]">
-                  {nombreEvento}
+                  {titulo_evento}
                 </Text>
               </Row>
               <Row>
                 <Text className="m-0 mt-4 text-[16px] text-gray-600 leading-[26px]">
-                  {descripcionEvento}
+                  {descripcion_evento}
                 </Text>
               </Row>
 
@@ -66,7 +66,7 @@ const NotificacionEvento = ({
                       Fecha
                     </Text>
                     <Text className="m-0 mt-1 text-[16px] text-gray-600 leading-[24px]">
-                      {fechaEvento}
+                      {fecha_inicio} - {fecha_final}
                     </Text>
                   </Column>
                 </Row>
@@ -89,7 +89,7 @@ const NotificacionEvento = ({
                       Horario
                     </Text>
                     <Text className="m-0 mt-1 text-[16px] text-gray-600 leading-[24px]">
-                      {horaEvento}
+                      {hora_evento}
                     </Text>
                   </Column>
                 </Row>
@@ -112,30 +112,7 @@ const NotificacionEvento = ({
                       Lugar
                     </Text>
                     <Text className="m-0 mt-1 text-[16px] text-gray-600 leading-[24px]">
-                      {lugarEvento}
-                    </Text>
-                  </Column>
-                </Row>
-              </Section>
-
-              <Hr className="border-gray-200 my-4" />
-
-              <Section>
-                <Row>
-                  <Column className="w-[48px] align-top">
-                    <Img
-                      src="https://img.icons8.com/ios-filled/50/005E8D/conference-call.png"
-                      width="40"
-                      height="40"
-                      alt="Organizador"
-                    />
-                  </Column>
-                  <Column className="pl-3">
-                    <Text className="m-0 font-semibold text-[18px] text-gray-900 leading-[24px]">
-                      Organizador
-                    </Text>
-                    <Text className="m-0 mt-1 text-[16px] text-gray-600 leading-[24px]">
-                      {organizador}
+                      {lugar_evento}
                     </Text>
                   </Column>
                 </Row>
@@ -148,7 +125,7 @@ const NotificacionEvento = ({
                 <Row>
                   <Column align="center">
                     <Button
-                      href={urlEvento}
+                      href={url_evento}
                       className="bg-[#00AAFF] text-white font-semibold text-[16px] px-8 py-4 rounded-lg no-underline"
                     >
                       Ver detalles del evento
@@ -159,9 +136,9 @@ const NotificacionEvento = ({
 
               <Row>
                 <Text className="m-0 mt-6 text-[14px] text-gray-500 text-center leading-[22px]">
-                  ¿Tienes alguna pregunta? Responde a este correo o contáctanos en{" "}
-                  <Link href="mailto:eventos@escom.ipn.mx" className="text-[#1e3a5f] underline">
-                    eventos@escom.ipn.mx
+                  ¿Tienes alguna pregunta?{" "}
+                  <Link href="mailto:contacto@escom.ipn.mx" className="text-[#1e3a5f] underline">
+                    Contáctanos
                   </Link>
                 </Text>
               </Row>
