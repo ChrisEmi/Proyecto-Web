@@ -3,6 +3,8 @@ import { useNavigate, Link } from "react-router-dom";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
+import { createPortal } from "react-dom";
+
 gsap.registerPlugin(SplitText);
 
 import { useEffect, useState, useTransition } from "react";
@@ -14,15 +16,16 @@ library.add(fas);
 
 
 import { useAuth } from "../../../api/Context/AuthContext";
-import {IconoEscom, SvgLogin} from "../../../components/assets/decoraciones/ElementosSvg";
+import { IconoEscom, SvgLogin } from "../../../components/assets/decoraciones/ElementosSvg";
 import { CampoTexto } from "../../../components/assets/cutoms-campos/CampoTexto";
 import { CampoContrasena } from "../../../components/assets/cutoms-campos/CampoContrasena";
 
 
 const Login = () => {
   const { register, handleSubmit } = useForm();
-  const { iniciarSesion, usuario, authSesion, errors: authErrors } = useAuth();
+  const { iniciarSesion, usuario, authSesion, errors: authErrors, generarTokenContrasena, errorRecuperacion } = useAuth();
   const [showError, setShowError] = useState(false);
+  const [modalCorreo, setModalCorreo] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState(false);
 
   const navigate = useNavigate();
@@ -123,6 +126,73 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-escom-200 via-black/10 to-escom-300 flex flex-col justify-center p-4 md:p-8 lg:p-20">
       <div className="w-full h-full md:h-auto md:min-h-[600px] lg:min-h-[700px] flex flex-col md:flex-row shadow-2xl rounded-2xl md:rounded-4xl bg-white overflow-hidden">
+        {modalCorreo && createPortal(
+          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-2xl w-full max-w-sm relative overflow-hidden">
+              <button
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 transition-colors z-10"
+                onClick={() => setModalCorreo(false)}
+              >
+                <FontAwesomeIcon icon="fa-solid fa-xmark" className="text-lg" />
+              </button>
+
+              {/* Contenido */}
+              <div className="p-6 flex flex-col gap-5">
+                <div className="text-center pt-2">
+                  <FontAwesomeIcon icon="fa-solid fa-key" className="text-escom-900 text-4xl mb-3" />
+                  <h2 className="text-2xl font-bold text-escom-900">Recuperar Contraseña</h2>
+                </div>
+
+                <div className="p-4 bg-escom-100 rounded-xl">
+                  <h3 className="text-escom-900 font-bold text-sm mb-1">
+                    <FontAwesomeIcon icon="fa-solid fa-info-circle" className="mr-1" />
+                    Instrucciones
+                  </h3>
+                  <p className="text-escom-700 text-sm">Ingresa tu correo electrónico para recibir instrucciones de recuperación.</p>
+                </div>
+
+                { errorRecuperacion && (
+                  <div className="text-red-600 text-sm bg-red-50 p-3 rounded-lg">
+                    <FontAwesomeIcon icon="fa-solid fa-circle-exclamation" className="mr-1" />
+                    {errorRecuperacion}
+                  </div>
+                )}
+
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  const correo = e.target.correo.value; 
+                  const res = await generarTokenContrasena(correo);
+                  console.log(res);
+                }} className="flex flex-col gap-4">
+                  <div>
+                    <label className="text-sm font-semibold text-escom-900 mb-1 block">Correo Electrónico</label>
+                    <input
+                      type="email"
+                      name="correo"
+                      placeholder="tucorreo@ipn.mx"
+                      required
+                      className="w-full p-3 border-2 border-escom-200 rounded-lg focus:outline-none focus:border-escom-700"
+                    />
+                  </div>
+                  
+                  <p className="text-xs text-gray-500">
+                    <FontAwesomeIcon icon="fa-solid fa-circle-exclamation" className="text-escom-700 mr-1" />
+                    Solo recibirás el correo si la cuenta existe.
+                  </p>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-escom-900 hover:bg-escom-700 text-white py-3 rounded-lg font-semibold transition-colors"
+                  >
+                    <FontAwesomeIcon icon="fa-solid fa-paper-plane" className="mr-2" />
+                    Enviar Instrucciones
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
         <div className="imagen-login hidden md:block relative md:w-1/2 lg:w-5/8 h-64 md:h-auto" style={{
           clipPath: window.innerWidth >= 768 ? "url(#wave-clip)" : "none"
         }}>
@@ -187,9 +257,9 @@ const Login = () => {
             
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
               <span className="text-xs md:text-sm text-escom-900 font-semibold">¿Olvidaste tu contraseña?</span>
-              <a href="#" className="text-xs md:text-sm text-escom-700 hover:text-escom-900 font-semibold hover:underline transition-colors">
+              <button type="button" onClick={() => setModalCorreo(true)} className="text-xs md:text-sm text-escom-700 hover:text-escom-900 font-semibold hover:underline transition-colors">
                 Recuperar Contraseña
-              </a>
+              </button>
             </div>
             
             <button 

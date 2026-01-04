@@ -27,8 +27,21 @@ function auth_routes($router) {
         $controller->verificarTokenCookie($db);
     });
 
-    $router->post('/auth/registro-admin', function() use ($db) {
+    $router->post('/auth/generar-token-contrasena', function() use ($db) {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $correo = $data['correo'] ?? '';
         $controller = new AuthController();
-        $controller->registroAdmin($db);
+        $controller->recuperarContraseña($db, $correo);
+    });
+
+    $router->post('/auth/restablecer-contrasena', function() use ($db) {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $token = $data['token'] ?? '';
+        $nuevasContrasenas = [
+            'nueva_contrasena' => $data['nueva_contrasena'] ?? '',
+            'confirmar_contrasena' => $data['confirmar_contrasena'] ?? ''
+        ];
+        $controller = new AuthController();
+        $controller->cambiarContrasena($db, $token, $nuevasContrasenas);
     });
 }

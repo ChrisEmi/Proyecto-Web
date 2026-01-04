@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     const [authSesion, setAuthSesion] = useState(false)
     const [loading, setLoading] = useState(true)
     const [errors, setErrors] = useState()
+    const [errorRecuperacion, setErrorRecuperacion] = useState()
     
     const registrarUsuario = async (user) => {
         try {
@@ -55,6 +56,27 @@ export const AuthProvider = ({ children }) => {
         }
     }
 
+    const generarTokenContrasena = async (correo) => {
+        try {
+            const res = await AuthAPI.generarTokenContrasena(correo);
+            return res;
+        } catch (error) {
+            console.error("Error al generar token de recuperación de contraseña:", error);
+            setErrorRecuperacion(error.response?.data?.message);
+        }
+    }
+
+    const recuperarContrasena = async (data) => {
+        try {
+            const res = await AuthAPI.restablecerContrasena(data);
+            return res;
+        } catch (error) {
+            console.error("Error al cambiar la contraseña:", error);
+            setErrorRecuperacion(error.response?.data?.message);
+        }
+    }
+
+
     useEffect(() => {
         let isMounted = true;
         async function checkLogin() {
@@ -71,7 +93,6 @@ export const AuthProvider = ({ children }) => {
                 }
             } catch (e) {
                 if (isMounted) {
-                    console.error("Error al verificar token:", e);
                     setAuthSesion(false);
                     setUsuario(null);
                 }
@@ -89,21 +110,26 @@ export const AuthProvider = ({ children }) => {
         }, []);
 
     useEffect(() => {
-    if (errors && Object.keys(errors).length > 0) {
-        const timer = setTimeout(() => {
-            setErrors(null);
-        }, 5150);
-        return () => clearTimeout(timer)
+        if (errors || errorRecuperacion) {
+            const timer = setTimeout(() => {
+                setErrors(null);
+                setErrorRecuperacion(null);
+            }, 5150);
+            return () => clearTimeout(timer);
         }
-    }, [errors]);
+    }, [errors, errorRecuperacion]);
 
     return (
         <AuthContext.Provider value={{
             registrarUsuario,
             iniciarSesion,
             cerrarSesion,
+            errorRecuperacion,
             usuario,
+            recuperarContrasena,
             errors,
+            setErrorRecuperacion,
+            generarTokenContrasena,
             loading,
             authSesion,
         }}>

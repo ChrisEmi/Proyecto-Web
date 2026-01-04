@@ -33,9 +33,7 @@ class CorreoService
         );
     }
 
-    /**
-     * Envía un email genérico
-     */
+    
     public function enviarEmail(string $destinatario, string $asunto, string $html): array
     {
         try {
@@ -107,5 +105,19 @@ class CorreoService
         }
 
         return $resultados;
+    }
+
+    public function enviarRecuperacionContrasena(string $destinatario, array $datosUsuario): array
+    {
+        $html = $this->renderTemplate('emails/recuperacionContrasena.html', [
+            'nombre_usuario' => $datosUsuario['nombre_usuario'] ?? 'Usuario',
+            'url_recuperacion' => $datosUsuario['url_recuperacion'] ?? '#'
+        ]);
+
+        return $this->enviarEmail(
+            $destinatario,
+            "Recuperación de contraseña",
+            $html
+        );
     }
 }

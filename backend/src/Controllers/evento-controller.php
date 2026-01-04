@@ -95,25 +95,34 @@ class EventoController {
             $eventoModel->inscribirUsuarioEventoQuery($id_usuario, $id_evento);
 
             try {
-                $evento = $eventoModel->obtenerEventoPorIdQuery($id_evento);
+                $eventos = $eventoModel->obtenerEventoPorIdQuery($id_evento);
+                $evento = $eventos[0] ?? null;
                 $usuarioModel = new QuerysAuth($pool);
                 $usuario = $usuarioModel->obtenerCorreoPorId($id_usuario);
                 $res = $evento;
                 
                 if ($evento && $id_usuario && !empty($usuario['correo'])) {
                     $emailService = new CorreoService();
+                    
+                    // Formatear fechas
+                    $fechaInicio = !empty($evento['fecha']) ? date('d \d\e F, Y', strtotime($evento['fecha'])) : '';
+                    $fechaFinal = !empty($evento['fecha_final']) ? date('d \d\e F, Y', strtotime($evento['fecha_final'])) : '';
+                    $horaEvento = !empty($evento['fecha']) ? date('H:i', strtotime($evento['fecha'])) : '';
+                    
                     $resultadoEmail = $emailService->enviarNotificacionEvento(
                         $usuario['correo'], 
-                        ['nombre_usuario' => $usuario['nombre'] ?? 'Estudiante',
-                        'titulo_evento' => $evento['titulo_evento'] ?? '',
-                        'descripcion_evento' => $evento['descripcion'] ?? '',
-                        'fecha_inicio' => $evento['fecha'] ?? '',
-                        'fecha_final' => $evento['fecha_final'] ?? '',
-                        'hora_evento' => date('H:i', strtotime($evento['fecha'])) ?? '',
-                        'lugar_evento' => $evento['ubicacion'] ?? '',
-                        'imagen_evento' => !empty($evento['imagenes']) ? $evento['imagenes'][0]['src'] : '',
-                        'url_evento' => "http://localhost:5173/eventos/{$id_evento}"
-                    ]);
+                        [
+                            'nombre_usuario' => $usuario['nombre'] ?? 'Estudiante',
+                            'titulo_evento' => $evento['titulo_evento'] ?? '',
+                            'descripcion_evento' => $evento['descripcion'] ?? '',
+                            'fecha_inicio' => $fechaInicio,
+                            'fecha_final' => $fechaFinal,
+                            'hora_evento' => $horaEvento,
+                            'lugar_evento' => $evento['ubicacion'] ?? '',
+                            'imagen_evento' => !empty($evento['imagenes']) ? $evento['imagenes'][0]['src'] : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop',
+                            'url_evento' => "http://localhost:5173/eventos/{$id_evento}"
+                        ]
+                    );
                     error_log("Resultado envío email: " . json_encode($resultadoEmail));
                     http_response_code(200);
                     echo json_encode([

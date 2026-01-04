@@ -5,6 +5,7 @@ import Inicio from "../pages/base/Inicio.jsx";
 import Login from "../pages/usuarios/usuario/Login.jsx";
 import Registro from "../pages/usuarios/usuario/Registro.jsx";
 import SinPermiso from "../pages/base/SinPermiso.jsx";
+import RecuperarContrasena from "../pages/usuarios/usuario/RecuperarContrasena.jsx";
 
 import { AuthGuard } from "../guards/AuthGuard.jsx";
 import { RolGuard } from "../guards/RolGuard.jsx";
@@ -29,6 +30,7 @@ const Router = () => {
           } />
           <Route path="/login" element={<Login />} />
           <Route path="/registro" element={<Registro />} />
+          <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
 
           <Route path="/actividades-eventos/*" element={<EventosRoutes />} />
 

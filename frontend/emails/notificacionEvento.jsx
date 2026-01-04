@@ -15,7 +15,7 @@ const NotificacionEvento = ({
     <Html>
       <Tailwind>
         <Head />
-        <Preview>{titulo_evento} - ESCOMunidad</Preview>
+        <Preview>ESCOMunidad</Preview>
         <Body className="bg-gray-100 font-sans">
           <Container className="bg-white mx-auto my-10 rounded-lg overflow-hidden max-w-[600px]">
             
@@ -154,11 +154,11 @@ const NotificacionEvento = ({
                       <tr>
                         <td style={{ verticalAlign: 'middle', paddingRight: '16px' }}>
                           <Img 
-                            src="https://res.cloudinary.com/dqhsgokht/image/upload/v1764631266/gd98apkes7nfmhz0m2k7.ico" 
+                            src="https://res.cloudinary.com/dqhsgokht/image/upload/e_colorize:100,co_white/v1764631266/gd98apkes7nfmhz0m2k7.png" 
                             width="70" 
                             height="70" 
                             alt="ESCOM"
-                            style={{ filter: 'brightness(0) invert(1)', display: 'block', objectFit: 'contain' }}
+                            style={{ display: 'block', objectFit: 'contain' }}
                           />
                         </td>
                         <td style={{ verticalAlign: 'middle' }}>

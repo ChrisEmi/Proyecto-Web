@@ -107,6 +107,22 @@ class QuerysPerfil{
             throw $e;
         }
     }
+
+    public function verificarContrasena($id_usuario, $contrasenaActual) {
+        
+        $sql = "SELECT contrasena FROM Usuario WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($resultado && password_verify($contrasenaActual, $resultado['contrasena'])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }
 
 ?>

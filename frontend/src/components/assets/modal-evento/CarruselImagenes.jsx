@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
 const CarruselImagenes = ({ imagenes, abrirDetalles, isEditando = false, onAgregarImagen, onEliminarImagen }) => {
-    const [currentIndex, setCurrentIndex] = useState(0);
+    const currentIndexRef = useRef(0);
 
     const handleAgregarImagen = () => {
         const widget = window.cloudinary.createUploadWidget(
@@ -32,9 +32,9 @@ const CarruselImagenes = ({ imagenes, abrirDetalles, isEditando = false, onAgreg
     };
 
     const handleEliminarImagen = () => {
-        console.log("Eliminando imagen con índice:", currentIndex);
+        console.log("Eliminando imagen con índice:", currentIndexRef.current);
         if (onEliminarImagen) {
-            onEliminarImagen(currentIndex);
+            onEliminarImagen(currentIndexRef.current);
         }
     };
 
@@ -48,17 +48,11 @@ const CarruselImagenes = ({ imagenes, abrirDetalles, isEditando = false, onAgreg
         const prevButton = document.querySelector(".carrusel-nav-prev");
         const contador = document.querySelector(".carrusel-contador");
 
-        // Asegurar que currentIndex esté dentro del rango válido
-        const safeIndex = Math.min(currentIndex, slides.length - 1);
-        if (safeIndex !== currentIndex) {
-            setCurrentIndex(safeIndex);
-            return;
-        }
+        let currentIndex = 0;
+        currentIndexRef.current = 0;
 
         function posicionarContador() {
-            if (safeIndex < 0 || safeIndex >= slides.length) return;
-            const slideActual = slides[safeIndex];
-            if (!slideActual) return;
+            const slideActual = slides[currentIndex];
             const img = slideActual.querySelector("img");
             if (img && contador) {
                 const imgRect = img.getBoundingClientRect();
@@ -70,14 +64,13 @@ const CarruselImagenes = ({ imagenes, abrirDetalles, isEditando = false, onAgreg
         }
 
         function cambiarSlide(direccion) {
-            if (safeIndex < 0 || safeIndex >= slides.length) return;
-            gsap.to(slides[safeIndex], { opacity: 0, duration: 1, y: 50, ease: "power3.inOut" });
-            const newIndex = gsap.utils.wrap(0, slides.length, safeIndex + direccion);
-            setCurrentIndex(newIndex);
-            gsap.to(slides[newIndex], { opacity: 1, duration: 1, y: 0, ease: "power3.inOut", onComplete: posicionarContador });
+            gsap.to(slides[currentIndex], { opacity: 0, duration: 1, y: 50, ease: "power3.inOut" });
+            currentIndex = gsap.utils.wrap(0, slides.length, currentIndex + direccion);
+            currentIndexRef.current = currentIndex;
+            gsap.to(slides[currentIndex], { opacity: 1, duration: 1, y: 0, ease: "power3.inOut", onComplete: posicionarContador });
             gsap.to(contador, {
                 opacity: 0, duration: 1, y: 50, ease: "power3.inOut", onComplete: () => {
-                    if (contador) contador.innerText = `${newIndex + 1}/${slides.length}`;
+                    if (contador) contador.innerText = `${currentIndex + 1}/${slides.length}`;
                 }
             });
         }
@@ -93,21 +86,21 @@ const CarruselImagenes = ({ imagenes, abrirDetalles, isEditando = false, onAgreg
 
         slides.forEach((slide, index) => {
             slide.classList.add("carrusel-slide-abs");
-            gsap.set(slide, { opacity: index === safeIndex ? 1 : 0 });
+            gsap.set(slide, { opacity: index === 0 ? 1 : 0 });
             const img = slide.querySelector("img");
-            if (img && index === safeIndex) {
+            if (img && index === 0) {
                 img.onload = posicionarContador;
                 if (img.complete) posicionarContador();
             }
         });
 
-        if (contador) contador.innerText = `${safeIndex + 1}/${slides.length}`;
+        if (contador) contador.innerText = `1/${slides.length}`;
 
         return () => {
             nextButton?.removeEventListener("click", handleNext);
             prevButton?.removeEventListener("click", handlePrev);
         };
-    }, { dependencies: [abrirDetalles, imagenes, currentIndex], scope: document.body });
+    }, { dependencies: [abrirDetalles, imagenes], scope: document.body });
 
     if (!imagenes || imagenes.length === 0) {
         if (isEditando) {

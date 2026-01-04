@@ -15,7 +15,7 @@ class QuerysAuth
 
     public function buscarPorCorreo(string $correo)
     {
-        $sql = "SELECT u.correo, u.contraseña AS contrasena, u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, tu.nombre_tipo AS rol 
+        $sql = "SELECT u.correo, u.contraseña AS contrasena, u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, tu.nombre_tipo AS rol, u.recuperacion_token, u.recuperacion_exp
                 FROM Usuario u
                 INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario 
                 WHERE u.correo = :correo";
@@ -84,6 +84,50 @@ class QuerysAuth
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     
+
+    public function tokenRecuperarContrasena($id_usuario, $token) {
+        $fecha_expiracion = date('Y-m-d H:i:s', strtotime('+1 hour'));
+        
+        $sql = "UPDATE Usuario SET recuperacion_token = :token, recuperacion_exp = :fecha_expiracion WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':fecha_expiracion', $fecha_expiracion);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+
+    
+
+    public function cambiarContrasena($id_usuario, $nuevaContrasena) {
+        $hashedPassword = password_hash($nuevaContrasena, PASSWORD_BCRYPT);
+
+        $sql = "UPDATE Usuario SET contraseña = :contrasena WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':contrasena', $hashedPassword);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
+    
+    public function buscarPorTokenRecuperacion($token) {
+        $sql = "SELECT id_usuario, nombre, correo, recuperacion_token, recuperacion_exp
+                FROM Usuario 
+                WHERE recuperacion_token = :token";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function limpiarTokenRecuperacion($id_usuario) {
+        $sql = "UPDATE Usuario SET recuperacion_token = NULL, recuperacion_exp = NULL WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->rowCount();
+    }
 
 }

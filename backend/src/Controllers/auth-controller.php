@@ -265,9 +265,90 @@ class AuthController {
         }
     }
 
+    public function recuperarContraseña($pool, $correo){
+        $usuarioModel = new QuerysAuth($pool);
+        $usuario = $usuarioModel->buscarPorCorreo($correo);
+        if (!$usuario) {
+            return;
+        }
+        $token = bin2hex(random_bytes(16));
+        $res = $usuarioModel->tokenRecuperarContrasena($usuario['id_usuario'], $token);
+        if($res){
+            $correoService = new CorreoService();
+            $urlRecuperacion = $_ENV['FRONTEND_URL'] . "recuperar-contrasena?token=" . $token . "&id=" . $usuario['correo'];
+            $correoService->enviarRecuperacionContrasena($correo, [
+                'nombre_usuario' => $usuario['nombre'],
+                'url_recuperacion' => $urlRecuperacion
+            ]);
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Correo de recuperación enviado"
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al generar token de recuperación"
+            ]);
+        }
+    }
 
-    public function recuperarPassword($pool) {
-        // Lógica de recuperación de contraseña
+    public function cambiarContrasena($pool, $token, array $nuevas_contrasenas){
+        $usuarioModel = new QuerysAuth($pool);
+        $usuario = $usuarioModel->buscarPorTokenRecuperacion($token);
+        if (!$usuario) {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Token inválido o expirado"
+            ]);
+            return;
+        }
+        
+        if (strtotime($usuario['recuperacion_exp']) < time()) {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "El enlace de recuperación ha expirado"
+            ]);
+            return;
+        }
+        
+        if ($nuevas_contrasenas['nueva_contrasena'] !== $nuevas_contrasenas['confirmar_contrasena']) {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Las contraseñas no coinciden"
+            ]);
+            return;
+        }
+        
+        if (strlen($nuevas_contrasenas['nueva_contrasena']) < 8) {
+            http_response_code(400);
+            echo json_encode([
+                "status" => "error",
+                "message" => "La contraseña debe tener al menos 8 caracteres"
+            ]);
+            return;
+        }
+
+        $res = $usuarioModel->cambiarContrasena($usuario['id_usuario'], $nuevas_contrasenas['nueva_contrasena']);
+        if($res){
+            $usuarioModel->limpiarTokenRecuperacion($usuario['id_usuario']);
+            
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Contraseña actualizada exitosamente"
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al actualizar la contraseña"
+            ]);
+        }
     }
 }
 
