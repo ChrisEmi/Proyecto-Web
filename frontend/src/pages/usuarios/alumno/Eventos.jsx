@@ -134,13 +134,13 @@ const Eventos = () => {
                         <FontAwesomeIcon icon={['fas', 'circle-notch']} className="text-escom-sombra-400 text-9xl mx-auto my-10 animate-spin" />
                         <p className="p-4 text-3xl font-semibold text-escom-900">Cargando tus eventos...</p>
                     </div>
-                ) : !eventosInscritos || eventosInscritos.length === 0 ? (
+                ) : !eventosInscritos || eventosInscritos?.length === 0 ? (
                     <div className="flex flex-1 flex-col items-center justify-center h-[60vh] w-full p-18">
                         <FontAwesomeIcon icon={['fas', 'calendar-times']} className="text-escom-sombra-400 text-9xl mx-auto my-10" />
                         <p className="p-4 text-3xl font-semibold text-escom-900">No tienes eventos inscritos.</p>
                     </div>
                 ) : (
-                    eventosInscritos.map((evento) => (
+                    eventosInscritos?.map((evento) => (
                         <TarjetaEvento 
                             key={evento.id_evento}
                             evento={evento}

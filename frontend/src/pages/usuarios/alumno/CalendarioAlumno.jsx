@@ -40,7 +40,7 @@ const CalendarioAlumno = () => {
         const hoy = new Date();
         hoy.setHours(0, 0, 0, 0);
         
-        return eventosInscritos.map(evento => {
+        return eventosInscritos?.map(evento => {
             const fechaEvento = new Date(evento.fecha);
             const esPasado = fechaEvento < hoy;
             
@@ -127,7 +127,7 @@ const CalendarioAlumno = () => {
         today: <><FontAwesomeIcon icon={faCalendarDay} /></>,
         month: 'Mes',
         week: 'Semana',
-        date: 'Fecha',
+        day: 'Día',
         time: 'Hora',
         event: 'Evento',
         noEventsInRange: 'No hay eventos en este rango',
@@ -147,7 +147,7 @@ const CalendarioAlumno = () => {
                     onDesinscribirse={() => {
                         desinscribirseYActualizar(eventoSeleccionado.id_evento);
                     }}
-                    esAlumno={true}
+                    tipoUsuario='alumno'
                 />
             )}
             <div className="flex flex-col gap-8 text-escom-sombra-400 container-section min-w-full rounded-2xl shadow-2xl bg-white/40 p-4 md:p-8">
@@ -166,7 +166,7 @@ const CalendarioAlumno = () => {
                         onNavigate={setDate}
                         onSelectEvent={handleSelectEvent}
                         min={new Date(new Date().setHours(7, 0, 0))}
-                        views={['month', 'week']}
+                        views={['month', 'week', 'day']}
                         style={{ height: '100%' }}
                         eventPropGetter={eventStyleGetter}
                         dayPropGetter={dayStyleGetter}
