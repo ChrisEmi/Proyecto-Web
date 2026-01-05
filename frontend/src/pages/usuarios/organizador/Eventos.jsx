@@ -1,5 +1,6 @@
 import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
 import { useOrganizador } from "../../../api/Context/OrganizadorContext.jsx";
+import { Link } from "react-router-dom";
 import { useEventos } from "../../../api/Context/EventosContext.jsx";
 import { useEffect, useState } from "react";
 import ModalDetallesEvento from "../../../components/assets/modals/ModalDetallesEvento.jsx";
@@ -167,13 +168,21 @@ const Eventos = () => {
                             )}
                         </div>
                 )}
-                {eventosOrganizados.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center h-full w-full shadow-2xl rounded-2xl p-10">
-                        <FontAwesomeIcon icon={['fas', 'calendar-times']} className="text-escom-sombra-400 text-9xl mx-auto my-10" />
-                        <p className="p-4">No hay eventos organizados.</p>
+                {eventosOrganizados?.length === 0 || !eventosOrganizados ? (
+                    <div className="flex flex-col items-center justify-center min-h-[38rem] w-full shadow-2xl rounded-2xl p-10 text-escom-sombra-400 ">
+                        <FontAwesomeIcon icon={['fas', 'calendar-times']} className="text-9xl mx-auto " />
+                        <p className="p-4 font-bold text-3xl">No tienes eventos</p>
+                        <Link 
+                            to="/organizador/crear-evento" 
+                                className="mt-4 inline-block bg-escom-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-escom-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                        >
+                            <FontAwesomeIcon icon={['fas', 'plus']} className="mr-2" />
+                            Crear evento
+                        </Link>
+                        
                     </div>
                 ) : (
-                    eventosOrganizados.map((evento) => (
+                    eventosOrganizados?.map((evento) => (
                         <TarjetaEvento 
                             key={evento.id_evento}
                             evento={evento}
