@@ -1,24 +1,18 @@
 export const RUTAS_HOME = (cerrarMenu) => [
   { href: "/#inicio", label: "Inicio", onClick: cerrarMenu },
   { href: "/#section-horizontal", label: "Presentación", onClick: cerrarMenu },
-  { href: "/#actividades", label: "Actividades", onClick: cerrarMenu },
   { href: "/#contacto", label: "Contacto", onClick: cerrarMenu },
 ];
 
 export const RUTAS_AGENDA = (cerrarMenu) => [
   {
-    to: "/actividades-eventos/explorar",
+    to: "/eventos/explorar",
     label: "Explorar",
     onClick: cerrarMenu,
   },
+  { to: "/eventos/eventos", label: "Eventos", onClick: cerrarMenu },
   {
-    to: "/actividades-eventos/actividades",
-    label: "Actividades",
-    onClick: cerrarMenu,
-  },
-  { to: "/actividades-eventos/eventos", label: "Eventos", onClick: cerrarMenu },
-  {
-    to: "/actividades-eventos/calendario",
+    to: "/eventos/calendario",
     label: "Calendario",
     onClick: cerrarMenu,
   },
@@ -39,11 +33,6 @@ export const RUTAS_PANEL = {
     { to: "/organizador/calendario", label: "Calendario", onClick: cerrarMenu },
     { to: "/organizador/eventos", label: "Mis Eventos", onClick: cerrarMenu },
     {
-      to: "/organizador/inscripciones",
-      label: "Inscripciones",
-      onClick: cerrarMenu,
-    },
-    {
       to: "/organizador/crear-evento",
       label: "Crear Evento",
       onClick: cerrarMenu,
@@ -52,11 +41,6 @@ export const RUTAS_PANEL = {
   Estudiante: (cerrarMenu) => [
     { to: "/alumno/calendario", label: "Calendario", onClick: cerrarMenu },
     { to: "/alumno/mis-eventos", label: "Mis Eventos", onClick: cerrarMenu },
-    {
-      to: "/alumno/mis-actividades",
-      label: "Mis Actividades",
-      onClick: cerrarMenu,
-    },
   ],
 };
 

@@ -81,5 +81,37 @@ function admin_routes($router) {
         });
     });
 
+    $router->post('/administrador/banear-usuario/{id_usuario}', function($id_usuario) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_usuario) {
+            $controller = new AdminController();
+            $controller->banearDesbanearUsuario($db, $id_usuario);
+        });
+    });
+
+    $router->get('/administrador/perfil-usuario/{id_usuario}', function($id_usuario) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_usuario) {
+            $controller = new AdminController();
+            $controller->obtenerDatosPerfilAdmin($db, $id_usuario);
+        });
+    });
+
+    $router->get('/administrador/eventos-usuario/{id_usuario}', function($id_usuario) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_usuario) {
+            $controller = new AdminController();
+            $controller->obtenerInscripcionesUsuario($db, $id_usuario);
+        });
+    });
+    
+    $router->get('/administrador/eventos-organizador/{id_usuario}', function($id_usuario) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $id_usuario) {
+            $controller = new AdminController();
+            $controller->obtenerEventosOrganizador($db, $id_usuario);
+        });
+    });
+
 
 }

@@ -87,6 +87,20 @@ export const AlumnoProvider = ({ children }) => {
         }
     };
 
+    const cambiarPreferenciasNotificaciones = async (preferencias) => {
+        try {
+            const res = await PerfilAPI.cambiarPreferenciasNotificacionesAlumno(preferencias);
+            setMensajeConfirmacion(res.data.message);
+            console.log("Preferencias de notificaciones actualizadas:", res.data);
+            return res;
+        }
+        catch (error) {
+            console.error("Error al cambiar las preferencias de notificaciones:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
     const actualizarDatosPerfil = async (formData) => {
         try {
             const res = await PerfilAPI.actualizarPerfilAlumno(formData);
@@ -128,6 +142,7 @@ export const AlumnoProvider = ({ children }) => {
             desinscribirseEvento,
             eventosInscritos,
             perfil,
+            cambiarPreferenciasNotificaciones,
             obtenerDatosPerfil,
             errors,
             actualizarDatosPerfil,

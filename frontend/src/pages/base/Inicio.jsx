@@ -8,7 +8,6 @@ import { useEffect } from "react";
 
 import HeroInicio from "../../components/inicio-sections/HeroInicio";
 import EventosHorizontal from "../../components/inicio-sections/EventosHorizontal";
-import Actividades from "../../components/inicio-sections/Actividades";
 import Contacto from "../../components/inicio-sections/Contacto";
 
 
@@ -42,7 +41,6 @@ const Inicio = () => {
     <div ref={mainContainerRef} className="overscroll-nonebg-white">
     <HeroInicio />
     <EventosHorizontal eventos={eventos} />
-    <Actividades />
     <Contacto />
     </div>
   );

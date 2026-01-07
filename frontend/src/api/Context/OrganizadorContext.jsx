@@ -61,7 +61,9 @@ export const OrganizadorProvider = ({ children }) => {
     const obtenerInscripcionesPorEvento = async (id_evento) => {
         try {
             const res = await EventosAPI.inscripcionesPorEvento(id_evento);
+            console.log("Inscripciones obtenidas:", res);
             setInscripciones(res.data.inscripciones);
+            return res.data.inscripciones;
         } catch (error) {
             console.error("Error al obtener las inscripciones del evento:", error);
             setErrors(error.response?.data?.message);
@@ -99,6 +101,48 @@ export const OrganizadorProvider = ({ children }) => {
         }
     };
 
+    const enviarAvisosProximosEventos = async (id_evento) => {
+        try {
+            const res = await EventosAPI.enviarAvisosProximosEventos(id_evento);
+            setMensajeConfirmacion(res.data.message);
+            console.log("Avisos enviados:", res.data);
+            return res.data.message;
+        } catch (error) {
+            console.error("Error al enviar avisos de próximos eventos:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    const marcarEventoComoPasado = async (id_evento) => {
+        try {
+            const res = await EventosAPI.marcarEventoComoPasado(id_evento);
+            setMensajeConfirmacion(res.data.message);
+            console.log("Evento marcado como pasado:", res.data);
+            return res.data.message;
+        }
+
+        catch (error) {
+            console.error("Error al marcar el evento como pasado:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    const cambiarPreferenciasNotificaciones = async (preferencias) => {
+        try {
+            const res = await PerfilAPI.cambiarPreferenciasNotificacionesOrganizador(preferencias);
+            setMensajeConfirmacion(res.data.message);
+            console.log("Preferencias de notificaciones actualizadas:", res.data);
+            return res.data.message;
+        }
+        catch (error) {
+            console.error("Error al cambiar las preferencias de notificaciones:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
     useEffect(() => {
         if ((errors && Object.keys(errors).length > 0) || mensajeConfirmacion) {
             const timer = setTimeout(() => {
@@ -115,9 +159,12 @@ export const OrganizadorProvider = ({ children }) => {
             actualizarEvento,
             obtenerEventosPorOrganizador,
             obtenerInscripcionesPorEvento,
+            enviarAvisosProximosEventos,
+            marcarEventoComoPasado,
             eventosOrganizados,
             inscripciones,
             perfil,
+            cambiarPreferenciasNotificaciones,
             obtenerDatosPerfil,
             actualizarDatosPerfil,
             errors,

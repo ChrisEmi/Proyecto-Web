@@ -100,8 +100,9 @@ class EventoController {
                 $usuarioModel = new QuerysAuth($pool);
                 $usuario = $usuarioModel->obtenerCorreoPorId($id_usuario);
                 $res = $evento;
+                $organizador = $usuarioModel->obtenerCorreoPorId($evento['id_organizador']);
                 
-                if ($evento && $id_usuario && !empty($usuario['correo'])) {
+                if ($evento && $id_usuario && !empty($usuario['correo'] )) {
                     $emailService = new CorreoService();
                     
                     // Formatear fechas
@@ -109,7 +110,8 @@ class EventoController {
                     $fechaFinal = !empty($evento['fecha_final']) ? date('d \d\e F, Y', strtotime($evento['fecha_final'])) : '';
                     $horaEvento = !empty($evento['fecha']) ? date('H:i', strtotime($evento['fecha'])) : '';
                     
-                    $resultadoEmail = $emailService->enviarNotificacionEvento(
+                    if((int)$usuario['config_notificacion'] !== 0){
+                        $resultadoEmail = $emailService->enviarNotificacionEvento(
                         $usuario['correo'], 
                         [
                             'nombre_usuario' => $usuario['nombre'] ?? 'Estudiante',
@@ -123,7 +125,28 @@ class EventoController {
                             'url_evento' => "http://localhost:5173/eventos/{$id_evento}"
                         ]
                     );
-                    error_log("Resultado envío email: " . json_encode($resultadoEmail));
+                    }
+
+                    // Enviar email al organizador solo si tiene correo válido
+                    if (!empty($organizador['correo']) && (int)$organizador['config_notificacion'] !== 0) {
+                        $emailService->enviarNotificacionInscripcionOrganizador(
+                            $organizador['correo'], 
+                            [
+                                'nombre_organizador' => $organizador['nombre'] ?? 'Organizador',
+                                'titulo_evento' => $evento['titulo_evento'] ?? '',
+                                'nombre_inscrito' => ($usuario['nombre'] ?? '') . ' ' . ($usuario['apellido_paterno'] ?? ''),
+                                'correo_inscrito' => $usuario['correo'] ?? '',
+                                'fecha_inscripcion' => date('d/m/Y H:i'),
+                                'hora_evento' => $horaEvento,
+                                'lugar_evento' => $evento['ubicacion'] ?? '',
+                                'url_evento' => "http://localhost:5173/organizador/eventos"
+                            ]
+                        );
+                    }
+
+
+
+                    error_log("Resultado envío email usuario: " . json_encode($resultadoEmail));
                     http_response_code(200);
                     echo json_encode([
                         "status" => "success",
@@ -252,9 +275,6 @@ class EventoController {
 
     public function obtenerInscripcionesPorEvento($pool, $id_evento){
         try {
-            $datos = json_decode(file_get_contents('php://input'), true);
-            $id_evento = $datos['id_evento'];
-
             if (!$id_evento) {
                 http_response_code(400);
                 echo json_encode([
@@ -326,6 +346,110 @@ class EventoController {
             echo json_encode([
                 "status" => "error",
                 "message" => "Error al verificar la inscripcion del usuario al evento"
+            ]);
+        }
+    }
+
+    public function obtenerInscripcionesPorOrganizador($pool){
+        $id_organizador = AuthContext::obtenerIdUsuario();
+        try {
+            $eventoModel = new QuerysEventos($pool);
+            $inscripciones = $eventoModel->obtenerInscripcionesPorOrganizadorQuery($id_organizador);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "inscripciones" => $inscripciones
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener las inscripciones del organizador: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function obtenerResumenInscripcionesPorOrganizador($pool){
+        $id_organizador = AuthContext::obtenerIdUsuario();
+        try {
+            $eventoModel = new QuerysEventos($pool);
+            $resumen = $eventoModel->obtenerResumenInscripcionesPorOrganizadorQuery($id_organizador);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "resumen" => $resumen
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener el resumen de inscripciones: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function enviarCorreosAvisoEventoProximo($pool, $id_evento){
+        try {
+            $eventoModel = new QuerysEventos($pool);
+            $evento = $eventoModel->obtenerEventoPorIdQuery($id_evento);
+            if (!$evento) {
+                throw new Exception("Evento no encontrado");
+                return;
+            }
+            $inscripciones = $eventoModel->obtenerInscripcionesPorEventoQuery($id_evento);
+            $correoService = new CorreoService();
+            $correos = [];
+
+            foreach ($inscripciones as $inscripcion) {
+                if ((int)$inscripcion['config_notificacion'] !== 0) {
+                    $correos[] = $inscripcion['correo'];
+                }
+            }
+
+            $resultado = $correoService->enviarNotificacionesEventoProximo($correos, [
+                'titulo_evento' => $evento[0]['titulo_evento'] ?? '',
+                'descripcion_evento' => $evento[0]['descripcion'] ?? '',
+                'fecha_inicio' => $evento[0]['fecha'] ?? '',
+                'fecha_final' => $evento[0]['fecha_final'] ?? '',
+                'hora_evento' => !empty($evento[0]['fecha']) ? date('H:i', strtotime($evento[0]['fecha'])) : '',
+                'lugar_evento' => $evento[0]['ubicacion'] ?? '',
+                'imagen_evento' => !empty($evento[0]['imagenes']) ? $evento[0]['imagenes'][0]['src'] : 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop',
+                'url_evento' => "http://localhost:5173/eventos/{$id_evento}"
+            ]);
+
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Correos de aviso enviados correctamente",
+                "resultado" => $resultado
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al enviar los correos de aviso: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function marcarEventoComoPasado($pool, $id_evento){
+        try {
+            $eventoModel = new QuerysEventos($pool);
+            $eventoModel->marcarEventoComoPasadoQuery($id_evento);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Evento actualizado correctamente"
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al marcar el evento como pasado: " . $e->getMessage()
             ]);
         }
     }

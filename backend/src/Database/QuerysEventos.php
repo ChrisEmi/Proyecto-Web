@@ -358,9 +358,9 @@ class QuerysEventos
     }
 
     public function obtenerInscripcionesPorEventoQuery($id_evento){
-        $sql = "SELECT ie.*, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo FROM InscripcionEvento ie
+        $sql = "SELECT ie.*, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, u.config_notificacion FROM InscripcionEvento ie
                 INNER JOIN Usuario u ON ie.id_usuario = u.id_usuario
-                WHERE ie.id_evento = :id_evento AND ie.estado = 'Activo'";
+                WHERE ie.id_evento = :id_evento AND ie.estado = 'Inscrito'";
         $stmt = $this->pool->prepare($sql);
         $stmt->bindParam(':id_evento', $id_evento);
         $stmt->execute();
@@ -386,6 +386,65 @@ class QuerysEventos
         $stmt->bindParam(':id_evento', $id_evento);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerInscripcionesPorOrganizadorQuery($id_organizador){
+        $sql = "SELECT 
+                    e.id_evento,
+                    e.titulo_evento,
+                    e.fecha,
+                    e.fecha_final,
+                    e.ubicacion,
+                    ie.id_inscripcion_evento,
+                    ie.fecha_inscripcion,
+                    ie.estado as estado_inscripcion,
+                    u.id_usuario,
+                    u.nombre,
+                    u.apellido_paterno,
+                    u.apellido_materno,
+                    u.correo
+                FROM Evento e
+                INNER JOIN InscripcionEvento ie ON e.id_evento = ie.id_evento
+                INNER JOIN Usuario u ON ie.id_usuario = u.id_usuario
+                WHERE e.id_organizador = :id_organizador AND ie.estado = 'Inscrito'
+                ORDER BY e.fecha DESC, ie.fecha_inscripcion DESC";
+        
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_organizador', $id_organizador);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerResumenInscripcionesPorOrganizadorQuery($id_organizador){
+        $sql = "SELECT 
+                    e.id_evento,
+                    e.titulo_evento,
+                    e.fecha,
+                    e.cupo,
+                    COUNT(ie.id_inscripcion_evento) as total_inscritos
+                FROM Evento e
+                LEFT JOIN InscripcionEvento ie ON e.id_evento = ie.id_evento AND ie.estado = 'Inscrito'
+                WHERE e.id_organizador = :id_organizador
+                GROUP BY e.id_evento, e.titulo_evento, e.fecha, e.cupo
+                ORDER BY e.fecha DESC";
+        
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_organizador', $id_organizador);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function marcarEventoComoPasadoQuery($id_evento){
+        $sql = "UPDATE Evento SET estado = 'Pasado' WHERE id_evento = :id_evento";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_evento', $id_evento);
+        $stmt->execute();
+
+        $sql_inscripciones = "UPDATE InscripcionEvento SET estado = 'Finalizado' 
+                             WHERE id_evento = :id_evento AND estado = 'Inscrito'";
+        $stmt_inscripciones = $this->pool->prepare($sql_inscripciones);
+        $stmt_inscripciones->bindParam(':id_evento', $id_evento);
+        $stmt_inscripciones->execute();
     }
 
 }

@@ -19,5 +19,16 @@ const PerfilAPI = {
   actualizarPerfilAdmin: (formData) => {
     return axios.put("/perfil/admin/actualizar", formData);
   },
+  cambiarPreferenciasNotificacionesOrganizador: (preferencias) => {
+    return axios.put(
+      `/perfil/cambiar-preferencias-organizador/${preferencias}`
+    );
+  },
+  cambiarPreferenciasNotificacionesAlumno: (preferencias) => {
+    return axios.put(`/perfil/cambiar-preferencias-alumno/${preferencias}`);
+  },
+  cambiarPreferenciasNotificacionesAdmin: (preferencias) => {
+    return axios.put(`/perfil/cambiar-preferencias-admin/${preferencias}`);
+  },
 };
 export default PerfilAPI;

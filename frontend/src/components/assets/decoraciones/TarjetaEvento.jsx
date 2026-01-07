@@ -1,9 +1,9 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-export const TarjetaEvento = ({ evento, onClickAbrirDetalles }) => {
+export const TarjetaEvento = ({ evento, onClickAbrirDetalles, tipoUsuario = "default", onClickAbrirInscritos }) => {
   return (
-    <div className="bg-white m-2 md:m-5 relative flex flex-col lg:flex-row rounded-2xl shadow-lg min-h-[300px] max-h-[500px] w-full evento-card xl:overflow-hidden overflow-auto md:hover:scale-101 hover:shadow-2xl transition-all duration-400">
+    <div className="bg-white m-2 md:m-5 relative flex flex-col lg:flex-row rounded-2xl shadow-lg min-h-[300px] max-h-[650px] w-full evento-card xl:overflow-hidden overflow-auto md:hover:scale-101 hover:shadow-2xl transition-all duration-400">
       <div className="evento-imagen relative w-full lg:w-3/10 h-48 lg:h-auto max-h-[600px] text-sm flex shrink-0">
         <div className="absolute w-full h-full bg-gradient-to-r from-escom-sombra-400/70 to-transparent" />
         {evento.imagenes && evento.imagenes.length > 0 ? (
@@ -184,7 +184,7 @@ export const TarjetaEvento = ({ evento, onClickAbrirDetalles }) => {
           </div>
         </div>
       </div>
-      <div className="w-full lg:flex-1 flex items-center justify-center p-4 shrink-0">
+      <div className="w-full lg:flex-1 flex flex-col gap-4 items-center justify-center p-4 shrink-0">
         <button
           className="bg-escom-800 text-white px-4 md:px-8 py-3 md:py-4 rounded-xl hover:bg-escom-900 transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg text-sm md:text-base w-full lg:w-auto justify-center"
           onClick={() => onClickAbrirDetalles(evento.id_evento)}
@@ -192,6 +192,15 @@ export const TarjetaEvento = ({ evento, onClickAbrirDetalles }) => {
           Ver Detalles
           <FontAwesomeIcon icon={["fas", "arrow-right"]} />
         </button>
+        {tipoUsuario === "organizador" && (
+          <button
+          className="bg-escom-700 text-white px-4 md:px-8 py-3 md:py-4 rounded-xl hover:bg-escom-900 transition-all duration-300 flex items-center gap-2 font-semibold shadow-md hover:shadow-lg text-sm md:text-base w-full lg:w-auto justify-center"
+          onClick={() => onClickAbrirInscritos(evento.id_evento)}
+          >
+            Ver Inscritos
+            <FontAwesomeIcon icon={["fas", "users"]} />
+          </button>
+        )}
       </div>
     </div>
   );

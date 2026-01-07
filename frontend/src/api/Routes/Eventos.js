@@ -36,6 +36,14 @@ const EventosAPI = {
     axios.get(`/evento/verificar-inscripcion/${id_evento}`),
   eliminarEvento: (id_evento) =>
     axios.post(`/evento/eliminar-evento/${id_evento}`),
+  inscripcionesOrganizador: () =>
+    axios.get(`/evento/inscripciones-organizador`),
+  resumenInscripcionesOrganizador: () =>
+    axios.get(`/evento/resumen-inscripciones-organizador`),
+  enviarAvisosProximosEventos: (id_evento) =>
+    axios.post(`/evento/enviar-avisos/${id_evento}`),
+  marcarEventoComoPasado: (id_evento) =>
+    axios.post(`/evento/marcar-como-pasado/${id_evento}`),
 };
 
 export default EventosAPI;

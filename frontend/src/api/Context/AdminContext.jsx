@@ -1,8 +1,6 @@
 import { useEffect, createContext, useContext, useState } from "react";
 import AdminAPI from "../Routes/Admin.js";
-import EventosAPI from "../Routes/Eventos.js";
 import PerfilAPI from "../Routes/Perfil.js";
-import { set } from "react-hook-form";
 
 export const AdminContext = createContext();
 
@@ -129,7 +127,64 @@ export const AdminProvider = ({ children }) => {
         }
     };
 
+    const perfilUsuario = async (id_usuario) => {
+        try {
+            setLoading(true);
+            const res = await AdminAPI.obtenerPerfilUsuario(id_usuario);
+            console.log("Datos del perfil obtenidos:", res);
+            return res.data.perfil;
+        }
+        catch (error) {
+            console.error("Error al obtener los datos del perfil:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+        finally {
+            setLoading(false);
+        }
+    };
 
+    const banearUsuario = async (id_usuario, nuevo_estado) => {
+        try {
+            const res = await AdminAPI.banearUsuario(id_usuario, nuevo_estado);
+            setMensajeConfirmacion(res.data.message);
+            return res.data;
+        } catch (error) {
+            console.error("Error al cambiar el estado del usuario:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        }
+    };
+
+    const obtenerEventosPorUsuario = async (id_usuario) => {
+        try {
+            setLoading(true);
+            const res = await AdminAPI.obtenerEventosPorUsuario(id_usuario);
+            console.log("Eventos del usuario obtenidos:", res);
+            return res.data.inscripciones;
+        } catch (error) {
+            console.error("Error al obtener los eventos del usuario:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const obtenerEventosOrganizador = async (id_usuario) => {
+        try {
+            setLoading(true);
+            const res = await AdminAPI.obtenerEventosOrganizador(id_usuario);
+            console.log("Eventos del organizador obtenidos:", res);
+            return res.data.eventos;
+        } catch (error) {
+            console.error("Error al obtener los eventos del organizador:", error);
+            setErrors(error.response?.data?.message);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
     if (errors && Object.keys(errors).length > 0) {
@@ -157,7 +212,12 @@ export const AdminProvider = ({ children }) => {
             usuarioCreado,
             usuarios,
             obtenerEventos,
+            obtenerEventosPorUsuario,
+            obtenerEventosOrganizador,
+
             eventos,
+            banearUsuario,
+            perfilUsuario,
             mensajeConfirmacion,
             obtenerDatosPerfil,
             perfil,

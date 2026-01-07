@@ -123,6 +123,14 @@ class QuerysPerfil{
         }
     }
 
+    public function cambiarPreferenciasNotificaciones($id_usuario, ?int $preferencias) {
+        $sql = "UPDATE Usuario SET config_notificacion = :preferencias WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':preferencias', $preferencias, PDO::PARAM_INT);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+    }
+
 }
 
 ?>

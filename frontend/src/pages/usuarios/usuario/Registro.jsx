@@ -226,7 +226,7 @@ const Registro = () => {
               </span>
             </h2>
             <p className="text-sm md:text-base lg:text-lg xl:text-xl text-escom-100 max-w-md leading-relaxed">
-              Únete a nuestra plataforma para gestionar eventos, actividades y conectar con la comunidad ESCOM
+              Únete a nuestra plataforma para gestionar eventos y conectar con la comunidad ESCOM
             </p>
           </div>
         </div>

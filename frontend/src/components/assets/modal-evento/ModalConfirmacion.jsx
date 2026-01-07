@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createPortal } from "react-dom";
 
 const ModalConfirmacion = ({ 
     isOpen, 
@@ -12,7 +13,7 @@ const ModalConfirmacion = ({
 }) => {
     if (!isOpen) return null;
 
-    return (
+    return createPortal(
         <div className="modal-cancelar fixed inset-0 z-[600] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl min-h-50 p-6 flex items-center justify-center flex-col">
                 <div className="flex flex-col items-center text-center gap-5">
@@ -35,7 +36,8 @@ const ModalConfirmacion = ({
                     </button>
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
 

@@ -32,7 +32,7 @@ const InicioAdmin = () => {
 							Sistema de Gestión ESCOM
 						</h2>
 						<p className="text-escom-50 mb-4">
-							Administra eventos culturales, usuarios y actividades de manera eficiente
+							Administra eventos culturales y usuarios de manera eficiente
 						</p>
 						<NavLink 
 							to="/control/admin/usuarios"
@@ -88,17 +88,17 @@ const InicioAdmin = () => {
 					<div className="bg-white rounded-2xl shadow-md p-6 h-full flex flex-col">
 						<h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
 							<FontAwesomeIcon icon={['fas', 'clock']} className="mr-3 text-escom-400" />
-							Actividad Reciente
+							Historial Reciente
 						</h2>
 						{/*<div className="space-y-4 overflow-y-auto">
-							{actividadReciente.map((actividad, index) => (
+							{historialReciente.map((item, index) => (
 								<div key={index} className="flex items-start gap-3 pb-4 border-b border-gray-100 last:border-0">
-									<div className={`w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 ${actividad.color}`}>
-										<FontAwesomeIcon icon={['fas', actividad.icono]} />
+									<div className={`w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 ${item.color}`}>
+										<FontAwesomeIcon icon={['fas', item.icono]} />
 									</div>
 									<div className="flex-1 min-w-0">
-										<p className="text-sm text-gray-800 font-medium">{actividad.texto}</p>
-										<p className="text-xs text-gray-500 mt-1">{actividad.tiempo}</p>
+										<p className="text-sm text-gray-800 font-medium">{item.texto}</p>
+										<p className="text-xs text-gray-500 mt-1">{item.tiempo}</p>
 									</div>
 								</div>
 							))}

@@ -32,7 +32,7 @@ const Router = () => {
           <Route path="/registro" element={<Registro />} />
           <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
 
-          <Route path="/actividades-eventos/*" element={<EventosRoutes />} />
+          <Route path="/eventos/*" element={<EventosRoutes />} />
 
           <Route element={<AuthGuard />}>
 

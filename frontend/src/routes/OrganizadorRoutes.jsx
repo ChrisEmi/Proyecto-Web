@@ -10,6 +10,7 @@ const Calendario = lazy(() => import('../pages/usuarios/organizador/CalendarioOr
 const CrearEvento = lazy(() => import('../pages/usuarios/organizador/CrearEvento.jsx'));
 const Eventos = lazy(() => import('../pages/usuarios/organizador/Eventos.jsx'));
 const Perfil = lazy(() => import('../pages/usuarios/organizador/Perfil.jsx'));
+const Configuracion = lazy(() => import('../pages/usuarios/organizador/Configuracion.jsx'));
 
 
 const OrganizadorRoutes = () => {
@@ -23,9 +24,8 @@ const OrganizadorRoutes = () => {
                 <Route path="/perfil" element={<Perfil />} />
                 <Route path="/crear-evento" element={<CrearEvento />} />
                 <Route path="/eventos" element={<Eventos />} />
-                <Route path="/inscripciones" element={<Inicio />} />
                 <Route path="/calendario" element={<Calendario />} />
-                <Route path="/ajustes" element={<Inicio />} />
+                <Route path="/ajustes" element={<Configuracion />} />
                 <Route path="*" element={<Navigate to="/organizador/inicio" />} />
               </Route>
             </Routes>

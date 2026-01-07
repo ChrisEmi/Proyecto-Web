@@ -9,6 +9,7 @@ const Inicio = lazy(() => import('../pages/usuarios/alumno/InicioAlumno.jsx'));
 const Calendario = lazy(() => import('../pages/usuarios/alumno/CalendarioAlumno.jsx'));
 const Eventos = lazy(() => import('../pages/usuarios/alumno/Eventos.jsx'));
 const Perfil = lazy(() => import('../pages/usuarios/alumno/Perfil.jsx'));
+const Configuracion = lazy(() => import('../pages/usuarios/alumno/Configuracion.jsx'));
 
 const AlumnoRoutes = () => {
   return (
@@ -19,10 +20,9 @@ const AlumnoRoutes = () => {
               <Route element={<AlumnoLayout />}>
                 <Route path="/inicio" element={<Inicio />} />
                 <Route path="/perfil" element={<Perfil />} />
-                <Route path="/mis-actividades" element={<Inicio />} />
                 <Route path="/mis-eventos" element={<Eventos />} />
                 <Route path="/calendario" element={<Calendario />} />
-                <Route path="/ajustes" element={<Inicio />} />
+                <Route path="/ajustes" element={<Configuracion />} />
                 <Route path="*" element={<Navigate to="/alumno/inicio" />} />
               </Route>
             </Routes>

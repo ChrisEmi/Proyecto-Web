@@ -18,9 +18,8 @@ const EventosRoutes = () => {
             <Route element={<EventosLayout />}>
               <Route path="/explorar" element={<Inicio />} />
               <Route path="/eventos" element={<Eventos />} />
-              <Route path="/actividades" element={<Calendario />} />
               <Route path="/calendario" element={<Calendario />} />
-              <Route path="*" element={<Navigate to="/actividades-eventos/explorar" />} />
+              <Route path="*" element={<Navigate to="/eventos/explorar" />} />
             </Route>
           </Routes>
         </Suspense>

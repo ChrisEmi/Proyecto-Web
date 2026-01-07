@@ -104,6 +104,27 @@ class PerfilController {
             ]);
         }
     }
+
+    public function cambiarConfiguracionNotificaciones($pool, int $preferencias){
+        try {
+            $id_usuario = AuthContext::obtenerIdUsuario();
+
+            $perfilModel = new \App\Database\QuerysPerfil($pool);
+            $perfilModel->cambiarPreferenciasNotificaciones($id_usuario, $preferencias);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => "Configuración de notificaciones actualizada exitosamente"
+            ]);
+        } catch (\Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al actualizar la configuración de notificaciones: " . $e->getMessage()
+            ]);
+        }
+    }
 }
 
 ?>

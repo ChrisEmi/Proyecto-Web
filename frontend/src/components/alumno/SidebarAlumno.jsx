@@ -12,8 +12,7 @@ const linksArreglo = [
     { to: "/alumno/inicio", icon: "home", label: "Inicio" },
     { to: "/alumno/perfil", icon: "user", label: "Perfil" },
     { to: "/alumno/calendario", icon: "calendar-alt", label: "Calendario" },
-        { to: "/alumno/mis-actividades", icon: "chart-line", label: "Actividades" },
-        { to: "/alumno/mis-eventos", icon: "calendar", label: "Eventos" },
+    { to: "/alumno/mis-eventos", icon: "calendar", label: "Eventos" },
     { to: "/alumno/ajustes", icon: "cog", label: "Ajustes" },
 ];
     

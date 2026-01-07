@@ -71,9 +71,11 @@ const ModalDetallesEvento = ({
     isInscrito,
     onDesinscribirse,
     tipoUsuario = 'default', // 'admin' | 'alumno' | 'organizador' | 'default'
-    paginaAlumno = false
+    paginaAlumno = false,
+    actualizarEventoComoPasado,
 }) => {
     const [modalCancelar, setModalCancelar] = useState(false);
+    const [modalMarcarComoPasado, setModalMarcarComoPasado] = useState(false);
     const [modalInscribir, setModalInscribir] = useState(false);
     const [imagenes, setImagenes] = useState([]);
     const [eliminarImagen, setEliminarImagen] = useState(null);
@@ -122,6 +124,19 @@ const ModalDetallesEvento = ({
 
     return createPortal(
         <>
+            <ModalConfirmacion
+                isOpen={modalMarcarComoPasado}
+                onClose={() => setModalMarcarComoPasado(false)}
+                onConfirm={() => {
+                    actualizarEventoComoPasado();
+                    setModalMarcarComoPasado(false);
+                }}
+                titulo="Marcar como pasado"
+                mensaje={`¿Estás seguro de que deseas marcar el evento "${eventoSeleccionado?.titulo_evento}" como pasado? Esta acción no se puede deshacer.`}
+                icono="fa-solid fa-check-circle"
+                textoConfirmar="Marcar"
+                textoCancelar="Cancelar"
+            />
             <ModalConfirmacion
                 isOpen={modalCancelar}
                 onClose={() => setModalCancelar(false)}
@@ -252,6 +267,7 @@ const ModalDetallesEvento = ({
                     setModalInscribir={setModalInscribir}
                     setModalCancelar={setModalCancelar}
                     setModalEliminar={setModalEliminar}
+                    setModalMarcarComoPasado={setModalMarcarComoPasado}
                     onEliminar={onEliminar}
                 />
             </div>

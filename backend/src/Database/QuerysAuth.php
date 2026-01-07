@@ -15,7 +15,7 @@ class QuerysAuth
 
     public function buscarPorCorreo(string $correo)
     {
-        $sql = "SELECT u.correo, u.contraseña AS contrasena, u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, tu.nombre_tipo AS rol, u.recuperacion_token, u.recuperacion_exp
+        $sql = "SELECT u.correo, u.contraseña AS contrasena, u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, tu.nombre_tipo AS rol, u.estado, u.recuperacion_token, u.recuperacion_exp
                 FROM Usuario u
                 INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario 
                 WHERE u.correo = :correo";
@@ -77,7 +77,7 @@ class QuerysAuth
 
     public function obtenerCorreoPorId(string $id_usuario)
     {
-        $sql = "SELECT correo FROM Usuario WHERE id_usuario = :id_usuario";
+        $sql = "SELECT correo, nombre, apellido_paterno, config_notificacion FROM Usuario WHERE id_usuario = :id_usuario";
 
         $stmt = $this->pool->prepare($sql);
         $stmt->bindParam(':id_usuario', $id_usuario);
@@ -128,6 +128,16 @@ class QuerysAuth
         $stmt->bindParam(':id_usuario', $id_usuario);
         $stmt->execute();
         return $stmt->rowCount();
+    }
+
+    public function buscarPorId($id_usuario) {
+        $sql = "SELECT id_usuario, correo, contraseña AS contrasena, nombre, apellido_paterno
+                FROM Usuario 
+                WHERE id_usuario = :id_usuario";
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
 }

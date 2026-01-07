@@ -134,7 +134,7 @@ const EventosHorizontal = ({ eventos }) => {
         </div>
 
         <div className="mt-6 sm:mt-8 mb-4 sm:mb-0">
-          <Link to="/actividades-eventos/eventos" 
+          <Link to="/eventos/eventos" 
             className="group inline-flex relative bg-gradient-to-b from-escom-100 to-escom-200 text-escom-sombra-300 px-8 py-4 font-bold rounded-xl text-base sm:text-lg 
                     hover:text-escom-sombra-700 transition-all duration-300 transform hover:scale-105 shadow-2xl 
                       hover:shadow-escom-sombra-900/50

@@ -208,7 +208,7 @@ const Login = () => {
               </span>
             </h2>
             <p className="text-sm md:text-base lg:text-lg xl:text-xl text-escom-100 max-w-md leading-relaxed">
-              Accede a tu cuenta para gestionar eventos, actividades y conectar con la comunidad ESCOM
+              Accede a tu cuenta para gestionar eventos y conectar con la comunidad ESCOM
             </p>
             
           </div>

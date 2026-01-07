@@ -13,7 +13,6 @@ const linksArreglo = [
         { to: "/organizador/perfil", icon: "user", label: "Perfil" },
         { to: "/organizador/eventos", icon: "calendar", label: "Mis Eventos" },
         { to: "/organizador/crear-evento", icon: "calendar-plus", label: "Crear Evento" },
-        { to: "/organizador/inscripciones", icon: "list", label: "Inscripciones" },
         { to: "/organizador/ajustes", icon: "cog", label: "Ajustes" },
 ];
     

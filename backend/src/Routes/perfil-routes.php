@@ -58,6 +58,30 @@ function perfil_routes($router) {
             $controller->actualizarPerfilAdmin($db);
         });
     });
-}
 
+    $router->put('/perfil/cambiar-preferencias-organizador/{preferencias}', function($preferencias) use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db, $preferencias) {
+            $controller = new PerfilController();
+            $controller->cambiarConfiguracionNotificaciones($db, (int)$preferencias);
+        });
+    });
+
+    $router->put('/perfil/cambiar-preferencias-alumno/{preferencias}', function($preferencias) use ($db) {
+        $middleware = new EstudianteMiddleware();
+        $middleware->handle(function() use ($db, $preferencias) {
+            $controller = new PerfilController();
+            $controller->cambiarConfiguracionNotificaciones($db, (int)$preferencias);
+        });
+    });
+
+    $router->put('/perfil/cambiar-preferencias-admin/{preferencias}', function($preferencias) use ($db) {
+        $middleware = new AdminMiddleware();
+        $middleware->handle(function() use ($db, $preferencias) {
+            $controller = new PerfilController();
+            $controller->cambiarConfiguracionNotificaciones($db, (int)$preferencias);
+        });
+    });
+}
+    
 ?>

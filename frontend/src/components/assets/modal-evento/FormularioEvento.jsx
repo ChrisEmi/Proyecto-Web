@@ -21,6 +21,7 @@ const FormularioEvento = ({
     setModalInscribir,
     setModalCancelar,
     setModalEliminar,
+    setModalMarcarComoPasado,
     onEliminar
 }) => {
     const tieneImagenes = eventoSeleccionado.imagenes && eventoSeleccionado.imagenes.length > 0;
@@ -280,6 +281,7 @@ const FormularioEvento = ({
                     setModalInscribir={setModalInscribir}
                     setModalCancelar={setModalCancelar}
                     setModalEliminar={setModalEliminar}
+                    setModalMarcarComoPasado={setModalMarcarComoPasado}
                 />
             </form>
         </div>

@@ -10,11 +10,10 @@ import gsap from "gsap";
 
 const linksArreglo = [
         { to: "/control/admin/inicio", icon: "home", label: "Inicio" },
+        { to: "/control/admin/perfil", icon: "user", label: "Perfil" },
+        { to: "/control/admin/crear-usuario", icon: "user-plus", label: "Crear Usuario" },
         { to: "/control/admin/usuarios", icon: "users", label: "Usuarios" },
         { to: "/control/admin/eventos", icon: "calendar", label: "Eventos" },
-        { to: "/control/admin/crear-usuario", icon: "user-plus", label: "Crear Usuario" },
-        { to: "/control/admin/perfil", icon: "user", label: "Perfil" },
-        { to: "/control/admin/ajustes", icon: "cog", label: "Ajustes" },
 ];
     
 const SidebarAdmin = () => {

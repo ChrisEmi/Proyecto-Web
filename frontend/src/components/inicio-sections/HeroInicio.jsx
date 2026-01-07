@@ -70,7 +70,7 @@ const HeroInicio = () => {
         <div className="text-center mb-8 lg:mb-12">
           
           <h1 className="titulo-hero text-white text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-tight drop-shadow-2xl mb-6 px-4">
-            Actividades Culturales y Recreativas
+            Eventos Culturales y Recreativos
             <span className="escomunidad-hero block text-escom-200 mt-2">de la ESCOMunidad</span>
           </h1>
 
@@ -113,7 +113,7 @@ const HeroInicio = () => {
 
         <div className="text-center space-y-6 max-w-3xl mx-auto">
           <p className="text-white/80 text-base sm:text-lg leading-relaxed px-4">
-            Únete a nuestra comunidad estudiantil y participa en actividades que 
+            Únete a nuestra comunidad estudiantil y participa en eventos que 
             enriquecerán tu experiencia universitaria. Explora talleres, conferencias, 
             competencias y eventos culturales diseñados para ti.
           </p>
@@ -144,7 +144,7 @@ const HeroInicio = () => {
                         w-full sm:w-auto"
             >
               <span className="flex items-center justify-center gap-2">
-                Explorar Actividades
+                Explorar Eventos
                 <svg className="w-5 h-5 transition-transform duration-300 group-hover:rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>

@@ -15,7 +15,7 @@ class QuerysAdmin
 
     private function imagenesTagsPorEvento(array $eventos) {
         if(empty($eventos)){
-            return;
+            return [];
         }
 
         $ids_eventos = array_map(fn($evento) => $evento['id_evento'], $eventos);
@@ -68,7 +68,7 @@ class QuerysAdmin
         $roles_validos = ['Estudiante', 'Organizador', 'Administrador'];
         $direcciones_validas = (strtoupper($direccion) === 'ASC') ? 'ASC' : 'DESC';
 
-        $sql = "SELECT u.id_usuario, u.nombre, u.correo, tu.nombre_tipo, u.estado, u.apellido_paterno, u.apellido_materno
+        $sql = "SELECT u.id_usuario, u.nombre, u.correo, tu.nombre_tipo, u.estado, u.apellido_paterno, u.apellido_materno, u.fecha_creacion
              FROM Usuario u
              INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario";
         
@@ -192,6 +192,32 @@ class QuerysAdmin
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function obtenerEventosPorUsuarioQuery($id_usuario){
+        $sql = "SELECT e.*, c.nombre_categoria 
+                FROM Evento e
+                INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
+                WHERE e.id_organizador = :id_usuario
+                ORDER BY e.fecha DESC";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $res = $this->imagenesTagsPorEvento($eventos);
+
+        return $res;
+    }
+
+    public function banearDesbanearUsuarioQuery($id_usuario, $nuevo_estado){
+        $sql = "UPDATE Usuario SET estado = :nuevo_estado WHERE id_usuario = :id_usuario";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':nuevo_estado', $nuevo_estado);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+    }
+
     public function obtenerEventosAdminQuery($ordenar_por = 'fecha', $direccion = 'DESC', $estado = ''){
         $columnas_validas = [
             'titulo' => 'e.titulo_evento', 
@@ -229,4 +255,55 @@ class QuerysAdmin
 
         return $res;
     }
+    
+
+
+    public function obtenerDatosPerfilAdminQuery($id_usuario){
+        $sql = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, tu.nombre_tipo, u.estado
+             FROM Usuario u
+             INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
+             WHERE u.id_usuario = :id_usuario";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function obtenerEventosInscritosPorUsuarioQuery($id_usuario){
+        $sql = "SELECT e.*, c.nombre_categoria, ie.fecha_inscripcion 
+                FROM InscripcionEvento ie
+                INNER JOIN Evento e ON ie.id_evento = e.id_evento
+                INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
+                WHERE ie.id_usuario = :id_usuario
+                ORDER BY ie.fecha_inscripcion DESC";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $res = $this->imagenesTagsPorEvento($eventos);
+
+        return $res;
+    }
+
+    public function obtenerEventosCreadosPorUsuarioQuery($id_usuario){
+        $sql = "SELECT e.*, c.nombre_categoria 
+                FROM Evento e
+                INNER JOIN Categoria c ON e.id_categoria = c.id_categoria
+                WHERE e.id_organizador = :id_usuario
+                ORDER BY e.fecha DESC";
+
+        $stmt = $this->pool->prepare($sql);
+        $stmt->bindParam(':id_usuario', $id_usuario);
+        $stmt->execute();
+        $eventos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $res = $this->imagenesTagsPorEvento($eventos);
+
+        return $res;
+    }
+
+    
 }

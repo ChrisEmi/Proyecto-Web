@@ -37,8 +37,13 @@ class CorreoService
     public function enviarEmail(string $destinatario, string $asunto, string $html): array
     {
         try {
+            $from = getenv('EMAIL_FROM');
+            if (empty($from)) {
+                $from = 'ESCOMunidad <noreply@escomeventos.live>';
+            }
+            
             $result = $this->resend->emails->send([
-                'from' => getenv('EMAIL_FROM') ?: 'ESCOMunidad <onboarding@resend.dev>',
+                'from' => $from,
                 'to' => $destinatario,
                 'subject' => $asunto,
                 'html' => $html
@@ -119,5 +124,60 @@ class CorreoService
             "Recuperación de contraseña",
             $html
         );
+    }
+
+    public function enviarNotificacionInscripcionOrganizador(string $destinatario, array $datosInscripcion): array
+    {
+        $html = $this->renderTemplate('emails/notificacionEventoOrganizador.html', [
+            'nombre_organizador' => $datosInscripcion['nombre_organizador'] ?? 'Organizador',
+            'titulo_evento' => $datosInscripcion['titulo_evento'] ?? '',
+            'nombre_inscrito' => $datosInscripcion['nombre_inscrito'] ?? '',
+            'correo_inscrito' => $datosInscripcion['correo_inscrito'] ?? '',
+            'fecha_inscripcion' => $datosInscripcion['fecha_inscripcion'] ?? date('d/m/Y H:i'),
+            'hora_evento' => $datosInscripcion['hora_evento'] ?? '',
+            'lugar_evento' => $datosInscripcion['lugar_evento'] ?? '',
+            'url_evento' => $datosInscripcion['url_evento'] ?? '#'
+        ]);
+
+        return $this->enviarEmail(
+            $destinatario,
+            "Nueva inscripción en tu evento: " . ($datosInscripcion['titulo_evento'] ?? ''),
+            $html
+        );
+    }
+
+    public function enviarNotificacionesEventoProximo(array $destinatarios, array $datosEvento)
+    {
+        $fechaInicio = !empty($datosEvento['fecha_inicio']) ? new \DateTime($datosEvento['fecha_inicio']) : null;
+        $dias_restantes = $fechaInicio ? $fechaInicio->diff(new \DateTime())->days : null;
+        $fecha_formateada = $fechaInicio ? $fechaInicio->format('d \d\e F, Y') : '';
+
+        $html = $this->renderTemplate('emails/notificacionEventoProximo.html', [
+            'titulo_evento' => $datosEvento['titulo_evento'] ?? '',
+            'dias_restantes' => $dias_restantes ?? '',
+            'nombre_usuario' => $datosEvento['nombre'] ?? 'Estudiante',
+            'descripcion' => $datosEvento['descripcion_evento'] ?? '',
+            'fecha_evento' => $fecha_formateada,
+            'hora_evento' => $datosEvento['hora_evento'] ?? '',
+            'lugar_evento' => $datosEvento['lugar_evento'] ?? '',
+            'imagen_evento' => $datosEvento['imagen_evento'] ?? 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop',
+            'url_evento' => $datosEvento['url_evento'] ?? '#'
+        ]);
+
+        $resultados = [];
+
+        foreach ($destinatarios as $destinatario) {
+            $resultados[] = [
+                'email' => $destinatario,
+                'resultado' => $this->enviarEmail(
+                    $destinatario,
+                    "Recordatorio: Evento próximo - " . ($datosEvento['titulo_evento'] ?? ''),
+                    $html
+                )
+            ];
+        }
+
+        return $resultados;
+
     }
 }

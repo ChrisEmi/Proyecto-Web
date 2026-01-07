@@ -1,6 +1,5 @@
 import { useEffect, createContext, useContext, useState } from "react";
 import EventosAPI from "../Routes/Eventos.js";
-import ActividadesAPI from "../Routes/Actividades.js";
 
 export const EventosContext = createContext();
 
@@ -14,7 +13,6 @@ export const useEventos = () => {
 
 export const EventosProvider = ({ children }) => {
     const [eventos, setEventos] = useState([]);
-    const [actividades, setActividades] = useState([]);
     const [errors, setErrors] = useState();
     const [mensajeConfirmacion, setMensajeConfirmacion] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -57,19 +55,6 @@ export const EventosProvider = ({ children }) => {
         }
     };
 
-    const obtenerActividades = async () => { 
-        try {
-            setLoading(true);
-            const res = await ActividadesAPI.obtenerActividades();
-            setActividades(res.data.actividades);
-        } catch (error) {
-            console.error("Error al obtener las actividades:", error);
-            setErrors(error.response?.data?.message);
-        } finally {
-            setLoading(false);
-        }
-    }
-
     useEffect(() => {
         if ((errors && Object.keys(errors).length > 0) || mensajeConfirmacion) {
             const timer = setTimeout(() => {
@@ -85,8 +70,6 @@ export const EventosProvider = ({ children }) => {
             obtenerEventos,
             obtenerEventoPorId,
             mensajeConfirmacion,
-            obtenerActividades,
-            actividades,
             setMensajeConfirmacion,
             eliminarEvento,
             eventos,

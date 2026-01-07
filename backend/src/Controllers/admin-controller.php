@@ -215,6 +215,114 @@ class AdminController {
             ]);
         }
     }
+
+    public function banearDesbanearUsuario($pool, $id_usuario) {
+        try {
+            $input = json_decode(file_get_contents("php://input"), true);
+            
+            if (!isset($input['nuevo_estado'])) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "El nuevo estado es requerido"
+                ]);
+                return;
+            }
+
+            $nuevo_estado = $input['nuevo_estado'];
+            
+            // Validar que el estado sea válido
+            if (!in_array($nuevo_estado, ['Activo', 'Baneado', 'Desactivado'])) {
+                http_response_code(400);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Estado no válido. Debe ser 'Activo', 'Baneado' o 'Desactivado'"
+                ]);
+                return;
+            }
+
+            $query = new QuerysAdmin($pool);
+            $query->banearDesbanearUsuarioQuery($id_usuario, $nuevo_estado);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "message" => $nuevo_estado === 'Baneado' ? "Usuario baneado exitosamente" : "Usuario desbaneado exitosamente"
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al actualizar el estado del usuario: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function obtenerDatosPerfilAdmin($pool, $id_usuario) {
+        try {
+            $query = new QuerysAdmin($pool);
+            $perfil = $query->obtenerDatosPerfilAdminQuery($id_usuario);
+
+            if (!$perfil) {
+                http_response_code(404);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Usuario no encontrado"
+                ]);
+                return;
+            }
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "perfil" => $perfil
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener el perfil del usuario: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function obtenerInscripcionesUsuario($pool, $id_usuario) {
+        try {
+            $query = new QuerysAdmin($pool);
+            $inscripciones = $query->obtenerEventosInscritosPorUsuarioQuery($id_usuario);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "inscripciones" => $inscripciones
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener las inscripciones del usuario: " . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function obtenerEventosOrganizador($pool, $id_usuario) {
+        try {
+            $query = new QuerysAdmin($pool);
+            $eventos = $query->obtenerEventosCreadosPorUsuarioQuery($id_usuario);
+
+            http_response_code(200);
+            echo json_encode([
+                "status" => "success",
+                "eventos" => $eventos
+            ]);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode([
+                "status" => "error",
+                "message" => "Error al obtener los eventos del organizador: " . $e->getMessage()
+            ]);
+        }
+    }
 }
 
 

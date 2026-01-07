@@ -41,11 +41,28 @@ class AuthController {
 
             $usuarioModel = new QuerysAuth($pool);
             $usuario = $usuarioModel->buscarPorCorreo($correo);
+
+            if (!$usuario) {
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Credenciales incorrectas"
+                ]);
+                return;
+            }
+
+            if($usuario['estado'] === 'Desactivado' || $usuario['estado'] === 'Baneado' || $usuario['estado'] !== 'Activo'){
+                http_response_code(401);
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "La cuenta ha sido deshabilitada."
+                ]);
+                return;
+            }
             
-            if ($usuario && password_verify($contrasena, $usuario['contrasena'])) {
+            if (password_verify($contrasena, $usuario['contrasena'])) {
                 unset($usuario['contrasena']);
                 $jwt = $this->jwt($usuario['id_usuario'], $correo);
-
 
                 setcookie("token", $jwt, [
                     'expires' => time() + (60 * 60 * 24), 
@@ -66,7 +83,6 @@ class AuthController {
                         "apellido_materno" => $usuario['apellido_materno'] ?? '',
                     ]
                 ]);
-
             } else {
                 http_response_code(401);
                 echo json_encode([
@@ -74,6 +90,7 @@ class AuthController {
                     "message" => "Credenciales invalidas"
                 ]);
             }
+            
         } catch (Exception $e) {
             http_response_code(500);
             echo json_encode([
@@ -350,6 +367,7 @@ class AuthController {
             ]);
         }
     }
+
 }
 
 ?>

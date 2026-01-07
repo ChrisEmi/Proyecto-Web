@@ -33,6 +33,14 @@ const AdminAPI = {
       );
     }
   },
+  banearUsuario: (id_usuario, nuevo_estado) =>
+    axios.post(`/administrador/banear-usuario/${id_usuario}`, { nuevo_estado }),
+  obtenerPerfilUsuario: (id_usuario) =>
+    axios.get(`/administrador/perfil-usuario/${id_usuario}`),
+  obtenerEventosPorUsuario: (id_usuario) =>
+    axios.get(`/administrador/eventos-usuario/${id_usuario}`),
+  obtenerEventosOrganizador: (id_usuario) =>
+    axios.get(`/administrador/eventos-organizador/${id_usuario}`),
 };
 
 export default AdminAPI;

@@ -149,7 +149,7 @@ const Eventos = () => {
                     tipoUsuario={usuarioTipoModal}
                 />
             )}
-            <div className="section-container flex flex-col min-h-screen gap-4">
+            <div className="section-container flex flex-col min-h-screen gap-4 p-12">
                 <div className="titulo-nav z-50 flex flex-col gap-4 bg-escom-sombra-200/70 p-4 md:p-8 rounded-2xl backdrop-blur-sm text-center md:sticky md:top-0 md:z-10 shadow-lg">
                     <h1 className="text-5xl font-bold text-white titulo-h1">Eventos</h1>
                     <div className="flex flex-col md:flex-row items-center md:justify-between">

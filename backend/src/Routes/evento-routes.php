@@ -118,5 +118,37 @@ function evento_routes($router) {
         });
     });
 
+    $router->get('/evento/inscripciones-organizador', function() use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db) {
+            $controller = new EventoController();
+            $controller->obtenerInscripcionesPorOrganizador($db);
+        });
+    });
+
+    $router->get('/evento/resumen-inscripciones-organizador', function() use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db) {
+            $controller = new EventoController();
+            $controller->obtenerResumenInscripcionesPorOrganizador($db);
+        });
+    });
+
+    $router->post('/evento/enviar-avisos/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new EventoController();
+            $controller->enviarCorreosAvisoEventoProximo($db, $id_evento);
+        });
+    });
+
+    $router->post('/evento/marcar-como-pasado/{id_evento}', function($id_evento) use ($db) {
+        $middleware = new OrganizadorMiddleware();
+        $middleware->handle(function() use ($db, $id_evento) {
+            $controller = new EventoController();
+            $controller->marcarEventoComoPasado($db, $id_evento);
+        });
+    });
+
 
 }
