@@ -59,7 +59,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
     const selectedOption = options.find(opt => opt.value === currentValue);
 
     return (
-        <div ref={selectRef} className="relative">
+        <div ref={selectRef} className="relative z-[99999]">
             <button
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
@@ -82,7 +82,7 @@ const CustomSelect = ({ value, onChange, options, placeholder = "Seleccionar..."
                 />
             </button>
             {isOpen && (
-                <div className={`absolute z-50 mt-2 w-full bg-white rounded-xl shadow-2xl overflow-x-hidden`}>
+                <div className={`absolute z-[99999] mt-2 w-full bg-white rounded-xl shadow-2xl overflow-x-hidden`}>
                     <div className="max-h-60 overflow-y-auto">
                         {options.map((option) => (
                             <button

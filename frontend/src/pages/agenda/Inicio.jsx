@@ -82,9 +82,9 @@ const InicioEventos = () => {
                         <div className="order-2 lg:order-1 space-y-6 lg:space-y-8">
                             
                             {/* Label */}
-                            <div className="hero-label inline-flex items-center gap-2 bg-emerald-500/20 px-4 py-2 rounded-full">
-                                <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
-                                <span className="text-emerald-300 text-sm font-medium">
+                            <div className="hero-label inline-flex items-center gap-2 bg-escom-400/20 px-4 py-2 rounded-full">
+                                <span className="w-2 h-2 bg-escom-400 rounded-full animate-pulse"></span>
+                                <span className="text-escom-300 text-sm font-medium">
                                     {eventos?.length || 0} eventos disponibles
                                 </span>
                             </div>
@@ -94,13 +94,13 @@ const InicioEventos = () => {
                                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1]">
                                     Encuentra tu próximo
                                 </h1>
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 leading-[1.1]">
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-escom-400 to-cyan-400 leading-[1.1]">
                                     evento favorito
                                 </h1>
                             </div>
 
                             {/* Descripción */}
-                            <p className="hero-descripcion text-slate-300 text-lg lg:text-xl leading-relaxed max-w-lg">
+                            <p className="hero-descripcion text-escom-100 text-lg lg:text-xl leading-relaxed max-w-lg">
                                 Conferencias, talleres, torneos y más. Todo lo que necesitas para aprovechar tu vida universitaria en ESCOM.
                             </p>
 
@@ -110,7 +110,7 @@ const InicioEventos = () => {
                                     <>
                                         <Link
                                             to="/eventos/eventos"
-                                            className="hero-cta flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 py-3.5 rounded-xl font-bold transition-all duration-300 hover:scale-105"
+                                            className="hero-cta flex items-center gap-2 bg-escom-400 hover:bg-escom-500 text-slate-900 px-6 py-3.5 rounded-xl font-bold transition-all duration-300 hover:scale-105"
                                         >
                                             <FontAwesomeIcon icon={['fas', 'compass']} />
                                             Explorar Eventos
@@ -127,7 +127,7 @@ const InicioEventos = () => {
                                     <>
                                         <Link
                                             to="/registro"
-                                            className="hero-cta flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-6 py-3.5 rounded-xl font-bold transition-all duration-300 hover:scale-105"
+                                            className="hero-cta flex items-center gap-2 bg-escom-500 hover:bg-escom-400 text-slate-900 px-6 py-3.5 rounded-xl font-bold transition-all duration-300 hover:scale-105"
                                         >
                                             <FontAwesomeIcon icon={['fas', 'user-plus']} />
                                             Crear Cuenta Gratis
@@ -146,7 +146,7 @@ const InicioEventos = () => {
                             {/* Features inline */}
                             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-slate-700/50">
                                 <div className="feature-item text-center">
-                                    <div className="text-2xl lg:text-3xl font-black text-emerald-400">{eventos?.length || 0}</div>
+                                    <div className="text-2xl lg:text-3xl font-black text-escom-400">{eventos?.length || 0}</div>
                                     <div className="text-slate-400 text-sm">Eventos</div>
                                 </div>
                                 <div className="feature-item text-center">
@@ -190,8 +190,8 @@ const InicioEventos = () => {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         
                         <div className="feature-item group bg-slate-800/80 rounded-2xl p-6 hover:bg-slate-700/80 transition-all duration-300">
-                            <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <FontAwesomeIcon icon={['fas', 'bolt']} className="text-emerald-400 text-xl" />
+                            <div className="w-12 h-12 bg-escom-500/20 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <FontAwesomeIcon icon={['fas', 'bolt']} className="text-escom-400 text-xl" />
                             </div>
                             <h3 className="text-lg font-bold text-white mb-2">Inscripción rápida</h3>
                             <p className="text-slate-400 text-sm leading-relaxed">
@@ -224,7 +224,7 @@ const InicioEventos = () => {
                         <div className="text-center mt-12">
                             <Link
                                 to="/registro"
-                                className="inline-flex items-center gap-3 bg-gradient-to-r from-emerald-500 to-cyan-500 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all duration-300 hover:scale-105"
+                                className="inline-flex items-center gap-3 bg-gradient-to-r from-escom-500 to-cyan-500 text-slate-900 px-8 py-4 rounded-xl font-bold text-lg hover:opacity-90 transition-all duration-300 hover:scale-105"
                             >
                                 Empezar ahora
                                 <FontAwesomeIcon icon={['fas', 'arrow-right']} />

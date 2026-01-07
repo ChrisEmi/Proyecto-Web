@@ -259,7 +259,7 @@ class QuerysAdmin
 
 
     public function obtenerDatosPerfilAdminQuery($id_usuario){
-        $sql = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, tu.nombre_tipo, u.estado
+        $sql = "SELECT u.id_usuario, u.nombre, u.apellido_paterno, u.apellido_materno, u.correo, tu.nombre_tipo, u.estado, u.telefono, u.foto_src
              FROM Usuario u
              INNER JOIN TipoUsuario tu ON u.id_tipo_usuario = tu.id_tipo_usuario
              WHERE u.id_usuario = :id_usuario";

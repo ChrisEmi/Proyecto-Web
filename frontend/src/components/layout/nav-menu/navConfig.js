@@ -52,7 +52,6 @@ export const RUTAS_CUENTA = {
   Administrador: (cerrarMenu) => [
     { to: "/control/admin/inicio", label: "Inicio", onClick: cerrarMenu },
     { to: "/control/admin/perfil", label: "Perfil", onClick: cerrarMenu },
-    { to: "/control/admin/ajustes", label: "Ajustes", onClick: cerrarMenu },
   ],
   Organizador: (cerrarMenu) => [
     { to: "/organizador/inicio", label: "Panel", onClick: cerrarMenu },

@@ -2,6 +2,7 @@ import { useAlumno } from "../../../api/Context/AlumnoContext";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CampoTexto } from "../../../components/assets/cutoms-campos/CampoTexto";
+import CustomSelect from "../../../components/assets/cutoms-campos/CustomSelect";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -190,30 +191,56 @@ const Perfil = () => {
                                         icon={"fa-solid fa-id-card"}
                                         disabled={true}
                                     />
-                                    <CampoTexto
-                                        label="Semestre"
-                                        id="semestre"
-                                        type='number'
-                                        register={register}
-                                        required="El semestre es obligatorio"
-                                        error={errors.semestre}
-                                        icon={"fa-solid fa-layer-group"}
-                                        disabled={!editando}
-                                    />
-                                    <CampoTexto
-                                        label="Carrera"
-                                        id="carrera"
-                                        register={register}
-                                        required="La carrera es obligatoria"
-                                        error={errors.carrera}
-                                        icon={"fa-solid fa-book"}
-                                        disabled={!editando}
-                                        className="col-span-2"
-                                    />
+                                    <div className="flex flex-col gap-1">
+                                        <label className="flex items-center text-escom-900 font-semibold text-sm">
+                                            Semestre
+                                        </label>
+                                        <div className="flex items-center p-2">
+                                            <FontAwesomeIcon icon="fa-solid fa-layer-group" className="text-escom-700 mr-2" />
+                                            <CustomSelect
+                                            value={watch('semestre') || ''}
+                                            onChange={(val) => setValue('semestre', val, { shouldValidate: true })}
+                                            options={[
+                                                { value: '1', label: '1° Semestre', icon: 'layer-group' },
+                                                { value: '2', label: '2° Semestre', icon: 'layer-group' },
+                                                { value: '3', label: '3° Semestre', icon: 'layer-group' },
+                                                { value: '4', label: '4° Semestre', icon: 'layer-group' },
+                                                { value: '5', label: '5° Semestre', icon: 'layer-group' },
+                                                { value: '6', label: '6° Semestre', icon: 'layer-group' },
+                                                { value: '7', label: '7° Semestre', icon: 'layer-group' },
+                                                { value: '8', label: '8° Semestre', icon: 'layer-group' },
+                                            ]}
+                                            placeholder="Selecciona tu semestre"
+                                            disabled={!editando}
+                                            color="escom-900"
+                                        />
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col gap-1">
+                                        <label className="flex items-center text-escom-900 font-semibold text-sm">
+                                            
+                                            Carrera
+                                        </label>
+                                        <div className="flex items-center p-2">
+                                            <FontAwesomeIcon icon="fa-solid fa-book" className="text-escom-700 mr-2" />
+                                            <CustomSelect
+                                                value={watch('carrera') || ''}
+                                                onChange={(val) => setValue('carrera', val, { shouldValidate: true })}
+                                                options={[
+                                                    { value: 'Ingeniería en Sistemas Computacionales', label: 'ISC', icon: 'laptop-code' },
+                                                    { value: 'Ingeniería Ciencias de Datos', label: 'ICD', icon: 'database' },
+                                                    { value: 'Ingeniería en Inteligencia Artificial', label: 'IIA', icon: 'robot' },
+                                                ]}
+                                                placeholder="Selecciona tu carrera"
+                                                disabled={!editando}
+                                                color="escom-900"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto px-4 sm:px-0">
+                        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 w-full sm:w-auto px-4 sm:px-0 z-0 mt-16">
                             {!editando ? (
                                 <button 
                                     type="button" 
